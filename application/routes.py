@@ -1,41 +1,101 @@
 import os
+
+from flask_login import current_user
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import jsonify, request
+from flask import jsonify, redirect, render_template, request, url_for
 
-@app.route('/')
+@app.route('/') 
 def index():
-    return " hello this is flask framework "
+    return render_template('index.html')
+@app.route('/login')
+def login():
+      if current_user.is_authenticated:
+          return redirect(url_for('dashboard'))
+      return render_template('login.html')
+@app.route('/dashboard') 
+def index():
+    return render_template('dashboard.html')
 @app.route('/hello')
 def hello_world():
     ip_addr = request.remote_addr
     return '<h1> Your IP address is:' + ip_addr
+@app.route('/api/login/admin',methods=['POST'])
+def api_login_admin():
+    data = mysql.connection.cursor()
+    nip = request.form['nip']
+    password = request.form['password']
+    data.execute("SELECT * FROM data WHERE nip = %s" , (nip,))
+    datayangada = data.fetchall()
+    if str(datayangada) == '()':
+        data.close()
+        return "maaf nip tida ada"
+    elif not check_password_hash(datayangada[0][3],password):
+        data.close()
+        return "maaf password salah"
+    else:
+        data.close()
+        return "login berhasil"
+@app.route('/api/login/hrd',methods=['POST'])
+def api_login_hrd():
+    data = mysql.connection.cursor()
+    nip = request.form['nip']
+    password = request.form['password']
+    data.execute("SELECT * FROM data WHERE nip = %s" , (nip,))
+    datayangada = data.fetchall()
+    if str(datayangada) == '()':
+        data.close()
+        return "maaf nip tida ada"
+    elif not check_password_hash(datayangada[0][3],password):
+        data.close()
+        return "maaf password salah"
+    else:
+        data.close()
+        return "login berhasil"
+@app.route('/api/login/k_ruang',methods=['POST'])
+def api_login_k_ruang():
+    data = mysql.connection.cursor()
+    nip = request.form['nip']
+    password = request.form['password']
+    data.execute("SELECT * FROM data WHERE nip = %s" , (nip,))
+    datayangada = data.fetchall()
+    if str(datayangada) == '()':
+        data.close()
+        return "maaf nip tida ada"
+    elif not check_password_hash(datayangada[0][3],password):
+        data.close()
+        return "maaf password salah"
+    else:
+        data.close()
+        return "login berhasil"
 
 @app.route('/apilogin',methods=['POST'])
 def apilogin():
     data = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT nip FROM data WHERE nip = %s" , (nip,))
+    data.execute("SELECT * FROM data WHERE nip = %s" , (nip,))
     datayangada = data.fetchall()
     if str(datayangada) == '()':
+        data.close()
         return "maaf nip tida ada"
+    elif not check_password_hash(datayangada[0][3],password):
+        data.close()
+        return "maaf password salah"
     else:
-        data.execute("SELECT nip FROM data WHERE nip = %s and password = %s " , (nip,password,))
-        datapswd = data.fetchall()
-        if str(datapswd) == '()':
-            return "maaf password salah"
-        else:
-            return "login berhasil"
+        data.close()
+        return "login berhasil"
 
 @app.route('/apifoto',methods=['POST'])
 def apifoto():
     data = mysql.connection.cursor()
     if 'image' not in request.files:
+        data.close()
         return "tidak ada form image"
     file = request.files['image']
     if file.filename == '':
+        data.close()
         return "tidak ada file image yang dipilih"
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
@@ -43,8 +103,10 @@ def apifoto():
         print(filename)
         data.execute("INSERT INTO dataabsen(foto) VALUES (%s)",(filename,))
         if mysql.connection.commit():
+            data.close()
             print("oke")
         return "gambar telah terupload"
     else:
+        data.close()
         return "bukan file image"
     
