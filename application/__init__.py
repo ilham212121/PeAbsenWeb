@@ -5,7 +5,11 @@ from flask_mysqldb import MySQL
 app = Flask(__name__)
 mysql = MySQL()
 UPLOAD_FOLDER = 'application/static/upload/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def allowed_file(filename):     
+  return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= 'localhost'
 app.config['MYSQL_USER'] = 'root'
