@@ -1,13 +1,7 @@
-import os,pymongo
-from dotenv import load_dotenv
+import os
 from flask import Flask
-from sqlalchemy import *
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
-from sqlalchemy.engine import create_engine
-from sqlalchemy.schema import *
-from pybigquery.api import ApiClient
 app = Flask(__name__)
 mysql = MySQL()
 UPLOAD_FOLDER = 'application/static/upload/'
@@ -23,6 +17,4 @@ SECRET_KEY="powerful secretkey",
 WTF_CSRF_SECRET_KEY="wis tak omongi ora rahasia"
     ))
 mysql.init_app(app)
-from application.models import data
-
 from application import routes
