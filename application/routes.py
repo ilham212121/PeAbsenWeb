@@ -41,14 +41,10 @@ def apifoto():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print(filename)
-        data.execute("INSERT ")
-        if db.session.commit():
+        data.execute("INSERT INTO dataabsen(foto) VALUES (%s)",(filename,))
+        if mysql.connection.commit():
             print("oke")
-        return jsonify({
-            "pesan":"gambar telah terupload"
-            })
+        return "gambar telah terupload"
     else:
-        return jsonify({
-        "pesan":"bukan file image"
-        })
+        return "bukan file image"
     
