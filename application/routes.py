@@ -15,8 +15,8 @@ def login():
           return redirect(url_for('dashboard'))
       return render_template('login.html')
 @app.route('/dashboard') 
-def index():
-    return render_template('dashboard.html')
+def dashboard():
+    return render_template('admin/index.html')
 @app.route('/hello')
 def hello_world():
     ip_addr = request.remote_addr
