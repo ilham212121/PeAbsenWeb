@@ -141,30 +141,22 @@
                                     </tr>
                                 </tfoot>
                                 <tbody>
+                                    {% for row in dataabsensi %}
                                     <tr>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
+                                        <td>{{ row.1 }}</td>
+                                        <td>{{ row.2 }}</td>
+                                        <td>{{ row.3 }}</td>
+                                        <td>{{ row.4 }}</td>
+                                        <td>{{ row.5 }}</td>
+                                        <td><a href="/formupdatesampah/{{ row.0 }}"><button>Edit</button></a>
+                                            <a href="/deletesampah/{{ row.0 }}"><button>hapus</button></a>
+                                        </td>
                                     </tr>
+                                    {% else %}
                                     <tr>
-                                        <td>Garrett Winters</td>
-                                        <td>Accountant</td>
-                                        <td>Tokyo</td>
-                                        <td>63</td>
-                                        <td>2011/07/25</td>
-                                        <td>$170,750</td>
+                                        <td colspan="2">Unbelievable. No entries here so far</td>
                                     </tr>
-                                    <tr>
-                                        <td>Ashton Cox</td>
-                                        <td>Junior Technical Author</td>
-                                        <td>San Francisco</td>
-                                        <td>66</td>
-                                        <td>2009/01/12</td>
-                                        <td>$86,000</td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

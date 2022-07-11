@@ -16,14 +16,13 @@ def login():
       return render_template('login.html')
 @app.route('/dashboard') 
 def dashboard():
-    
     return render_template('admin/index.html')
 @app.route('/laporan_absen') 
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM dataabsen")
     dataabsen = data.fetchall()
-    return render_template('admin/lapran_absen.html',dataabsen=dataabsen)
+    return render_template('admin/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
 def laporan_pulang():
     return render_template('admin/laporan_pulang.html')
