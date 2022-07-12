@@ -16,14 +16,13 @@ def login():
       return render_template('login.html')
 @app.route('/dashboard') 
 def dashboard():
-    
     return render_template('admin/index.html')
 @app.route('/laporan_absen') 
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM dataabsen")
     dataabsen = data.fetchall()
-    return render_template('admin/lapran_absen.html',dataabsen=dataabsen)
+    return render_template('admin/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
 def laporan_pulang():
     return render_template('admin/laporan_pulang.html')
@@ -119,4 +118,23 @@ def apifoto():
     else:
         data.close()
         return "bukan file image"
+@app.route('/cetak_laporan') 
+def cetak_laporan():
+    return render_template('index.html')
+@app.route('/cetak_data') 
+def cetak_data():
+    return render_template('index.html')
+@app.route('/data_karyawan') 
+def data_karyawan():
+    return render_template('index.html')
+@app.route('/data_ka_ruang') 
+def data_ka_ruang():
+    return render_template('index.html')
+@app.route('/data_hrd') 
+def data_hrd():
+    return render_template('index.html')
+@app.route('/data_admin') 
+def data_admin():
+    return render_template('index.html')
+
     
