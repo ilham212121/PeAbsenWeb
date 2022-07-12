@@ -118,4 +118,23 @@ def apifoto():
     else:
         data.close()
         return "bukan file image"
+@app.route('/cetak_laporan') 
+def cetak_laporan():
+    return render_template('index.html')
+@app.route('/cetak_data') 
+def cetak_data():
+    return render_template('index.html')
+@app.route('/data_karyawan') 
+def data_karyawan():
+    return render_template('index.html')
+@app.route('/data_ka_ruang') 
+def data_ka_ruang():
+    return render_template('index.html')
+@app.route('/data_hrd') 
+def data_hrd():
+    return render_template('index.html')
+@app.route('/data_admin') 
+def data_admin():
+    return render_template('index.html')
+
     
