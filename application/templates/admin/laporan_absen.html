@@ -24,83 +24,170 @@
                 </select> pilih ruangan</label>
                 </div><div></div>
             </div>
-            <table id="datatablesSimple">
-                <thead>
-                    <tr>
-                        <th>NIP</th>
-                        <th>Nama</th>
-                        <th>Ruangan</th>
-                        <th>Lokasi</th>
-                        <th>Foto</th>
-                        <th>Waktu</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>NIP</th>
-                        <th>Nama</th>
-                        <th>Ruangan</th>
-                        <th>Lokasi</th>
-                        <th>Foto</th>
-                        <th>Waktu</th>
-                        <th>Status</th>
-                    </tr>
-                </tfoot>
-                <tbody>
+
                     {% for row in dataabsen %}
                     {% if row.2=='melati'%}
-                    <tr id="melati" style="display:none">
-                        <td>{{ row.0 }}</td>
-                        <td>{{ row.1 }}</td>
-                        <td>{{ row.2 }}</td>
-                        <td>{{ row.3 }}</td>
-                        <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
-                        <td>{{ row.5 }}</td>
-                        {% if row.6=='tidak telat'%}
-                        <td>{{ row.6 }}</td>
-                        {% endif %}
-                        {% if row.6=='telat'%}
-                        <td style="background-color: red;">{{ row.6 }}</td>
-                        {% endif %}
-                    </tr>
+                    <div id="melati" style="display:none">
+                        <table id="datatablesSimple">  
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr>
+                            <td>{{ row.0 }}</td>
+                            <td>{{ row.1 }}</td>
+                            <td>{{ row.2 }}</td>
+                            <td>{{ row.3 }}</td>
+                            <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
+                            <td>{{ row.5 }}</td>
+                            {% if row.6=='tidak telat'%}
+                            <td>{{ row.6 }}</td>
+                            {% endif %}
+                            {% if row.6=='telat'%}
+                            <td style="background-color: red;">{{ row.6 }}</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                    </table>
+                    </div>
                     {% endif %}
                     {% if row.2=='dahlia'%}
-                    <tr id="dahlia" style="display:none">
-                        <td>{{ row.0 }}</td>
-                        <td>{{ row.1 }}</td>
-                        <td>{{ row.2 }}</td>
-                        <td>{{ row.3 }}</td>
-                        <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
-                        <td>{{ row.5 }}</td>
-                        {% if row.6=='tidak telat'%}
-                        <td>{{ row.6 }}</td>
-                        {% endif %}
-                        {% if row.6=='telat'%}
-                        <td style="background-color: red;">{{ row.6 }}</td>
-                        {% endif %}
-                    </tr>
+                    <div id="dahlia" style="display:none">
+                        <table id="datatablesSimple">  
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr>
+                            <td>{{ row.0 }}</td>
+                            <td>{{ row.1 }}</td>
+                            <td>{{ row.2 }}</td>
+                            <td>{{ row.3 }}</td>
+                            <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
+                            <td>{{ row.5 }}</td>
+                            {% if row.6=='tidak telat'%}
+                            <td>{{ row.6 }}</td>
+                            {% endif %}
+                            {% if row.6=='telat'%}
+                            <td style="background-color: red;">{{ row.6 }}</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                    </table>
+                    </div>
                     {% endif %}
                     
                     {% if row.2=='anggrek'%}
-                    <tr id="anggrek" style="display:none">
-                        <td>{{ row.0 }}</td>
-                        <td>{{ row.1 }}</td>
-                        <td>{{ row.2 }}</td>
-                        <td>{{ row.3 }}</td>
-                        <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
-                        <td>{{ row.5 }}</td>
-                        {% if row.6=='tidak telat'%}
-                        <td>{{ row.6 }}</td>
-                        {% endif %}
-                        {% if row.6=='telat'%}
-                        <td style="background-color: red;">{{ row.6 }}</td>
-                        {% endif %}
-                    </tr>
+                    <div id="anggrek" style="display:none">
+                        <table id="datatablesSimple">  
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr>
+                            <td>{{ row.0 }}</td>
+                            <td>{{ row.1 }}</td>
+                            <td>{{ row.2 }}</td>
+                            <td>{{ row.3 }}</td>
+                            <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
+                            <td>{{ row.5 }}</td>
+                            {% if row.6=='tidak telat'%}
+                            <td>{{ row.6 }}</td>
+                            {% endif %}
+                            {% if row.6=='telat'%}
+                            <td style="background-color: red;">{{ row.6 }}</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                    </table>
+                    </div>
                     {% endif %}
                     
                     {% if row.2=='bougenvile'%}
-                    <tr id="bougenvile" style="display:none">
+                    <div id="bougenvile" style="display:none">
+                    <table id="datatablesSimple">  
+                    <thead>
+                        <tr>
+                            <th>NIP</th>
+                            <th>Nama</th>
+                            <th>Ruangan</th>
+                            <th>Lokasi</th>
+                            <th>Foto</th>
+                            <th>Waktu</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>NIP</th>
+                            <th>Nama</th>
+                            <th>Ruangan</th>
+                            <th>Lokasi</th>
+                            <th>Foto</th>
+                            <th>Waktu</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr>
+                    
                         <td>{{ row.0 }}</td>
                         <td>{{ row.1 }}</td>
                         <td>{{ row.2 }}</td>
@@ -114,43 +201,101 @@
                         <td style="background-color: red;">{{ row.6 }}</td>
                         {% endif %}
                     </tr>
+
+                </tbody>
+                </table>
+                </div>
                     {% endif %}
                     
                     {% if row.2=='mawar'%}
-                    <tr id="mawar" style="display:none">
-                        <td>{{ row.0 }}</td>
-                        <td>{{ row.1 }}</td>
-                        <td>{{ row.2 }}</td>
-                        <td>{{ row.3 }}</td>
-                        <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
-                        <td>{{ row.5 }}</td>
-                        {% if row.6=='tidak telat'%}
-                        <td>{{ row.6 }}</td>
-                        {% endif %}
-                        {% if row.6=='telat'%}
-                        <td style="background-color: red;">{{ row.6 }}</td>
-                        {% endif %}
-                    </tr>
+                    <div id="mawar" style="display:none">
+                        <table id="datatablesSimple">  
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr>
+                            <td>{{ row.0 }}</td>
+                            <td>{{ row.1 }}</td>
+                            <td>{{ row.2 }}</td>
+                            <td>{{ row.3 }}</td>
+                            <td><img src="../../static/upload/{{ row.4 }}"width="100px" height="100px"></td>
+                            <td>{{ row.5 }}</td>
+                            {% if row.6=='tidak telat'%}
+                            <td>{{ row.6 }}</td>
+                            {% endif %}
+                            {% if row.6=='telat'%}
+                            <td style="background-color: red;">{{ row.6 }}</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                    </table>
+                    </div>
                     {% endif %}
                     {% else %}
+                    <table id="datatablesSimple">  
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama</th>
+                                <th>Ruangan</th>
+                                <th>Lokasi</th>
+                                <th>Foto</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
                     <tr>
                         <td colspan="2">Tidak Ada Data. Silahkan Pilih ruangan lain</td>
                     </tr>
+                    </tbody>
+                    </table>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        
         </div>
     </div>
 </main>
 <script>
 function RUANGAN(){
-    let combo = document.getElementById("ruangan").value;
-    var melati = document.getElementById("melati");
-    var dahlia  = document.getElementById("dahlia");
-    var anggrek  = document.getElementById("anggrek");
-    var bugenvile  = document.getElementById("bugenvile");
-    var mawar  = document.getElementById("mawar");
+
+    let combo=document.getElementById("ruangan").value;
+    var melati=document.getElementById("melati");
+    var dahlia=document.getElementById("dahlia");
+    var anggrek=document.getElementById("anggrek");
+    var bugenvile=document.getElementById("bougenvile");
+    var mawar=document.getElementById("mawar");
+    
     if (combo =="melati"){
         melati.style.display="block"
         dahlia.style.display="none"
@@ -172,7 +317,9 @@ function RUANGAN(){
         bugenvile.style.display="none"
         mawar.style.display="none"
     }
-    else if (combo =="bugenvile"){
+
+    else if (combo =="bougenvile"){
+
         melati.style.display="none"
         dahlia.style.display="none"
         anggrek.style.display="none"
@@ -187,4 +334,5 @@ function RUANGAN(){
     }
   }
 </script>
+
 {% endblock %}
