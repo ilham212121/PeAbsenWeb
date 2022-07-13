@@ -183,11 +183,11 @@ def apiabsen():
         
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print(filename)
-        data.execute("INSERT INTO dataabsen(foto) VALUES (%s)",(timeNow,filename,status))
+        data.execute("INSERT INTO dataabsen(waktu,foto,status) VALUES (%s,%s,%s)",(timeNow,filename,status))
         if mysql.connection.commit():
             data.close()
             print("oke")
-        return "gambar telah terupload"
+        return "anda telah absen"
     else:
         data.close()
         return "bukan file image"
