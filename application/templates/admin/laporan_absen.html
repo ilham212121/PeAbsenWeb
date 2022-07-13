@@ -16,6 +16,7 @@
         <div class="card-body">
             <div class="dataTable-top">
                 <div class="dataTable-dropdown"><label><select id="ruangan" onclick="RUANGAN()" class="dataTable-selector">
+
                     <option value="melati">Melati</option>
                     <option value="dahlia" selected="">Dahlia</option>
                     <option value="anggrek">Anggrek</option>
@@ -24,6 +25,7 @@
                 </select> pilih ruangan</label>
                 </div><div></div>
             </div>
+
                     {% for row in dataabsen %}
                     {% if row.2=='melati'%}
                     <div id="melati" style="display:none">
@@ -186,6 +188,7 @@
                     </tfoot>
                     <tbody>
                     <tr>
+                    
                         <td>{{ row.0 }}</td>
                         <td>{{ row.1 }}</td>
                         <td>{{ row.2 }}</td>
@@ -199,6 +202,7 @@
                         <td style="background-color: red;">{{ row.6 }}</td>
                         {% endif %}
                     </tr>
+
                 </tbody>
                 </table>
                 </div>
@@ -285,6 +289,7 @@
 </main>
 <script>
 function RUANGAN(){
+
     let combo=document.getElementById("ruangan").value;
     var melati=document.getElementById("melati");
     var dahlia=document.getElementById("dahlia");
@@ -313,7 +318,9 @@ function RUANGAN(){
         bugenvile.style.display="none"
         mawar.style.display="none"
     }
+
     else if (combo =="bougenvile"){
+
         melati.style.display="none"
         dahlia.style.display="none"
         anggrek.style.display="none"
@@ -328,4 +335,5 @@ function RUANGAN(){
     }
   }
 </script>
+
 {% endblock %}
