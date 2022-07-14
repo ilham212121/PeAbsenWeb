@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 12, 2022 at 06:44 AM
+-- Generation Time: Jul 12, 2022 at 08:05 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -66,7 +66,7 @@ CREATE TABLE `dataabsen` (
 
 INSERT INTO `dataabsen` (`nip`, `nama`, `ruangan`, `lokasi`, `foto`, `waktu`, `status`) VALUES
 ('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'bio.jpg', '2022-07-12', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'bougenvile', 0x, 'IMG20220712073116.jpg', '2022-07-12', 'tidak telat'),
+('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'IMG20220712073116.jpg', '2022-07-12', 'tidak telat'),
 ('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '2022-07-12', 'tidak telat'),
 ('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '2022-07-12', 'telat'),
 ('19090107', 'Rizky Dwi Saputra', 'mawar', NULL, 'IMG20220712083001.jpg', '2022-07-11', 'tidak telat'),

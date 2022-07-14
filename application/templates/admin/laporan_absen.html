@@ -4,14 +4,13 @@
     <div class="container-fluid px-4">
         <h1 class="mt-4">Laporan Absensi</h1>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+            <li class="breadcrumb-item" ><a  href="/dashboard">Dashboard</a></li>
             <li class="breadcrumb-item active">Sidenav Light</li>
         </ol>
-
-        <div class="card-header">
+        <div class="card mb-4">
+        <div class="card-header" style="background-color: #E6B794;">
             <i class="fas fa-table me-1"></i>
-         <div class="card mb-4">
-        Table Absensi
+            Data Absensi
         </div>
         <div class="card-body">
             <div class="dataTable-top">
@@ -24,32 +23,22 @@
                 </select> pilih ruangan</label>
                 </div><div></div>
             </div>
+
                     {% for row in dataabsen %}
                     {% if row.2=='melati'%}
-                    <div id="melati" style="display:none">
-                        <table id="datatablesSimple">  
+                    <div id="melati"class="dataTable-container" style="display:none">
+                        <table id="datatablesSimple"  class="dataTable-table">  
                         <thead>
                             <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
+                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                         <tr>
                             <td>{{ row.0 }}</td>
@@ -70,30 +59,19 @@
                     </div>
                     {% endif %}
                     {% if row.2=='dahlia'%}
-                    <div id="dahlia" style="display:none">
-                        <table id="datatablesSimple">  
+                    <div id="dahlia" class="dataTable-container" style="display:none">
+                        <table id="datatablesSimple" class="dataTable-table">  
                         <thead>
                             <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                         <tr>
                             <td>{{ row.0 }}</td>
@@ -115,30 +93,19 @@
                     {% endif %}
                     
                     {% if row.2=='anggrek'%}
-                    <div id="anggrek" style="display:none">
-                        <table id="datatablesSimple">  
+                    <div id="anggrek" style="display:none"class="dataTable-container">
+                        <table id="datatablesSimple"class="dataTable-table">  
                         <thead>
                             <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                         <tr>
                             <td>{{ row.0 }}</td>
@@ -160,30 +127,19 @@
                     {% endif %}
                     
                     {% if row.2=='bougenvile'%}
-                    <div id="bougenvile" style="display:none">
-                    <table id="datatablesSimple">  
+                    <div id="bougenvile" class="dataTable-container"style="display:none">
+                    <table id="datatablesSimple"class="dataTable-table">  
                     <thead>
                         <tr>
-                            <th>NIP</th>
-                            <th>Nama</th>
-                            <th>Ruangan</th>
-                            <th>Lokasi</th>
-                            <th>Foto</th>
-                            <th>Waktu</th>
-                            <th>Status</th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                            <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>NIP</th>
-                            <th>Nama</th>
-                            <th>Ruangan</th>
-                            <th>Lokasi</th>
-                            <th>Foto</th>
-                            <th>Waktu</th>
-                            <th>Status</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                     <tr>
                         <td>{{ row.0 }}</td>
@@ -199,36 +155,26 @@
                         <td style="background-color: red;">{{ row.6 }}</td>
                         {% endif %}
                     </tr>
+
                 </tbody>
                 </table>
                 </div>
                     {% endif %}
                     
                     {% if row.2=='mawar'%}
-                    <div id="mawar" style="display:none">
-                        <table id="datatablesSimple">  
+                    <div id="mawar" class="dataTable-container" style="display:none">
+                        <table id="datatablesSimple"class="dataTable-table">  
                         <thead>
                             <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                         <tr>
                             <td>{{ row.0 }}</td>
@@ -249,29 +195,19 @@
                     </div>
                     {% endif %}
                     {% else %}
-                    <table id="datatablesSimple">  
+                    <div class="dataTable-container" id="kosong" style="display:none;">
+                    <table id="datatablesSimple"class="dataTable-table">  
                         <thead>
                             <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>NIP</th>
-                                <th>Nama</th>
-                                <th>Ruangan</th>
-                                <th>Lokasi</th>
-                                <th>Foto</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                     <tr>
                         <td colspan="2">Tidak Ada Data. Silahkan Pilih ruangan lain</td>
@@ -282,15 +218,18 @@
         
         </div>
     </div>
+    </div>
 </main>
 <script>
 function RUANGAN(){
+
     let combo=document.getElementById("ruangan").value;
     var melati=document.getElementById("melati");
     var dahlia=document.getElementById("dahlia");
     var anggrek=document.getElementById("anggrek");
     var bugenvile=document.getElementById("bougenvile");
     var mawar=document.getElementById("mawar");
+    var kosong=document.getElementById("kosong");
     
     if (combo =="melati"){
         melati.style.display="block"
@@ -313,7 +252,9 @@ function RUANGAN(){
         bugenvile.style.display="none"
         mawar.style.display="none"
     }
+
     else if (combo =="bougenvile"){
+
         melati.style.display="none"
         dahlia.style.display="none"
         anggrek.style.display="none"
@@ -325,7 +266,14 @@ function RUANGAN(){
         anggrek.style.display="none"
         bugenvile.style.display="none"
         mawar.style.display="block"
+    }else{
+        dahlia.style.display="none"
+        anggrek.style.display="none"
+        bugenvile.style.display="none"
+        mawar.style.display="none" 
+        kosong.style.display="block" 
     }
   }
 </script>
+
 {% endblock %}

@@ -7,12 +7,17 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard Pe-Absen</title>
+        <style>
+            #dash:hover ,#laporan:hover,#laporan_absen:hover, #laporan_pulang:hover,#data:hover,#data_karyawan:hover,#data_hrd:hover,#data_admin:hover,#data_ka_ruang:hover,#cetak_laporan:hover,#cetak_data:hover{
+                background-color: rgba(255, 255, 255, 0.459);
+            }
+        </style>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../../static/css/dashboard.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-coklat">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark" style="background-color: #56382D;">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" href="index.html">Pengelola Absensi </a>
             <!-- Sidebar Toggle-->
@@ -21,7 +26,7 @@
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button" style="background-color: #E6B794;"><i class="fas fa-search"></i></button>
                 </div>
             </form>
             <!-- Navbar-->
@@ -37,66 +42,66 @@
                 </li>
             </ul>
         </nav>
-        <div id="layoutSidenav">
+        <div id="layoutSidenav" >
             <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark bg-coklat" id="sidenavAccordion">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" style="background-color: #56382D;"id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
-                        <div class="nav">
+                        <div  class="nav">
 
-                            <a class="nav-link" href="{{ url_for('dashboard') }}" style="color: black;">
-                                <div style="color: black;" class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <a id="dash"class="nav-link" href="{{ url_for('dashboard') }}" style="color: #E5DBCF;">
+                                <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
 
-                            <a class="nav-link collapsed"style="color: black;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns" style="color: black;"></i></div>
+                            <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns" style="color: #E5DBCF;"></i></div>
                                 Laporan
-                                <div style="color: black;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav " style="color: black;">
-                                    <a class="nav-link" href="{{ url_for('laporan_absen') }}" style="color: black;">Laporan Absen</a>
-                                    <a class="nav-link" href="{{ url_for('laporan_pulang') }}" style="color: black;">Laporan Pulang</a>
+                            <div  class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
+                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('laporan_absen') }}" style="color: #E5DBCF;">Laporan Absen</a>
+                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('laporan_pulang') }}" style="color: #E5DBCF;">Laporan Pulang</a>
                                 </nav>
                             </div>
-                            <a style="color: black;" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open" style="color: black;"></i></div>
+                            <a id="data" style="color: #E5DBCF;" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open" style="color: #E5DBCF;"></i></div>
                                 Data
-                                <div style="color: black;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div style="color: black;" class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages" style="color: black;">
-                                    <a style="color: black;" class="nav-link collapsed" href="{{ url_for('data_karyawan') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                            <div style="color: #E5DBCF;" class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages" style="color: #E5DBCF;">
+                                    <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link collapsed" href="{{ url_for('data_karyawan') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
                                         Data Karyawan
                                     </a>
                                    
-                                    <a style="color: black;" class="nav-link collapsed" href="{{ url_for('data_hrd') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link collapsed" href="{{ url_for('data_hrd') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Data Hrd
                                     </a>
                                 
-                                    <a style="color: black;" class="nav-link collapsed" href="{{ url_for('data_ka_ruang') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link collapsed" href="{{ url_for('data_ka_ruang') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Data Kepala Ruangan
                                     </a>
                                   
-                                    <a style="color: black;" class="nav-link collapsed" href="{{ url_for('data_admin') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    <a id="data_admin"style="color: #E5DBCF;" class="nav-link collapsed" href="{{ url_for('data_admin') }}" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Data Admin
                                     </a>
                                  
                                 </nav>
                             </div>
-                            <div class="sb-sidenav-menu-heading" style="color: black;">Cetak</div>
-                            <a style="color: black;" class="nav-link" href="{{ url_for('cetak_laporan') }}">
-                                <div style="color: black;" class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                            <div class="sb-sidenav-menu-heading" style="color: #E5DBCF;">Cetak</div>
+                            <a id="cetak_laporan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('cetak_laporan') }}">
+                                <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Cetak Laporan
                             </a>
-                            <a style="color: black;" class="nav-link" href="{{ url_for('cetak_data') }}">
-                                <div style="color: black;" class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            <a id="cetak_data" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('cetak_data') }}">
+                                <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Cetak Data
                             </a>
                         </div>
                     </div>
-                    <div class="sb-sidenav-footer bg-coklat" style="color: black;">
-                        <div class="small" style="color: black;">Logged in as:</div>
+                    <div class="sb-sidenav-footer" style="color: #E5DBCF; background-color: #56382D;">
+                        <div class="small" style="color: #E5DBCF;">Logged in as:</div>
                         {{ name }}
                     </div>
                 </nav>
@@ -107,7 +112,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                            <div class="text-muted">Copyright &copy; RSUI Harapan Anda</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
