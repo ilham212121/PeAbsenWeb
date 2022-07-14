@@ -30,4 +30,4 @@ timeNow = datetime.strptime(timeNow, "%I:%M%p")
 
 print(isNowInTimePeriod(timeStart, timeEnd, timeNow))
 if __name__ == '__main__':
-    app.run(host="10.0.50.0",debug=True,port=5001)
+    app.run(host="192.168.43.207",debug=True,port=5001)
