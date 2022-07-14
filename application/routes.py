@@ -1,6 +1,5 @@
 import os
 from time import time
-import time
 from flask_login import current_user
 from sqlalchemy import case
 from application import app,mysql,allowed_file
@@ -9,9 +8,16 @@ from werkzeug.utils import secure_filename
 from flask import jsonify, redirect, render_template, request, url_for
 import time
 import datetime
+from datetime import datetime
 def isNowInTimePeriod(startTime, endTime, nowTime):
     if startTime < endTime:
-        return nowTime >= startTime and nowTime <= endTime
+        if nowTime < startTime:
+            return "kamu absen terlalu cepat"
+        if nowTime > endTime:
+            return "kamu terlambat"
+        if nowTime >= startTime and nowTime <= endTime:
+            return "kamu absen tepat waktu"
+        return 
     else: #Over midnight
         return nowTime >= startTime or nowTime <= endTime
 @app.route('/') 
@@ -96,10 +102,12 @@ def apilogin():
     datayangada = data.fetchall()
     if str(datayangada) == '()':
         data.close()
-        return "maaf nip tida ada"
+        print("maaf nip tidak ada")
+        return jsonify({"msg":"maaf nip tidak ada"})
     elif not check_password_hash(datayangada[0][2],password):
         data.close()
-        return "maaf password salah"
+        print("maaf password salah")
+        return jsonify({"msg":"maaf password salah"})
     else:
         data.close()
         return jsonify({"data":datayangada,"msg":"login berhasil"})
@@ -114,6 +122,9 @@ def apiabsen():
     nip=request.form['nip']
     nama=request.form['nama']
     ruangan= request.form['ruangan']
+    lokasi=request.form['lokasi']
+    lokasi="POINT("+lokasi+")"
+    
     if file.filename == '':
         data.close()
         return "tidak ada file image yang dipilih"
@@ -121,8 +132,6 @@ def apiabsen():
         filename = secure_filename(file.filename)
         data.execute("SELECT shift from karyawan where nip= %s",(nip,))
         shift = data.fetchall()
-        localtime = time.localtime(time.time())
-        print ("Waktu lokal saat ini :", localtime )#python 2
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
@@ -132,65 +141,55 @@ def apiabsen():
         else:
             w='AM'
         timeNow = '{}:{}{}'.format(hr,mn,w)
+        timeNow = datetime.strptime(timeNow, "%I:%M%p")
         if shift[0][0]=="pagi":
             timeStart = '06:30AM'
             timeEnd = '07:10AM'
             timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
             timeStart = datetime.strptime(timeStart, "%I:%M%p")
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
             status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-            if status == True:
-                status='tidak telat'
-            else:
-                status='telat'
-            return status
+            
         elif shift[0][0]=="siang":
             timeStart = '01:30PM'
             timeEnd = '02:10PM'
             timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
             timeStart = datetime.strptime(timeStart, "%I:%M%p")
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
             status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-            if status == True:
-                status='tidak telat'
-            else:
-                status='telat'
-            return status
+            
         elif shift[0][0]=="middle":
             timeStart = '09:30AM'
             timeEnd = '10:10AM'
             timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
             timeStart = datetime.strptime(timeStart, "%I:%M%p")
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
             status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-            if status == True:
-                status='tidak telat'
-            else:
-                status='telat'
-            return status
+
         elif shift[0][0]=="malam":
             timeStart = '09:30PM'
             timeEnd = '10:10PM'
             timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
             timeStart = datetime.strptime(timeStart, "%I:%M%p")
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
             status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-            if status == True:
-                status='tidak telat'
-            else:
-                status='telat'
-            return status
-        
+            
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print(filename)
-        data.execute("INSERT INTO dataabsen(foto) VALUES (%s)",(timeNow,filename,status))
-        if mysql.connection.commit():
+        if status=='kamu absen terlalu cepat':
             data.close()
-            print("oke")
-        return "gambar telah terupload"
+            return status
+        if status=="kamu terlambat":
+            statusdb="telat"
+            data.execute("INSERT INTO dataabsen(nip,nama,ruangan,lokasi,waktu,foto,status) VALUES (%s,%s,%s,ST_GeomFromText(%s),%s,%s,%s)",(nip,nama,ruangan,lokasi,timeNow,filename,statusdb))
+            if mysql.connection.commit():
+                data.close()
+            return status
+        if status=="kamu absen tepat waktu":
+            statusdb="tepat waktu"
+            data.execute("INSERT INTO dataabsen(nip,nama,ruangan,lokasi,waktu,foto,status) VALUES (%s,%s,%s,ST_GeomFromText(%s),%s,%s,%s)",(nip,nama,ruangan,lokasi,timeNow,filename,statusdb))
+            if mysql.connection.commit():
+                data.close()
+            return status
     else:
         data.close()
-        return "bukan file image"
+        return "foto yang anda kirim invalid"
 
 @app.route('/cetak_laporan') 
 def cetak_laporan():

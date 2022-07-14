@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 12, 2022 at 08:05 AM
+-- Generation Time: Jul 14, 2022 at 06:36 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -54,9 +54,9 @@ CREATE TABLE `dataabsen` (
   `nip` varchar(10) DEFAULT NULL,
   `nama` varchar(100) DEFAULT NULL,
   `ruangan` varchar(100) NOT NULL,
-  `lokasi` geometry DEFAULT NULL,
+  `lokasi` point DEFAULT NULL,
   `foto` varchar(100) NOT NULL,
-  `waktu` date DEFAULT NULL,
+  `waktu` time DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -65,16 +65,50 @@ CREATE TABLE `dataabsen` (
 --
 
 INSERT INTO `dataabsen` (`nip`, `nama`, `ruangan`, `lokasi`, `foto`, `waktu`, `status`) VALUES
-('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'bio.jpg', '2022-07-12', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'IMG20220712073116.jpg', '2022-07-12', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '2022-07-12', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '2022-07-12', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'mawar', NULL, 'IMG20220712083001.jpg', '2022-07-11', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'mawar', NULL, 'IMG20220712110028.jpg', '2022-07-11', 'telat'),
-('19090101', 'M ilham Fajar S', 'melati', NULL, 'IMG20220712110028.jpg', '2022-07-13', 'tidak telat'),
-('19090107', 'Rizky Dwi Saputra', 'melati', NULL, 'IMG20220712083001.jpg', '2022-07-13', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'anggrek', NULL, 'bio.jpg', '2022-07-13', 'telat'),
-('19090101', 'M Ilham Fajar S', 'anggrek', NULL, 'IMG20220712110028.jpg', '2022-07-13', 'tidak telat');
+('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'bio.jpg', '00:00:00', 'telat'),
+('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'IMG20220712073116.jpg', '00:00:00', 'tidak telat'),
+('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
+('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '00:00:00', 'telat'),
+('19090107', 'Rizky Dwi Saputra', 'mawar', NULL, 'IMG20220712083001.jpg', '00:00:00', 'tidak telat'),
+('19090101', 'M Ilham Fajar S', 'mawar', NULL, 'IMG20220712110028.jpg', '00:00:00', 'telat'),
+('19090101', 'M ilham Fajar S', 'melati', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
+('19090107', 'Rizky Dwi Saputra', 'melati', NULL, 'IMG20220712083001.jpg', '00:00:00', 'telat'),
+('19090107', 'Rizky Dwi Saputra', 'anggrek', NULL, 'bio.jpg', '00:00:00', 'telat'),
+('19090101', 'M Ilham Fajar S', 'anggrek', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'anda absen tepat wak'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat 1:14:'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat 1:17:'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '08:58:00', 'kamu absen terlalu c'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '10:58:00', 'kamu terlambat'),
+('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '11:03:00', 'telat');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `geo`
+--
+
+CREATE TABLE `geo` (
+  `lok` point NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `geo`
+--
+
+INSERT INTO `geo` (`lok`) VALUES
+(0x),
+(0x),
+(0x000000000101000000000000000000f03f000000000000f03f);
 
 -- --------------------------------------------------------
 
@@ -99,9 +133,11 @@ CREATE TABLE `hrd` (
 
 CREATE TABLE `karyawan` (
   `nip` varchar(10) NOT NULL,
-  `pswd` varchar(1000) NOT NULL,
   `nama` varchar(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL,
   `posisi` varchar(100) NOT NULL,
+  `shift` varchar(10) NOT NULL,
+  `ruangan` varchar(100) NOT NULL,
   `gender` varchar(1) NOT NULL,
   `ttl` date NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -113,8 +149,8 @@ CREATE TABLE `karyawan` (
 -- Dumping data for table `karyawan`
 --
 
-INSERT INTO `karyawan` (`nip`, `pswd`, `nama`, `posisi`, `gender`, `ttl`, `email`, `no_hp`, `alamat`) VALUES
-('220712001', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54c1', 'Bambang', 'Perawat', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3');
+INSERT INTO `karyawan` (`nip`, `nama`, `pswd`, `posisi`, `shift`, `ruangan`, `gender`, `ttl`, `email`, `no_hp`, `alamat`) VALUES
+('220712001', 'Bambang', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'Perawat', 'middle', 'dahlia', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3');
 
 -- --------------------------------------------------------
 
