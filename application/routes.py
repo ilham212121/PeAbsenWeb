@@ -31,6 +31,30 @@ def login():
 @app.route('/dashboard') 
 def dashboard():
     return render_template('admin/index.html')
+@app.route('/data_admin') 
+def data_admin():
+    data = mysql.connection.cursor()
+    data.execute("SELECT * FROM admin")
+    admin = data.fetchall()
+    return render_template('admin/data_admin.html',admin=admin)
+@app.route('/data_hrd') 
+def data_hrd():
+    data = mysql.connection.cursor()
+    data.execute("SELECT * FROM hrd")
+    hrd = data.fetchall()
+    return render_template('admin/data_hrd.html',hrd=hrd)
+@app.route('/data_ka_ruang') 
+def data_ka_ruang():
+    data = mysql.connection.cursor()
+    data.execute("SELECT * FROM ka_ruang")
+    ka_ruang = data.fetchall()
+    return render_template('admin/data_ka_ruang.html',ka_ruang=ka_ruang)
+@app.route('/data_karyawan') 
+def data_karyawan():
+    data = mysql.connection.cursor()
+    data.execute("SELECT * FROM karyawan")
+    karyawan = data.fetchall()
+    return render_template('admin/data_karyawan.html',karyawan=karyawan)
 @app.route('/laporan_absen') 
 def laporan_absen():
     data = mysql.connection.cursor()
