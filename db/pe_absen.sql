@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 14, 2022 at 06:36 AM
+-- Generation Time: Jul 16, 2022 at 10:58 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `nip` int(10) DEFAULT NULL,
+  `nip` int(10) NOT NULL,
   `nama` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(1000) NOT NULL,
@@ -41,8 +41,8 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`) VALUES
-(19090107, 'Rizky Dwi Saputra', 'rizkydwisaputrar1@gmail.com', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'jl balamoa selatan rt 03/01', '08953605107'),
-(19090101, 'M Ilham Fajar S', 'ilham@gmail.com', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54', 'jl sriti gang 3 no 4', '0895365912452');
+(19090101, 'M Ilham Fajar S', 'ilham@gmail.com', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54', 'jl sriti gang 3 no 4', '0895365912452'),
+(19090107, 'Rizky Dwi Saputra', 'rizkydwisaputrar1@gmail.com', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'jl balamoa selatan rt 03/01', '08953605107');
 
 -- --------------------------------------------------------
 
@@ -51,11 +51,11 @@ INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`) VAL
 --
 
 CREATE TABLE `dataabsen` (
+  `id` int(11) NOT NULL,
   `nip` varchar(10) DEFAULT NULL,
-  `nama` varchar(100) DEFAULT NULL,
-  `ruangan` varchar(100) NOT NULL,
   `lokasi` point DEFAULT NULL,
   `foto` varchar(100) NOT NULL,
+  `tanggal` date DEFAULT NULL,
   `waktu` time DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -64,51 +64,36 @@ CREATE TABLE `dataabsen` (
 -- Dumping data for table `dataabsen`
 --
 
-INSERT INTO `dataabsen` (`nip`, `nama`, `ruangan`, `lokasi`, `foto`, `waktu`, `status`) VALUES
-('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'bio.jpg', '00:00:00', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'bougenvile', NULL, 'IMG20220712073116.jpg', '00:00:00', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'dahlia', NULL, 'IMG20220712110028.jpg', '00:00:00', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'mawar', NULL, 'IMG20220712083001.jpg', '00:00:00', 'tidak telat'),
-('19090101', 'M Ilham Fajar S', 'mawar', NULL, 'IMG20220712110028.jpg', '00:00:00', 'telat'),
-('19090101', 'M ilham Fajar S', 'melati', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
-('19090107', 'Rizky Dwi Saputra', 'melati', NULL, 'IMG20220712083001.jpg', '00:00:00', 'telat'),
-('19090107', 'Rizky Dwi Saputra', 'anggrek', NULL, 'bio.jpg', '00:00:00', 'telat'),
-('19090101', 'M Ilham Fajar S', 'anggrek', NULL, 'IMG20220712110028.jpg', '00:00:00', 'tidak telat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'telat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'anda absen tepat wak'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat 1:14:'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat 1:17:'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu terlambat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '00:00:00', 'kamu absen terlalu c'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '08:58:00', 'kamu absen terlalu c'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '10:58:00', 'kamu terlambat'),
-('220712001', 'bambang', 'dahlia', 0x0000000001010000003d0ad7a3703d24403d0ad7a3703d2440, 'ppwa.png', '11:03:00', 'telat');
+INSERT INTO `dataabsen` (`id`, `nip`, `lokasi`, `foto`, `tanggal`, `waktu`, `status`) VALUES
+(1, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-14934AM.jpg', '2022-07-14', '09:34:00', 'tepat waktu'),
+(2, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-151126AM.jpg', '2022-07-15', '11:26:00', 'telat'),
+(3, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1676AM.jpg', '2022-07-16', '07:06:00', 'tepat waktu'),
+(4, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1798AM.jpg', '2022-07-17', '09:08:00', 'telat'),
+(5, '220712002', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120022022-7-1824PM.jpg', '2022-07-18', '14:04:00', 'tepat waktu'),
+(6, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1826PM.jpg', '2022-07-18', '14:06:00', 'tepat waktu');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `geo`
+-- Table structure for table `datapulang`
 --
 
-CREATE TABLE `geo` (
-  `lok` point NOT NULL
+CREATE TABLE `datapulang` (
+  `id` int(11) NOT NULL,
+  `nip` varchar(100) NOT NULL,
+  `lokasi` point NOT NULL,
+  `foto` varchar(100) NOT NULL,
+  `tanggal` date NOT NULL,
+  `waktu` time NOT NULL,
+  `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `geo`
+-- Dumping data for table `datapulang`
 --
 
-INSERT INTO `geo` (`lok`) VALUES
-(0x),
-(0x),
-(0x000000000101000000000000000000f03f000000000000f03f);
+INSERT INTO `datapulang` (`id`, `nip`, `lokasi`, `foto`, `tanggal`, `waktu`, `status`) VALUES
+(1, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120022022-7-1824PM.jpg', '2022-07-16', '00:00:00', 'terlalu cepat');
 
 -- --------------------------------------------------------
 
@@ -119,11 +104,19 @@ INSERT INTO `geo` (`lok`) VALUES
 CREATE TABLE `hrd` (
   `nip` varchar(10) NOT NULL,
   `nama` varchar(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL,
   `email` varchar(100) NOT NULL,
   `no hp` varchar(15) NOT NULL,
   `alamat` varchar(1000) NOT NULL,
   `jabatan` varchar(10) NOT NULL DEFAULT 'HRD'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `hrd`
+--
+
+INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no hp`, `alamat`, `jabatan`) VALUES
+('2208001', 'boss', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'hrd@rsi.com', '08564006310', 'jln milyader no 1', 'HRD');
 
 -- --------------------------------------------------------
 
@@ -150,7 +143,8 @@ CREATE TABLE `karyawan` (
 --
 
 INSERT INTO `karyawan` (`nip`, `nama`, `pswd`, `posisi`, `shift`, `ruangan`, `gender`, `ttl`, `email`, `no_hp`, `alamat`) VALUES
-('220712001', 'Bambang', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'Perawat', 'middle', 'dahlia', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3');
+('220712001', 'Bambang', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'Perawat', 'siang', 'anggrek', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3'),
+('220712002', 'farid', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dokter', 'siang', 'anggrek', 'L', '1993-07-11', 'halodok@gmail.com', '089213212135', 'jl kedungbanteng kidul');
 
 -- --------------------------------------------------------
 
@@ -161,10 +155,102 @@ INSERT INTO `karyawan` (`nip`, `nama`, `pswd`, `posisi`, `shift`, `ruangan`, `ge
 CREATE TABLE `kep_ruang` (
   `nip` varchar(10) NOT NULL,
   `nama` varchar(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL,
   `penempatan` varchar(1000) NOT NULL,
   `no_hp` varchar(15) NOT NULL,
   `alamat` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `kep_ruang`
+--
+
+INSERT INTO `kep_ruang` (`nip`, `nama`, `pswd`, `penempatan`, `no_hp`, `alamat`) VALUES
+('2209001', 'kepala ruang #1', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dahlia', '08921321485', 'jl jalak barat gang 3');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login`
+--
+
+CREATE TABLE `login` (
+  `nip` varchar(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `login`
+--
+
+INSERT INTO `login` (`nip`, `pswd`) VALUES
+('220712001', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shift`
+--
+
+CREATE TABLE `shift` (
+  `shift` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`nip`);
+
+--
+-- Indexes for table `dataabsen`
+--
+ALTER TABLE `dataabsen`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `datapulang`
+--
+ALTER TABLE `datapulang`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `hrd`
+--
+ALTER TABLE `hrd`
+  ADD PRIMARY KEY (`nip`);
+
+--
+-- Indexes for table `karyawan`
+--
+ALTER TABLE `karyawan`
+  ADD PRIMARY KEY (`nip`);
+
+--
+-- Indexes for table `kep_ruang`
+--
+ALTER TABLE `kep_ruang`
+  ADD PRIMARY KEY (`nip`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `dataabsen`
+--
+ALTER TABLE `dataabsen`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `datapulang`
+--
+ALTER TABLE `datapulang`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
