@@ -136,7 +136,7 @@ def apilogin():
     data = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
+    data.execute("SELECT * FROM login WHERE nip = %s" , (nip,))
     datayangada = data.fetchall()
     if str(datayangada) == '()':
         data.close()
@@ -297,8 +297,8 @@ def apipulang():
                 status=isNowpulang(timeStart, timeEnd, timeNow)
                 
             elif shift[0][0]=="siang":
-                timeStart = '10:00PM'
-                timeEnd = '10:18PM'
+                timeStart = '09:00PM'
+                timeEnd = '09:18PM'
                 timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
                 timeStart = datetime.strptime(timeStart, "%I:%M%p")
                 status=isNowpulang(timeStart, timeEnd, timeNow)
@@ -311,8 +311,8 @@ def apipulang():
                 status=isNowpulang(timeStart, timeEnd, timeNow)
     
             elif shift[0][0]=="malam":
-                timeStart = '05:00AM'
-                timeEnd = '05:18AM'
+                timeStart = '07:00AM'
+                timeEnd = '07:18AM'
                 timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
                 timeStart = datetime.strptime(timeStart, "%I:%M%p")
                 status=isNowpulang(timeStart, timeEnd, timeNow)
