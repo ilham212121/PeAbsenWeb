@@ -1,5 +1,6 @@
 import os
 from time import time
+from urllib.request import DataHandler
 from flask_login import current_user
 from sqlalchemy import case
 from application import app,mysql,allowed_file
@@ -163,7 +164,7 @@ def apilogin():
     data = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT * FROM login WHERE role='karyawan', nip = %s" , (nip,))
+    data.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
     datalogin= data.fetchall()
     if str(datalogin) == '()':
         data.close()
@@ -379,7 +380,23 @@ def apipulang():
     else:
         data.close()
         return "foto yang anda kirim invalid"
-
+@app.route('/api/karyawan/history', methods=['POST'])
+def history():
+    data = mysql.connection.cursor()
+    nip = request.form['nip']
+    data.execute('SELECT * FROM dataabsen WHERE nip = %s',(nip,))
+    datahistory= data.fetchall()
+    print(datahistory)
+    respon=[]
+    for i,j in enumerate(datahistory):
+        dictlogs={}
+        print(int(i))
+        print(str(j))
+        dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})
+        print(dictlogs)
+        respon.append(dictlogs)
+    print(respon)
+    return jsonify({"data":respon,"msg":'get history sukses'})
 @app.route('/cetak_laporan') 
 @roles_required('admin','HRD','k_ruang')
 def cetak_laporan():
