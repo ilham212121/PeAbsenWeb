@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard Pe-Absen</title>
+        <title>Dashboard Pengelola Absensi</title>
         <style>
             #dash:hover ,#laporan:hover,#laporan_absen:hover, #laporan_pulang:hover,#data:hover,#data_karyawan:hover,#data_hrd:hover,#data_admin:hover,#data_ka_ruang:hover,#cetak_laporan:hover,#cetak_data:hover{
                 background-color: rgba(255, 255, 255, 0.459);
@@ -74,15 +74,21 @@
                                     <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karyawan') }}">
                                         Data Karyawan
                                     </a>
+                                    {% if session['role'] =='admin' %}
                                     <a id="data_admin"style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_admin') }}">
                                         Data Admin
                                     </a>
+                                    {% endif %}
+                                    {% if session['role'] =='data'%}
                                     <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_hrd') }}">
                                         Data Hrd
                                     </a>
-                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_ka_ruang') }}">
+                                    {% endif %}
+                                    {% if session['role'] =='data'%}
+                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karu') }}">
                                         Data Kepala Ruangan
                                     </a>
+                                    {% endif %}
                                    
                                 </nav>
                             </div>
