@@ -39,14 +39,13 @@ def roles_required(*role_names):
         @wraps(original_route)
         def decorated_route(*args, **kwargs):
             if 'loggedin' in session:
-                return original_route(*args, **kwargs)
-            
-            print(role_names)
-            if not session['role'] in role_names:
-                return original_route(*args, **kwargs)
-            else:
-                print('The user does not have this role.')
-                return redirect(url_for('index'))
+            # User is loggedin show them the home page
+                if not session['role'] in role_names:
+                    print('The user does not have this role.')
+                    return redirect(url_for('index'))
+                else:
+                    print('The user is in this role.')
+                    return original_route(*args, **kwargs)
         return decorated_route
     return decorator
 @app.route('/') 
