@@ -38,27 +38,30 @@ def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
         def decorated_route(*args, **kwargs):
-            if not 'loggedin' in session:
-                print('The user is not authenticated.')
-                return redirect(url_for('index'))
+            if 'loggedin' in session:
+                return original_route(*args, **kwargs)
             
-            print(session['role'])
             print(role_names)
             if not session['role'] in role_names:
+                return original_route(*args, **kwargs)
+            else:
                 print('The user does not have this role.')
                 return redirect(url_for('index'))
-            else:
-                print('The user is in this role. ')
-                return original_route(*args, **kwargs)
         return decorated_route
     return decorator
 @app.route('/') 
 def index():
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('dashboard/index.html', username=session['username'])
-    # User is not loggedin redirect to login page
-    return redirect(url_for('index'))
+        role_names=['admin','HRD','k_ruang']
+        if not session['role'] in role_names:
+            print('The user does not have this role.')
+            return redirect(url_for('index'))
+        else:
+            print('The user is in this role.')
+            return render_template('dashboard/index.html', username=session['username'])
+    else:
+        return render_template('index.html')
 @app.errorhandler(404)
 def errorhandler(e):
     return render_template('404.html')
@@ -74,13 +77,18 @@ def handle_error(error):
     else:
         return make_response(jsonify({ "error": { "code": 500, "message": "Internal server error" } }), 500)
 @app.route('/dashboard') 
-@roles_required('admin','HRD','k_ruang') 
 def dashboard():
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('dashboard/index.html', username=session['username'])
-    # User is not loggedin redirect to login page
-    return redirect(url_for('index'))
+        role_names=['admin','HRD','k_ruang']
+        if not session['role'] in role_names:
+            print('The user does not have this role.')
+            return redirect(url_for('index'))
+        else:
+            print('The user is in this role.')
+            return render_template('dashboard/index.html', username=session['username'])
+    else:
+        return redirect(url_for('index'))
 @app.route('/data_admin') 
 def data_admin():
     data = mysql.connection.cursor()
@@ -136,13 +144,13 @@ def apilogindashboard():
         return "maaf password salah"
     else:
         if datalogin[0][2]=='admin':
-            data.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.kontak FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
+            data.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
             datalogin= data.fetchall()
         elif datalogin[0][2]=='HRD':
-            data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.kontak FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
+            data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
             datalogin= data.fetchall()
         elif datalogin[0][2]=='k_ruang':
-            data.execute("SELECT login.nip,login.role, kep_ruang.nama,kep_ruang.email,kep_ruang.alamat,kep_ruang.kontak FROM login INNER JOIN kep_ruang ON login.nip = kep_ruang.nip WHERE login.nip = %s " , (nip,))
+            data.execute("SELECT login.nip,login.role, kep_ruang.nama,kep_ruang.email,kep_ruang.alamat,kep_ruang.no_hp FROM login INNER JOIN kep_ruang ON login.nip = kep_ruang.nip WHERE login.nip = %s " , (nip,))
             datalogin= data.fetchall()
         else:
             return "maaf nip tida ada"
