@@ -46,6 +46,8 @@ def roles_required(*role_names):
                 else:
                     print('The user is in this role.')
                     return original_route(*args, **kwargs)
+            else:
+                return redirect(url_for('index'))
         return decorated_route
     return decorator
 @app.route('/') 
@@ -70,11 +72,6 @@ def errorhandler(e):
 @app.errorhandler(500)
 def errorhandler(e):
     return render_template('500.html')
-def handle_error(error):
-    if error.status_code == 404:
-        return make_response(jsonify({ "error": { "code": 404, "message": "Not found" } }), 404)
-    else:
-        return make_response(jsonify({ "error": { "code": 500, "message": "Internal server error" } }), 500)
 @app.route('/dashboard') 
 def dashboard():
     if 'loggedin' in session:
