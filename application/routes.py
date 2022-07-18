@@ -89,30 +89,35 @@ def dashboard():
     else:
         return redirect(url_for('index'))
 @app.route('/data_admin') 
+@roles_required('admin')
 def data_admin():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM admin")
     admin = data.fetchall()
     return render_template('dashboard/data_admin.html',admin=admin)
-@app.route('/data_hrd') 
+@app.route('/data_hrd')
+@roles_required('admin','HRD')
 def data_hrd():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM hrd")
     hrd = data.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
 @app.route('/data_ka_ruang') 
+@roles_required('admin','HRD','k_ruang')
 def data_ka_ruang():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM ka_ruang")
     ka_ruang = data.fetchall()
     return render_template('dashboard/data_ka_ruang.html',ka_ruang=ka_ruang)
 @app.route('/data_karyawan') 
+@roles_required('admin','HRD','k_ruang')
 def data_karyawan():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM karyawan")
     karyawan = data.fetchall()
     return render_template('dashboard/data_karyawan.html',karyawan=karyawan)
 @app.route('/laporan_absen') 
+@roles_required('admin','HRD','k_ruang')
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute(
@@ -122,12 +127,9 @@ def laporan_absen():
     dataabsen = data.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
+@roles_required('admin','HRD','k_ruang')
 def laporan_pulang():
     return render_template('dashboard/laporan_pulang.html')
-@app.route('/hello')
-def hello_world():
-    ip_addr = request.remote_addr
-    return '<h1> Your IP address is:' + ip_addr
 @app.route('/api/login',methods=['POST'])
 def apilogindashboard():
     data = mysql.connection.cursor()
@@ -180,6 +182,7 @@ def apilogin():
         data.close()
         return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":datalogin[0][4],"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
+@roles_required('admin','HRD','k_ruang')
 def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
@@ -381,9 +384,11 @@ def apipulang():
         return "foto yang anda kirim invalid"
 
 @app.route('/cetak_laporan') 
+@roles_required('admin','HRD','k_ruang')
 def cetak_laporan():
     return render_template('dashboard/charts.html')
 @app.route('/cetak_data') 
+@roles_required('admin','HRD','k_ruang')
 def cetak_data():
     return render_template('dashboard/tables.html')
     
