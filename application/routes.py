@@ -38,7 +38,7 @@ def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
         def decorated_route(*args, **kwargs):
-            if not session['loggedin'] == True:
+            if not 'loggedin' in session:
                 print('The user is not authenticated.')
                 return redirect(url_for('index'))
             
@@ -54,11 +54,11 @@ def roles_required(*role_names):
     return decorator
 @app.route('/') 
 def index():
-    if session==None:
-        return render_template('index.html')
-    else:
-        return render_template('index.html')
-   
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        return render_template('dashboard/index.html', username=session['username'])
+    # User is not loggedin redirect to login page
+    return redirect(url_for('index'))
 @app.errorhandler(404)
 def errorhandler(e):
     return render_template('404.html')
@@ -76,7 +76,11 @@ def handle_error(error):
 @app.route('/dashboard') 
 @roles_required('admin','HRD','k_ruang') 
 def dashboard():
-    return render_template('dashboard/index.html')
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        return render_template('dashboard/index.html', username=session['username'])
+    # User is not loggedin redirect to login page
+    return redirect(url_for('index'))
 @app.route('/data_admin') 
 def data_admin():
     data = mysql.connection.cursor()

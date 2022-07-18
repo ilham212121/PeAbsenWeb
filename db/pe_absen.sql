@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2022 at 10:58 AM
+-- Generation Time: Jul 18, 2022 at 04:42 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -33,16 +33,17 @@ CREATE TABLE `admin` (
   `email` varchar(100) NOT NULL,
   `password` varchar(1000) NOT NULL,
   `alamat` varchar(1000) NOT NULL,
-  `kontak` varchar(13) NOT NULL
+  `kontak` varchar(13) NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT 'admin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`) VALUES
-(19090101, 'M Ilham Fajar S', 'ilham@gmail.com', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54', 'jl sriti gang 3 no 4', '0895365912452'),
-(19090107, 'Rizky Dwi Saputra', 'rizkydwisaputrar1@gmail.com', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'jl balamoa selatan rt 03/01', '08953605107');
+INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`, `role`) VALUES
+(19090101, 'M Ilham Fajar S', 'ilham@gmail.com', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54', 'jl sriti gang 3 no 4', '0895365912452', 'admin'),
+(19090107, 'Rizky Dwi Saputra', 'rizkydwisaputrar1@gmail.com', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'jl balamoa selatan rt 03/01', '08953605107', 'admin');
 
 -- --------------------------------------------------------
 
@@ -53,7 +54,8 @@ INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`) VAL
 CREATE TABLE `dataabsen` (
   `id` int(11) NOT NULL,
   `nip` varchar(10) DEFAULT NULL,
-  `lokasi` point DEFAULT NULL,
+  `latitude` varchar(1000) DEFAULT NULL,
+  `longitude` varchar(1000) NOT NULL,
   `foto` varchar(100) NOT NULL,
   `tanggal` date DEFAULT NULL,
   `waktu` time DEFAULT NULL,
@@ -64,13 +66,16 @@ CREATE TABLE `dataabsen` (
 -- Dumping data for table `dataabsen`
 --
 
-INSERT INTO `dataabsen` (`id`, `nip`, `lokasi`, `foto`, `tanggal`, `waktu`, `status`) VALUES
-(1, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-14934AM.jpg', '2022-07-14', '09:34:00', 'tepat waktu'),
-(2, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-151126AM.jpg', '2022-07-15', '11:26:00', 'telat'),
-(3, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1676AM.jpg', '2022-07-16', '07:06:00', 'tepat waktu'),
-(4, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1798AM.jpg', '2022-07-17', '09:08:00', 'telat'),
-(5, '220712002', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120022022-7-1824PM.jpg', '2022-07-18', '14:04:00', 'tepat waktu'),
-(6, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120012022-7-1826PM.jpg', '2022-07-18', '14:06:00', 'tepat waktu');
+INSERT INTO `dataabsen` (`id`, `nip`, `latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`) VALUES
+(1, '220712001', '', '', '2207120012022-7-14934AM.jpg', '2022-07-14', '09:34:00', 'tepat waktu'),
+(2, '220712001', '', '', '2207120012022-7-151126AM.jpg', '2022-07-15', '11:26:00', 'telat'),
+(3, '220712001', '', '', '2207120012022-7-1676AM.jpg', '2022-07-16', '07:06:00', 'tepat waktu'),
+(4, '220712001', '', '', '2207120012022-7-1798AM.jpg', '2022-07-17', '09:08:00', 'telat'),
+(5, '220712002', '', '', '2207120022022-7-1824PM.jpg', '2022-07-18', '14:04:00', 'tepat waktu'),
+(6, '220712001', '', '', '2207120012022-7-1826PM.jpg', '2022-07-18', '14:06:00', 'tepat waktu'),
+(7, '220712001', '', '', '2207120012022-7-20225PM.jpg', '2022-07-20', '14:25:00', 'telat'),
+(8, '220712001', '', '', '2207120012022-7-21228PM.jpg', '2022-07-21', '14:28:00', 'telat'),
+(9, '220712001', '-9.123124', '109.23132', '2207120012022-7-22959AM.jpg', '2022-07-22', '09:59:00', 'telat');
 
 -- --------------------------------------------------------
 
@@ -81,7 +86,8 @@ INSERT INTO `dataabsen` (`id`, `nip`, `lokasi`, `foto`, `tanggal`, `waktu`, `sta
 CREATE TABLE `datapulang` (
   `id` int(11) NOT NULL,
   `nip` varchar(100) NOT NULL,
-  `lokasi` point NOT NULL,
+  `latitude` varchar(1000) NOT NULL,
+  `longitude` varchar(1000) NOT NULL,
   `foto` varchar(100) NOT NULL,
   `tanggal` date NOT NULL,
   `waktu` time NOT NULL,
@@ -92,8 +98,9 @@ CREATE TABLE `datapulang` (
 -- Dumping data for table `datapulang`
 --
 
-INSERT INTO `datapulang` (`id`, `nip`, `lokasi`, `foto`, `tanggal`, `waktu`, `status`) VALUES
-(1, '220712001', 0x00000000010100000096b4e21b0a3f22c049ba66f2cd4e5b40, '2207120022022-7-1824PM.jpg', '2022-07-16', '00:00:00', 'terlalu cepat');
+INSERT INTO `datapulang` (`id`, `nip`, `latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`) VALUES
+(1, '220712001', '', '', '2207120022022-7-1824PM.jpg', '2022-07-16', '00:00:00', 'terlalu cepat'),
+(2, '220712002', '', '', 'IMG20220712110028.jpg', '2022-07-16', '00:00:00', 'terlalu cepat');
 
 -- --------------------------------------------------------
 
@@ -108,14 +115,14 @@ CREATE TABLE `hrd` (
   `email` varchar(100) NOT NULL,
   `no hp` varchar(15) NOT NULL,
   `alamat` varchar(1000) NOT NULL,
-  `jabatan` varchar(10) NOT NULL DEFAULT 'HRD'
+  `role` varchar(10) NOT NULL DEFAULT 'HRD'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `hrd`
 --
 
-INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no hp`, `alamat`, `jabatan`) VALUES
+INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no hp`, `alamat`, `role`) VALUES
 ('2208001', 'boss', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'hrd@rsi.com', '08564006310', 'jln milyader no 1', 'HRD');
 
 -- --------------------------------------------------------
@@ -127,10 +134,7 @@ INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no hp`, `alamat`, `jabatan`)
 CREATE TABLE `karyawan` (
   `nip` varchar(10) NOT NULL,
   `nama` varchar(100) NOT NULL,
-  `pswd` varchar(1000) NOT NULL,
   `posisi` varchar(100) NOT NULL,
-  `shift` varchar(10) NOT NULL,
-  `ruangan` varchar(100) NOT NULL,
   `gender` varchar(1) NOT NULL,
   `ttl` date NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -142,9 +146,9 @@ CREATE TABLE `karyawan` (
 -- Dumping data for table `karyawan`
 --
 
-INSERT INTO `karyawan` (`nip`, `nama`, `pswd`, `posisi`, `shift`, `ruangan`, `gender`, `ttl`, `email`, `no_hp`, `alamat`) VALUES
-('220712001', 'Bambang', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'Perawat', 'siang', 'anggrek', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3'),
-('220712002', 'farid', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dokter', 'siang', 'anggrek', 'L', '1993-07-11', 'halodok@gmail.com', '089213212135', 'jl kedungbanteng kidul');
+INSERT INTO `karyawan` (`nip`, `nama`, `posisi`, `gender`, `ttl`, `email`, `no_hp`, `alamat`) VALUES
+('220712001', 'Bambang', 'Perawat', 'L', '1992-08-03', 'banbangkeuh@gmail.com', '0895360510704', 'jl jalak barat gang 3'),
+('220712002', 'farid', 'dokter', 'L', '1993-07-11', 'halodok@gmail.com', '089213212135', 'jl kedungbanteng kidul');
 
 -- --------------------------------------------------------
 
@@ -157,16 +161,18 @@ CREATE TABLE `kep_ruang` (
   `nama` varchar(100) NOT NULL,
   `pswd` varchar(1000) NOT NULL,
   `penempatan` varchar(1000) NOT NULL,
+  `email` varchar(1000) NOT NULL,
   `no_hp` varchar(15) NOT NULL,
-  `alamat` varchar(1000) NOT NULL
+  `alamat` varchar(1000) NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT 'k_ruang'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `kep_ruang`
 --
 
-INSERT INTO `kep_ruang` (`nip`, `nama`, `pswd`, `penempatan`, `no_hp`, `alamat`) VALUES
-('2209001', 'kepala ruang #1', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dahlia', '08921321485', 'jl jalak barat gang 3');
+INSERT INTO `kep_ruang` (`nip`, `nama`, `pswd`, `penempatan`, `email`, `no_hp`, `alamat`, `role`) VALUES
+('2209001', 'kepala ruang #1', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dahlia', '', '08921321485', 'jl jalak barat gang 3', 'k_ruang');
 
 -- --------------------------------------------------------
 
@@ -175,16 +181,22 @@ INSERT INTO `kep_ruang` (`nip`, `nama`, `pswd`, `penempatan`, `no_hp`, `alamat`)
 --
 
 CREATE TABLE `login` (
-  `nip` varchar(100) NOT NULL,
-  `pswd` varchar(1000) NOT NULL
+  `nip` int(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL,
+  `role` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`nip`, `pswd`) VALUES
-('220712001', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d');
+INSERT INTO `login` (`nip`, `pswd`, `role`) VALUES
+(2208001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'HRD'),
+(2209001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'k_ruang'),
+(19090101, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'admin'),
+(19090107, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'admin'),
+(220712001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'karyawan'),
+(220712002, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'karyawan');
 
 -- --------------------------------------------------------
 
@@ -193,8 +205,17 @@ INSERT INTO `login` (`nip`, `pswd`) VALUES
 --
 
 CREATE TABLE `shift` (
-  `shift` varchar(10) NOT NULL
+  `shift` varchar(10) NOT NULL,
+  `nip` varchar(100) NOT NULL,
+  `ruangan` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `shift`
+--
+
+INSERT INTO `shift` (`shift`, `nip`, `ruangan`) VALUES
+('pagi', '220712001', 'dahlia');
 
 --
 -- Indexes for dumped tables
@@ -237,6 +258,12 @@ ALTER TABLE `kep_ruang`
   ADD PRIMARY KEY (`nip`);
 
 --
+-- Indexes for table `login`
+--
+ALTER TABLE `login`
+  ADD PRIMARY KEY (`nip`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -244,13 +271,13 @@ ALTER TABLE `kep_ruang`
 -- AUTO_INCREMENT for table `dataabsen`
 --
 ALTER TABLE `dataabsen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `datapulang`
 --
 ALTER TABLE `datapulang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
