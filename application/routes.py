@@ -55,7 +55,7 @@ def roles_required(*role_names):
 def index():
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        role_names=['admin','HRD','k_ruang']
+        role_names=['admin','HRD','karu']
         if not session['role'] in role_names:
             print('The user does not have this role.')
             return redirect(url_for('index'))
@@ -77,7 +77,7 @@ def errorhandler(e):
 def dashboard():
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        role_names=['admin','HRD','k_ruang']
+        role_names=['admin','HRD','karu']
         if not session['role'] in role_names:
             print('The user does not have this role.')
             return redirect(url_for('index'))
@@ -100,22 +100,22 @@ def data_hrd():
     data.execute("SELECT * FROM hrd")
     hrd = data.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
-@app.route('/data_ka_ruang') 
-@roles_required('admin','HRD','k_ruang')
-def data_ka_ruang():
+@app.route('/data_karu') 
+@roles_required('admin','HRD','karu')
+def data_karu():
     data = mysql.connection.cursor()
-    data.execute("SELECT * FROM ka_ruang")
-    ka_ruang = data.fetchall()
-    return render_template('dashboard/data_ka_ruang.html',ka_ruang=ka_ruang)
+    data.execute("SELECT * FROM karu")
+    karu = data.fetchall()
+    return render_template('dashboard/data_karu.html',karu=karu)
 @app.route('/data_karyawan') 
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def data_karyawan():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM karyawan")
     karyawan = data.fetchall()
     return render_template('dashboard/data_karyawan.html',karyawan=karyawan)
 @app.route('/laporan_absen') 
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute(
@@ -125,7 +125,7 @@ def laporan_absen():
     dataabsen = data.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def laporan_pulang():
     return render_template('dashboard/laporan_pulang.html')
 @app.route('/api/login',methods=['POST'])
@@ -148,8 +148,8 @@ def apilogindashboard():
         elif datalogin[0][2]=='HRD':
             data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
             datalogin= data.fetchall()
-        elif datalogin[0][2]=='k_ruang':
-            data.execute("SELECT login.nip,login.role, kep_ruang.nama,kep_ruang.email,kep_ruang.alamat,kep_ruang.no_hp FROM login INNER JOIN kep_ruang ON login.nip = kep_ruang.nip WHERE login.nip = %s " , (nip,))
+        elif datalogin[0][2]=='karu':
+            data.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
             datalogin= data.fetchall()
         else:
             return "maaf nip tida ada"
@@ -180,7 +180,7 @@ def apilogin():
         data.close()
         return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":datalogin[0][4],"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
@@ -398,11 +398,11 @@ def history():
     print(respon)
     return jsonify({"data":respon,"msg":'get history sukses'})
 @app.route('/cetak_laporan') 
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def cetak_laporan():
     return render_template('dashboard/charts.html')
 @app.route('/cetak_data') 
-@roles_required('admin','HRD','k_ruang')
+@roles_required('admin','HRD','karu')
 def cetak_data():
     return render_template('dashboard/tables.html')
     
