@@ -2,15 +2,15 @@
 {% block content %}
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Data HRD</h1>
+        <h1 class="mt-4">Data Kepala Ruangan</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item active">HRD</li>
+            <li class="breadcrumb-item active">karu</li>
         </ol>
         <div class="card mb-4">
             <div class="card-header" style="background-color: #E6B794;">
                 <i class="fas fa-table me-1"></i>
-                Data HRD
+                Data Kepala Ruangan
             </div>
             <div class="card-body">
                 <div class="dataTable-container" >
@@ -30,7 +30,7 @@
                         </thead>
                         <tbody>
                             
-                                {% for row in hrd %}
+                                {% for row in karu %}
                                 <tr>
                                 <td>{{ row.0 }}</td>
                                 <td>{{ row.1 }}</td>
@@ -55,7 +55,6 @@
                         </tbody>
                     </table>
                 </div>
-
 
             </div>
         </div>

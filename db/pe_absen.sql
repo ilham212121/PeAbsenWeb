@@ -264,6 +264,12 @@ ALTER TABLE `login`
   ADD PRIMARY KEY (`nip`);
 
 --
+-- Indexes for table `login`
+--
+ALTER TABLE `login`
+  ADD PRIMARY KEY (`nip`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 

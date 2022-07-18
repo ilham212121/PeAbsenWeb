@@ -1,5 +1,6 @@
 import os
 from time import time
+from urllib.request import DataHandler
 from flask_login import current_user
 from sqlalchemy import case
 from application import app,mysql,allowed_file
@@ -38,27 +39,31 @@ def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
         def decorated_route(*args, **kwargs):
-            if not session['loggedin'] == True:
-                print('The user is not authenticated.')
-                return redirect(url_for('index'))
-            
-            print(session['role'])
-            print(role_names)
-            if not session['role'] in role_names:
-                print('The user does not have this role.')
-                return redirect(url_for('index'))
+            if 'loggedin' in session:
+            # User is loggedin show them the home page
+                if not session['role'] in role_names:
+                    print('The user does not have this role.')
+                    return redirect(url_for('index'))
+                else:
+                    print('The user is in this role.')
+                    return original_route(*args, **kwargs)
             else:
-                print('The user is in this role. ')
-                return original_route(*args, **kwargs)
+                return redirect(url_for('index'))
         return decorated_route
     return decorator
 @app.route('/') 
 def index():
-    if session==None:
-        return render_template('index.html')
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        role_names=['admin','HRD','karu']
+        if not session['role'] in role_names:
+            print('The user does not have this role.')
+            return redirect(url_for('index'))
+        else:
+            print('The user is in this role.')
+            return render_template('dashboard/index.html', username=session['username'])
     else:
         return render_template('index.html')
-   
 @app.errorhandler(404)
 def errorhandler(e):
     return render_template('404.html')
@@ -68,40 +73,49 @@ def errorhandler(e):
 @app.errorhandler(500)
 def errorhandler(e):
     return render_template('500.html')
-def handle_error(error):
-    if error.status_code == 404:
-        return make_response(jsonify({ "error": { "code": 404, "message": "Not found" } }), 404)
-    else:
-        return make_response(jsonify({ "error": { "code": 500, "message": "Internal server error" } }), 500)
 @app.route('/dashboard') 
-@roles_required('admin','HRD','k_ruang') 
 def dashboard():
-    return render_template('dashboard/index.html')
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        role_names=['admin','HRD','karu']
+        if not session['role'] in role_names:
+            print('The user does not have this role.')
+            return redirect(url_for('index'))
+        else:
+            print('The user is in this role.')
+            return render_template('dashboard/index.html', username=session['username'])
+    else:
+        return redirect(url_for('index'))
 @app.route('/data_admin') 
+@roles_required('admin')
 def data_admin():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM admin")
     admin = data.fetchall()
     return render_template('dashboard/data_admin.html',admin=admin)
-@app.route('/data_hrd') 
+@app.route('/data_hrd')
+@roles_required('admin','HRD')
 def data_hrd():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM hrd")
     hrd = data.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
-@app.route('/data_ka_ruang') 
-def data_ka_ruang():
+@app.route('/data_karu') 
+@roles_required('admin','HRD','karu')
+def data_karu():
     data = mysql.connection.cursor()
-    data.execute("SELECT * FROM ka_ruang")
-    ka_ruang = data.fetchall()
-    return render_template('dashboard/data_ka_ruang.html',ka_ruang=ka_ruang)
+    data.execute("SELECT * FROM karu")
+    karu = data.fetchall()
+    return render_template('dashboard/data_karu.html',karu=karu)
 @app.route('/data_karyawan') 
+@roles_required('admin','HRD','karu')
 def data_karyawan():
     data = mysql.connection.cursor()
     data.execute("SELECT * FROM karyawan")
     karyawan = data.fetchall()
     return render_template('dashboard/data_karyawan.html',karyawan=karyawan)
 @app.route('/laporan_absen') 
+@roles_required('admin','HRD','karu')
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute(
@@ -111,12 +125,9 @@ def laporan_absen():
     dataabsen = data.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
+@roles_required('admin','HRD','karu')
 def laporan_pulang():
     return render_template('dashboard/laporan_pulang.html')
-@app.route('/hello')
-def hello_world():
-    ip_addr = request.remote_addr
-    return '<h1> Your IP address is:' + ip_addr
 @app.route('/api/login',methods=['POST'])
 def apilogindashboard():
     data = mysql.connection.cursor()
@@ -132,13 +143,13 @@ def apilogindashboard():
         return "maaf password salah"
     else:
         if datalogin[0][2]=='admin':
-            data.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.kontak FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
+            data.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
             datalogin= data.fetchall()
         elif datalogin[0][2]=='HRD':
-            data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.kontak FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
+            data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
             datalogin= data.fetchall()
-        elif datalogin[0][2]=='k_ruang':
-            data.execute("SELECT login.nip,login.role, kep_ruang.nama,kep_ruang.email,kep_ruang.alamat,kep_ruang.kontak FROM login INNER JOIN kep_ruang ON login.nip = kep_ruang.nip WHERE login.nip = %s " , (nip,))
+        elif datalogin[0][2]=='karu':
+            data.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
             datalogin= data.fetchall()
         else:
             return "maaf nip tida ada"
@@ -153,7 +164,7 @@ def apilogin():
     data = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT * FROM login WHERE role='karyawan', nip = %s" , (nip,))
+    data.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
     datalogin= data.fetchall()
     if str(datalogin) == '()':
         data.close()
@@ -169,6 +180,7 @@ def apilogin():
         data.close()
         return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":datalogin[0][4],"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
+@roles_required('admin','HRD','karu')
 def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
@@ -368,11 +380,29 @@ def apipulang():
     else:
         data.close()
         return "foto yang anda kirim invalid"
-
+@app.route('/api/karyawan/history', methods=['POST'])
+def history():
+    data = mysql.connection.cursor()
+    nip = request.form['nip']
+    data.execute('SELECT * FROM dataabsen WHERE nip = %s',(nip,))
+    datahistory= data.fetchall()
+    print(datahistory)
+    respon=[]
+    for i,j in enumerate(datahistory):
+        dictlogs={}
+        print(int(i))
+        print(str(j))
+        dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})
+        print(dictlogs)
+        respon.append(dictlogs)
+    print(respon)
+    return jsonify({"data":respon,"msg":'get history sukses'})
 @app.route('/cetak_laporan') 
+@roles_required('admin','HRD','karu')
 def cetak_laporan():
     return render_template('dashboard/charts.html')
 @app.route('/cetak_data') 
+@roles_required('admin','HRD','karu')
 def cetak_data():
     return render_template('dashboard/tables.html')
     

@@ -5,7 +5,7 @@
         <h1 class="mt-4">Laporan Absensi</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item active">Sidenav Light</li>
+            <li class="breadcrumb-item active">Laporan Absen</li>
         </ol>
         <div class="card mb-4">
             <div class="card-header" style="background-color: #E6B794;">
@@ -21,6 +21,7 @@
                                 <option value="anggrek">Anggrek</option>
                                 <option value="bougenvile">Bougenvile</option>
                                 <option value="mawar">Mawar</option>
+                                <option value="semua">Semua</option>
                             </select> pilih ruangan</label>
                     </div>
                     <div></div>
@@ -230,6 +231,49 @@
                         </tbody>
                     </table>
                 </div>
+                <div id="semua" class="dataTable-container" style="display:none">
+                    <table id="datatablesSimple" class="dataTable-table">
+                        <thead>
+                            <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                                {% for row in dataabsen %}
+                                <tr>
+                                <td>{{ row.0 }}</td>
+                                <td>{{ row.1 }}</td>
+                                <td>{{ row.2 }}</td>
+                                <td>{{ row.3 }}</td>
+                                <td>{{ row.4 }}</td>
+                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
+                                <td>{{ row.6 }}</td>
+                                <td>{{ row.7 }}</td>
+                                    {% if row.8=='tepat waktu'%}
+                                <td style="color: green;">{{ row.8 }}</td>
+                                    {% endif %}
+                                    {% if row.8=='telat'%}
+                                <td style="color: red;">{{ row.8 }}</td>
+                                    {% endif %}
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="10">Tidak Ada Data</td>
+                                </tr>
+                                {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
         </div>
@@ -244,7 +288,7 @@
         var anggrek = document.getElementById("anggrek");
         var bugenvile = document.getElementById("bougenvile");
         var mawar = document.getElementById("mawar");
-        var kosong = document.getElementById("kosong");
+        var semua = document.getElementById("semua");
         console.log(combo)
         if (combo == "melati") {
             melati.style.display = "block"
@@ -281,11 +325,12 @@
             bugenvile.style.display = "none"
             mawar.style.display = "block"
         } else {
+            melati.style.display = "none"
             dahlia.style.display = "none"
             anggrek.style.display = "none"
             bugenvile.style.display = "none"
             mawar.style.display = "none"
-            kosong.style.display = "block"
+            semua.style.display = "block"
         }
     }
  
