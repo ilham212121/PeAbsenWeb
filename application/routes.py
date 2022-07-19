@@ -119,8 +119,8 @@ def data_karyawan():
 def laporan_absen():
     data = mysql.connection.cursor()
     data.execute(
-        'SELECT dataabsen.nip, karyawan.nama, karyawan.ruangan, karyawan.shift, dataabsen.lokasi,dataabsen.foto, dataabsen.tanggal,dataabsen.waktu, dataabsen.status'
-        ' FROM dataabsen INNER JOIN karyawan ON dataabsen.nip = karyawan.nip'
+        'SELECT `id`, dataabsen.nip, karyawan.nama,shift.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        ' FROM dataabsen INNER JOIN shift on dataabsen.nip = shift.nip INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     dataabsen = data.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
