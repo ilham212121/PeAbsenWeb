@@ -34,7 +34,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -44,25 +45,26 @@
                         <tbody>
                             
                                 {% for row in dataabsen %}
-                                {% if row.2 == 'melati'%}
+                                {% if row.3 == 'melati'%}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
                                 {% endif %}
-                                {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
                                 {% endif %}
                             </tr>
-                                {% endif %}
-                                {% endfor %}
+                                    {% endif %}
+                                    {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -74,7 +76,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -84,21 +87,22 @@
                         <tbody>
                             
                                 {% for row in dataabsen %}
-                                {% if row.2=='dahlia'%}
+                                {% if row.3=='dahlia'%}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
                                 {% endif %}
-                                {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
                                 {% endif %}
                             </tr>
                                 {% endif %}
@@ -115,7 +119,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -125,25 +130,26 @@
                         <tbody>
                             
                                 {% for row in dataabsen %}
-                                {% if row.2=='anggrek'%}
+                                {% if row.3=='anggrek'%}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
                                 {% endif %}
-                                {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
                                 {% endif %}
-                            </tr>
-                                {% endif %}
-                                {% endfor %}
+                                </tr>
+                                    {% endif %}
+                                    {% endfor %}
                             
                         </tbody>
                     </table>
@@ -156,7 +162,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -166,27 +173,26 @@
                         <tbody>
                             
                                 {% for row in dataabsen %}
-                                {% if row.2=='bougenvile'%}
+                                {% if row.3=='bougenvile'%}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
                                 {% endif %}
-                                {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
                                 {% endif %}
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            
-
+                            </tr>
+                                        {% endif %}
+                                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -198,7 +204,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -208,26 +215,26 @@
                         <tbody>
                            
                                 {% for row in dataabsen %}
-                                {% if row.2=='mawar'%}
+                                {% if row.3=='mawar'%}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                    {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
-                                    {% endif %}
-                                    {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
-                                    {% endif %}
-                                </tr>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
                                 {% endif %}
-                                {% endfor %}
-                            
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                            </tr>
+                                    {% endif %}
+                                    {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -239,7 +246,8 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Lokasi</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
@@ -250,22 +258,23 @@
                            
                                 {% for row in dataabsen %}
                                 <tr>
-                                <td>{{ row.0 }}</td>
-                                <td>{{ row.1 }}</td>
-                                <td>{{ row.2 }}</td>
-                                <td>{{ row.3 }}</td>
-                                <td>{{ row.4 }}</td>
-                                <td><img src="../../static/upload/{{ row.5 }}" width="100px" height="100px"></td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
-                                    {% if row.8=='tepat waktu'%}
-                                <td style="color: green;">{{ row.8 }}</td>
-                                    {% endif %}
-                                    {% if row.8=='telat'%}
-                                <td style="color: red;">{{ row.8 }}</td>
-                                    {% endif %}
-                                </tr>
-                                {% else %}
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/upload/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
+                                {% endif %}
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                            </tr>
+                                    {% else %}
                                 <tr>
                                     <td colspan="10">Tidak Ada Data</td>
                                 </tr>
@@ -304,6 +313,7 @@
             anggrek.style.display = "none"
             bugenvile.style.display = "none"
             mawar.style.display = "none"
+            semua.style.display = "none"
         }
         else if (combo == "anggrek") {
             melati.style.display = "none"
@@ -311,6 +321,7 @@
             anggrek.style.display = "block"
             bugenvile.style.display = "none"
             mawar.style.display = "none"
+            semua.style.display = "none"
         }
         else if (combo == "bougenvile") {
             melati.style.display = "none"
@@ -318,12 +329,14 @@
             anggrek.style.display = "none"
             bugenvile.style.display = "block"
             mawar.style.display = "none"
+            semua.style.display = "none"
         } else if (combo == "mawar") {
             melati.style.display = "none"
             dahlia.style.display = "none"
             anggrek.style.display = "none"
             bugenvile.style.display = "none"
             mawar.style.display = "block"
+            semua.style.display = "none"
         } else {
             melati.style.display = "none"
             dahlia.style.display = "none"
