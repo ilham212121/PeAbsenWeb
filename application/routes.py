@@ -1,4 +1,5 @@
 import os
+import re
 from time import time
 from urllib.request import DataHandler
 from flask_login import current_user
@@ -177,8 +178,9 @@ def apilogin():
     else:
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         datalogin = cur.fetchall()
+        print(datalogin[0][4])
         cur.close()
-        return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":datalogin[0][4],"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
+        return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():
@@ -407,7 +409,7 @@ def cetak_laporan():
 @roles_required('admin','HRD','karu')
 def cetak_data():
     return render_template('dashboard/tables.html')
-@app.route('/update_profile') 
+@app.route('/api/karyawan/update_profile', methods=['POST']) 
 def update_profile():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -417,29 +419,30 @@ def update_profile():
     no_hp = request.form['no_hp']
     alamat = request.form['alamat']
     if old_pswd == '':
-        cur.execute("UPDATE KARYAWAN SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         new_data = cur.fetchall()
-        if mysql.connection.commit():
-            cur.close()
-            return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],
-            "msg":"data berhasil diupdate"})
-        
+        print(new_data)
+        cur.execute("UPDATE karyawan SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":str(new_data[0][4]),"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
     else:
-        cur.execute("SELECT * FROM LOGIN WHERE NIP = %s",(nip,))
+        cur.execute("SELECT * FROM login WHERE NIP = %s",(nip,))
         data = cur.fetchall()
         if not check_password_hash(data[0][1],old_pswd):
             cur.close()
             return jsonify({"msg":"password lama salah"})
         else: 
-            new_pswd = generate_password_hash(new_pswd)
-            cur.execute("UPDATE LOGIN SET pswd= %s WHERE nip = %s",(new_pswd, nip))
-            cur.execute("UPDATE KARYAWAN SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
-            cur.execute("SELECT * FROM KARYAWAN WHERE NIP = %s",(nip,))
-            new_data = cur.fetchall()
-            if mysql.connection.commit():
+            if new_pswd == '':
+                return jsonify({"msg":"Password Baru Tidak Boleh kosong"})
+            else:
+                new_pswd = generate_password_hash(new_pswd)
+                cur.execute("UPDATE login SET pswd = %s WHERE nip = %s",(new_pswd, nip))
+                cur.execute("UPDATE karyawan SET email = %s , no_hp = %s , alamat = %s WHERE nip = %s",(email,no_hp,alamat,nip,))
+                cur.execute("SELECT * FROM karyawan WHERE NIP = %s",(nip,))
+                new_data = cur.fetchall()
+                mysql.connection.commit()
                 cur.close()
-                return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],
-                "msg":"data berhasil diupdate"})
+                return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
                 
     
