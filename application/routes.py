@@ -1,4 +1,5 @@
 import os
+import re
 from time import time
 from urllib.request import DataHandler
 from flask_login import current_user
@@ -89,40 +90,40 @@ def dashboard():
 @app.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
-    data = mysql.connection.cursor()
-    data.execute("SELECT * FROM admin")
-    admin = data.fetchall()
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM admin")
+    admin = cur.fetchall()
     return render_template('dashboard/data_admin.html',admin=admin)
 @app.route('/data_hrd')
 @roles_required('admin','HRD')
 def data_hrd():
-    data = mysql.connection.cursor()
-    data.execute("SELECT * FROM hrd")
-    hrd = data.fetchall()
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM hrd")
+    hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
 @app.route('/data_karu') 
 @roles_required('admin','HRD','karu')
 def data_karu():
-    data = mysql.connection.cursor()
-    data.execute("SELECT * FROM karu")
-    karu = data.fetchall()
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM karu")
+    karu = cur.fetchall()
     return render_template('dashboard/data_karu.html',karu=karu)
 @app.route('/data_karyawan') 
 @roles_required('admin','HRD','karu')
 def data_karyawan():
-    data = mysql.connection.cursor()
-    data.execute("SELECT * FROM karyawan")
-    karyawan = data.fetchall()
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM karyawan")
+    karyawan = cur.fetchall()
     return render_template('dashboard/data_karyawan.html',karyawan=karyawan)
 @app.route('/laporan_absen') 
 @roles_required('admin','HRD','karu')
 def laporan_absen():
-    data = mysql.connection.cursor()
-    data.execute(
+    cur = mysql.connection.cursor()
+    cur.execute(
         'SELECT `id`, dataabsen.nip, karyawan.nama,shift.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
         ' FROM dataabsen INNER JOIN shift on dataabsen.nip = shift.nip INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
-    dataabsen = data.fetchall()
+    dataabsen = cur.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
 @app.route('/laporan_pulang') 
 @roles_required('admin','HRD','karu')
@@ -130,55 +131,56 @@ def laporan_pulang():
     return render_template('dashboard/laporan_pulang.html')
 @app.route('/api/login',methods=['POST'])
 def apilogindashboard():
-    data = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT * FROM login WHERE nip = %s" , (nip,))
-    datalogin = data.fetchall()
+    cur.execute("SELECT * FROM login WHERE nip = %s" , (nip,))
+    datalogin = cur.fetchall()
     if str(datalogin) == '()':
-        data.close()
+        cur.close()
         return "maaf nip tida ada"
     elif not check_password_hash(datalogin[0][1],password):
-        data.close()
+        cur.close()
         return "maaf password salah"
     else:
         if datalogin[0][2]=='admin':
-            data.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
-            datalogin= data.fetchall()
+            cur.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
+            datalogin= cur.fetchall()
         elif datalogin[0][2]=='HRD':
-            data.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
-            datalogin= data.fetchall()
+            cur.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
+            datalogin= cur.fetchall()
         elif datalogin[0][2]=='karu':
-            data.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
-            datalogin= data.fetchall()
+            cur.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
+            datalogin= cur.fetchall()
         else:
             return "maaf nip tida ada"
         session['loggedin'] = True
         session['id'] = datalogin[0][0]
         session['role'] = datalogin[0][1]
         session['username'] = datalogin[0][2]
-        data.close()
+        cur.close()
         return redirect(url_for('dashboard'))
 @app.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
-    data = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     nip = request.form['nip']
     password = request.form['password']
-    data.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
-    datalogin= data.fetchall()
+    cur.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
+    datalogin= cur.fetchall()
     if str(datalogin) == '()':
-        data.close()
+        cur.close()
         print("maaf nip tidak ada")
         return jsonify({"msg":"maaf nip tidak ada"})
     elif not check_password_hash(datalogin[0][1],password):
-        data.close()
+        cur.close()
         print("maaf password salah")
         return jsonify({"msg":"maaf password salah"})
     else:
-        data.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
-        datalogin = data.fetchall()
-        data.close()
-        return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":datalogin[0][4],"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
+        cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
+        datalogin = cur.fetchall()
+        print(datalogin[0][4])
+        cur.close()
+        return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():
@@ -190,9 +192,9 @@ def logout():
     return redirect(url_for('index'))
 @app.route('/apiabsen',methods=['POST'])
 def apiabsen():
-    data = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     if 'image' not in request.files:
-        data.close()
+        cur.close()
         return jsonify({"msg":"tidak ada form image"})
     file = request.files['image']
     nip=request.form['nip']
@@ -200,13 +202,13 @@ def apiabsen():
     longitude= request.form['longitude']
     
     if file.filename == '':
-        data.close()
+        cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         print(file.filename)
-        data.execute("SELECT shift from shift where nip= %s",(nip,))
-        shift = data.fetchall()
+        cur.execute("SELECT shift from shift where nip= %s",(nip,))
+        shift = cur.fetchall()
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
@@ -215,8 +217,8 @@ def apiabsen():
         hari=a.tm_mday
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
         print(tanggal)
-        data.execute("SELECT * from dataabsen where nip= %s and tanggal = %s ",(nip,tanggal))
-        cek = data.fetchall()
+        cur.execute("SELECT * from dataabsen where nip= %s and tanggal = %s ",(nip,tanggal))
+        cek = cur.fetchall()
         if hr>=12:
             if hr==12:
                 hr=12
@@ -264,30 +266,32 @@ def apiabsen():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamefile))
             print(renamefile)
             if status=='kamu absen terlalu cepat':
-                data.close()
+                cur.close()
                 return jsonify({"msg":status})
             if status=="kamu terlambat":
                 statusdb="telat"
-                data.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
+                cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                 if mysql.connection.commit():
-                    data.close()
+                    cur.close()
                 return jsonify({"msg":status})
             if status=="kamu absen tepat waktu":
                 statusdb="tepat waktu"
-                data.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
+                cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                 if mysql.connection.commit():
-                    data.close()
+                    cur.close()
                 return jsonify({"msg":status})
         else:
-             return jsonify({"msg":"maaf kamu sudah absen"})
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamefile))
+            print(renamefile)
+            return jsonify({"msg":"maaf kamu sudah absen"})
     else:
-        data.close()
+        cur.close()
         return "foto yang anda kirim invalid"
 @app.route('/apipulang',methods=['POST'])
 def apipulang():
-    data = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     if 'image' not in request.files:
-        data.close()
+        cur.close()
         return "tidak ada form image"
     file = request.files['image']
     nip=request.form['nip']
@@ -295,12 +299,12 @@ def apipulang():
     lokasi="POINT("+lokasi+")"
     
     if file.filename == '':
-        data.close()
+        cur.close()
         return "tidak ada file image yang dipilih"
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        data.execute("SELECT shift from karyawan where nip= %s",(nip,))
-        shift = data.fetchall()
+        cur.execute("SELECT shift from karyawan where nip= %s",(nip,))
+        shift = cur.fetchall()
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
@@ -311,8 +315,8 @@ def apipulang():
 
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
         print(tanggal)
-        data.execute("SELECT * from datapulang where nip= %s and tanggal = %s ",(nip,tanggal))
-        cek = data.fetchall()
+        cur.execute("SELECT * from datapulang where nip= %s and tanggal = %s ",(nip,tanggal))
+        cek = cur.fetchall()
         if hr>=12:
             if hr==12:
                 hr=12
@@ -359,33 +363,33 @@ def apipulang():
             timeNow = str(hr)+':'+str(mn)+str(det)+str(w)+''
             if status=='kamu pulang terlalu cepat':
                 statusdb="terlalu cepat"
-                data.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
-                    data.close()
+                    cur.close()
                 return jsonify({"msg":status})
             if status=="kamu pulang terlalu lambat dari jawdwal apakah kamu lembur?":
                 statusdb="lembur?"
-                data.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
-                    data.close()
+                    cur.close()
                 return jsonify({"msg":status})
             if status=="kamu pulang sesuai jadwal shift":
                 statusdb="tepat waktu"
-                data.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
-                    data.close()
+                    cur.close()
                 return jsonify({"msg":status})
         else:
              return jsonify({"msg":"maaf anda sudah absen pulang"})
     else:
-        data.close()
+        cur.close()
         return "foto yang anda kirim invalid"
 @app.route('/api/karyawan/history', methods=['POST'])
 def history():
-    data = mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     nip = request.form['nip']
-    data.execute('SELECT * FROM dataabsen WHERE nip = %s',(nip,))
-    datahistory= data.fetchall()
+    cur.execute('SELECT * FROM dataabsen WHERE nip = %s',(nip,))
+    datahistory= cur.fetchall()
     print(datahistory)
     respon=[]
     for i,j in enumerate(datahistory):
@@ -405,4 +409,40 @@ def cetak_laporan():
 @roles_required('admin','HRD','karu')
 def cetak_data():
     return render_template('dashboard/tables.html')
+@app.route('/api/karyawan/update_profile', methods=['POST']) 
+def update_profile():
+    cur = mysql.connection.cursor()
+    nip = request.form['nip']
+    old_pswd = request.form['old_pswd']
+    new_pswd = request.form['new_pswd']
+    email = request.form['email']
+    no_hp = request.form['no_hp']
+    alamat = request.form['alamat']
+    if old_pswd == '':
+        cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
+        new_data = cur.fetchall()
+        print(new_data)
+        cur.execute("UPDATE karyawan SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":str(new_data[0][4]),"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
+    else:
+        cur.execute("SELECT * FROM login WHERE NIP = %s",(nip,))
+        data = cur.fetchall()
+        if not check_password_hash(data[0][1],old_pswd):
+            cur.close()
+            return jsonify({"msg":"password lama salah"})
+        else: 
+            if new_pswd == '':
+                return jsonify({"msg":"Password Baru Tidak Boleh kosong"})
+            else:
+                new_pswd = generate_password_hash(new_pswd)
+                cur.execute("UPDATE login SET pswd = %s WHERE nip = %s",(new_pswd, nip))
+                cur.execute("UPDATE karyawan SET email = %s , no_hp = %s , alamat = %s WHERE nip = %s",(email,no_hp,alamat,nip,))
+                cur.execute("SELECT * FROM karyawan WHERE NIP = %s",(nip,))
+                new_data = cur.fetchall()
+                mysql.connection.commit()
+                cur.close()
+                return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
+                
     
