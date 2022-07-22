@@ -5,12 +5,13 @@ from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
 mysql = MySQL()
-UPLOAD_FOLDER = 'application/static/upload/'
+FOLDER_ABSEN = 'application/static/upload/absen/'
+FOLDER_PULANG = 'application/static/upload/pulang/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):     
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.config['FOLDER_ABSEN'] = FOLDER_ABSEN
+app.config['FOLDER_PULANG'] = FOLDER_PULANG
 app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= 'localhost'
 app.config['MYSQL_USER'] = 'root'
