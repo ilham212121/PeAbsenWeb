@@ -281,7 +281,6 @@ def apiabsen():
                     cur.close()
                 return jsonify({"msg":status})
         else:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamefile))
             print(renamefile)
             return jsonify({"msg":"maaf kamu sudah absen"})
     else:
