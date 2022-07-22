@@ -178,7 +178,6 @@ def apilogin():
     else:
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         datalogin = cur.fetchall()
-        print(datalogin[0][4])
         cur.close()
         return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
 @app.route('/logout')
@@ -205,7 +204,6 @@ def apiabsen():
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
         print(file.filename)
         cur.execute("SELECT shift from shift where nip= %s",(nip,))
         shift = cur.fetchall()
@@ -216,7 +214,6 @@ def apiabsen():
         bln=a.tm_mon
         hari=a.tm_mday
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        print(tanggal)
         cur.execute("SELECT * from dataabsen where nip= %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if hr>=12:
@@ -232,8 +229,6 @@ def apiabsen():
         if str(cek) == '()':
             timeNow = str(hr)+':'+str(mn)+str(w)+''
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
-            print(renamefile)
-            print(timeNow)
             timeNow = datetime.strptime(timeNow, "%I:%M%p")
             if shift[0][0]=="pagi":
                 timeStart = '06:30AM'
@@ -263,8 +258,7 @@ def apiabsen():
                 timeStart = datetime.strptime(timeStart, "%I:%M%p")
                 status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
                 
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamefile))
-            print(renamefile)
+            file.save(os.path.join(app.config['FOLDER_ABSEN'], renamefile))
             if status=='kamu absen terlalu cepat':
                 cur.close()
                 return jsonify({"msg":status})
@@ -279,9 +273,8 @@ def apiabsen():
                 cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                 if mysql.connection.commit():
                     cur.close()
-                return jsonify({"msg":status})
+                return jsonify({"msg":status,"waktu":timeNow,"tanggal":tanggal})
         else:
-            print(renamefile)
             return jsonify({"msg":"maaf kamu sudah absen"})
     else:
         cur.close()
@@ -291,18 +284,18 @@ def apipulang():
     cur = mysql.connection.cursor()
     if 'image' not in request.files:
         cur.close()
-        return "tidak ada form image"
+        return jsonify({"msg":"tidak ada form image"})
     file = request.files['image']
     nip=request.form['nip']
-    lokasi=request.form['lokasi']
-    lokasi="POINT("+lokasi+")"
+    latitude=request.form['latitude']
+    longitude= request.form['longitude']
     
     if file.filename == '':
         cur.close()
-        return "tidak ada file image yang dipilih"
+        return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        cur.execute("SELECT shift from karyawan where nip= %s",(nip,))
+        cur.execute("SELECT shift from shift where nip= %s",(nip,))
         shift = cur.fetchall()
         a=time.localtime()
         hr=a.tm_hour
@@ -313,7 +306,6 @@ def apipulang():
         hari=a.tm_mday
 
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        print(tanggal)
         cur.execute("SELECT * from datapulang where nip= %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if hr>=12:
@@ -328,7 +320,6 @@ def apipulang():
             w='AM'
         if str(cek) == '()':
             timeNow = str(hr)+':'+str(mn)+str(w)+''
-            print(timeNow)
             timeNow = datetime.strptime(timeNow, "%I:%M%p")
             if shift[0][0]=="pagi":
                 timeStart = '02:00PM'
@@ -358,23 +349,23 @@ def apipulang():
                 timeStart = datetime.strptime(timeStart, "%I:%M%p")
                 status=isNowpulang(timeStart, timeEnd, timeNow)
                 
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config['FOLDER_PULANG'], filename))
             timeNow = str(hr)+':'+str(mn)+str(det)+str(w)+''
             if status=='kamu pulang terlalu cepat':
                 statusdb="terlalu cepat"
-                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
                     cur.close()
                 return jsonify({"msg":status})
-            if status=="kamu pulang terlalu lambat dari jawdwal apakah kamu lembur?":
+            elif status=="kamu pulang terlalu lambat dari jawdwal apakah kamu lembur?":
                 statusdb="lembur?"
-                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
                     cur.close()
                 return jsonify({"msg":status})
-            if status=="kamu pulang sesuai jadwal shift":
+            elif status=="kamu pulang sesuai jadwal shift":
                 statusdb="tepat waktu"
-                cur.execute("INSERT INTO datapulang(nip,lokasi,tanggal,waktu,foto,status) VALUES (%s,ST_GeomFromText(%s),%s,%s,%s,%s)",(nip,lokasi,tanggal,timeNow,filename,statusdb))
+                cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
                 if mysql.connection.commit():
                     cur.close()
                 return jsonify({"msg":status})
@@ -382,23 +373,32 @@ def apipulang():
              return jsonify({"msg":"maaf anda sudah absen pulang"})
     else:
         cur.close()
-        return "foto yang anda kirim invalid"
-@app.route('/api/karyawan/history', methods=['POST'])
-def history():
+        return jsonify({"msg":"foto yang anda kirim invalid"})
+@app.route('/api/karyawan/history/absen', methods=['POST'])
+def history_absen():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
-    cur.execute('SELECT * FROM dataabsen WHERE nip = %s',(nip,))
+    cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
     datahistory= cur.fetchall()
-    print(datahistory)
     respon=[]
     for i,j in enumerate(datahistory):
         dictlogs={}
-        print(int(i))
-        print(str(j))
         dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})
-        print(dictlogs)
+        
         respon.append(dictlogs)
-    print(respon)
+    return jsonify({"data":respon,"msg":'get history sukses'})
+@app.route('/api/karyawan/history/pulang', methods=['POST'])
+def history_pulang():
+    cur = mysql.connection.cursor()
+    nip = request.form['nip']
+    cur.execute('SELECT * FROM datapulang WHERE nip = %s GROUP BY tanggal DESC',(nip,))
+    datahistory= cur.fetchall()
+    respon=[]
+    for i,j in enumerate(datahistory):
+        dictlogs={}
+        dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})
+        
+        respon.append(dictlogs)
     return jsonify({"data":respon,"msg":'get history sukses'})
 @app.route('/cetak_laporan') 
 @roles_required('admin','HRD','karu')
@@ -420,7 +420,6 @@ def update_profile():
     if old_pswd == '':
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         new_data = cur.fetchall()
-        print(new_data)
         cur.execute("UPDATE karyawan SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
         mysql.connection.commit()
         cur.close()
