@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 18, 2022 at 04:42 AM
+-- Generation Time: Jul 18, 2022 at 08:07 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -33,7 +33,7 @@ CREATE TABLE `admin` (
   `email` varchar(100) NOT NULL,
   `password` varchar(1000) NOT NULL,
   `alamat` varchar(1000) NOT NULL,
-  `kontak` varchar(13) NOT NULL,
+  `no_hp` varchar(13) NOT NULL,
   `role` varchar(10) NOT NULL DEFAULT 'admin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -41,7 +41,7 @@ CREATE TABLE `admin` (
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `kontak`, `role`) VALUES
+INSERT INTO `admin` (`nip`, `nama`, `email`, `password`, `alamat`, `no_hp`, `role`) VALUES
 (19090101, 'M Ilham Fajar S', 'ilham@gmail.com', 'pbkdf2:sha256:260000$wZS9dWu7iGiaoHg4$8ba676fd6c10fa74eff20866639e183ff293b879b31cd4111ce62c87c45a54', 'jl sriti gang 3 no 4', '0895365912452', 'admin'),
 (19090107, 'Rizky Dwi Saputra', 'rizkydwisaputrar1@gmail.com', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'jl balamoa selatan rt 03/01', '08953605107', 'admin');
 
@@ -113,7 +113,7 @@ CREATE TABLE `hrd` (
   `nama` varchar(100) NOT NULL,
   `pswd` varchar(1000) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `no hp` varchar(15) NOT NULL,
+  `no_hp` varchar(15) NOT NULL,
   `alamat` varchar(1000) NOT NULL,
   `role` varchar(10) NOT NULL DEFAULT 'HRD'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -122,8 +122,32 @@ CREATE TABLE `hrd` (
 -- Dumping data for table `hrd`
 --
 
-INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no hp`, `alamat`, `role`) VALUES
+INSERT INTO `hrd` (`nip`, `nama`, `pswd`, `email`, `no_hp`, `alamat`, `role`) VALUES
 ('2208001', 'boss', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'hrd@rsi.com', '08564006310', 'jln milyader no 1', 'HRD');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `karu`
+--
+
+CREATE TABLE `karu` (
+  `nip` varchar(10) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `pswd` varchar(1000) NOT NULL,
+  `penempatan` varchar(1000) NOT NULL,
+  `email` varchar(1000) NOT NULL,
+  `no_hp` varchar(15) NOT NULL,
+  `alamat` varchar(1000) NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT 'k_ruang'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `karu`
+--
+
+INSERT INTO `karu` (`nip`, `nama`, `pswd`, `penempatan`, `email`, `no_hp`, `alamat`, `role`) VALUES
+('2209001', 'kepala ruang #1', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dahlia', 'karu@gmail.com', '08921321485', 'jl jalak barat gang 3', 'karu');
 
 -- --------------------------------------------------------
 
@@ -153,30 +177,6 @@ INSERT INTO `karyawan` (`nip`, `nama`, `posisi`, `gender`, `ttl`, `email`, `no_h
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kep_ruang`
---
-
-CREATE TABLE `kep_ruang` (
-  `nip` varchar(10) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `pswd` varchar(1000) NOT NULL,
-  `penempatan` varchar(1000) NOT NULL,
-  `email` varchar(1000) NOT NULL,
-  `no_hp` varchar(15) NOT NULL,
-  `alamat` varchar(1000) NOT NULL,
-  `role` varchar(10) NOT NULL DEFAULT 'k_ruang'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `kep_ruang`
---
-
-INSERT INTO `kep_ruang` (`nip`, `nama`, `pswd`, `penempatan`, `email`, `no_hp`, `alamat`, `role`) VALUES
-('2209001', 'kepala ruang #1', 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'dahlia', '', '08921321485', 'jl jalak barat gang 3', 'k_ruang');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `login`
 --
 
@@ -192,7 +192,7 @@ CREATE TABLE `login` (
 
 INSERT INTO `login` (`nip`, `pswd`, `role`) VALUES
 (2208001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'HRD'),
-(2209001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'k_ruang'),
+(2209001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'karu'),
 (19090101, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'admin'),
 (19090107, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'admin'),
 (220712001, 'sha256$nLb0vObcNS7FiHeC$645acf9b245e3d523e5629b59e3ba5750cb60ce6ee0b1cdab44cb5a07c22b49d', 'karyawan'),
@@ -246,15 +246,21 @@ ALTER TABLE `hrd`
   ADD PRIMARY KEY (`nip`);
 
 --
+-- Indexes for table `karu`
+--
+ALTER TABLE `karu`
+  ADD PRIMARY KEY (`nip`);
+
+--
 -- Indexes for table `karyawan`
 --
 ALTER TABLE `karyawan`
   ADD PRIMARY KEY (`nip`);
 
 --
--- Indexes for table `kep_ruang`
+-- Indexes for table `login`
 --
-ALTER TABLE `kep_ruang`
+ALTER TABLE `login`
   ADD PRIMARY KEY (`nip`);
 
 --
