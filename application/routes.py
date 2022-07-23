@@ -14,10 +14,22 @@ from datetime import datetime
 from functools import wraps
 from flask_login import login_user, logout_user, login_required,current_user
 
+def isNowTanggal(startTgl, endTgl, nowTgl):
+    if startTgl < endTgl:
+        if nowTgl < startTgl:
+            return "tgl"
+        if nowTgl > endTgl:
+            return "kamu terlambat"
+        if nowTgl >= startTgl and nowTgl <= endTgl:
+            return "kamu absen tepat waktu"
+        return 
+    else: 
+        return nowTgl >= startTgl or nowTgl <= endTgl
 def isNowInTimePeriod(startTime, endTime, nowTime):
     if startTime < endTime:
         if nowTime < startTime:
-            return "kamu absen terlalu cepat"
+            wait=startTime-nowTime
+            return "kamu absen terlalu cepat silahkan tunggu "+wait+" lagi"
         if nowTime > endTime:
             return "kamu terlambat"
         if nowTime >= startTime and nowTime <= endTime:
@@ -199,65 +211,53 @@ def apiabsen():
     nip=request.form['nip']
     latitude=request.form['latitude']
     longitude= request.form['longitude']
-    
     if file.filename == '':
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         print(file.filename)
-        cur.execute("SELECT shift from shift where nip= %s",(nip,))
-        shift = cur.fetchall()
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
+        sc=a.tm_sec
         thn=a.tm_year
         bln=a.tm_mon
         hari=a.tm_mday
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        cur.execute("SELECT * from dataabsen where nip= %s and tanggal = %s ",(nip,tanggal))
+        print(tanggal)
+        timeNow = str(hr)+':'+str(mn)+':'+str(sc)
+        cur.execute("SELECT * from dataabsen where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
-        if hr>=12:
-            if hr==12:
-                hr=12
-            else:
-                hr = hr-12
-            w='PM'
-        else:
-            if hr==0:
-                hr=12
-            w='AM'
         if str(cek) == '()':
-            timeNow = str(hr)+':'+str(mn)+str(w)+''
+            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
+            shift = cur.fetchall()
+            print(shift)
+            cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
+            tglkhusus = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
-            if shift[0][0]=="pagi":
-                timeStart = '06:30AM'
-                timeEnd = '07:10AM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-                
-            elif shift[0][0]=="siang":
-                timeStart = '01:30PM'
-                timeEnd = '02:10PM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-                
-            elif shift[0][0]=="middle":
-                timeStart = '09:30AM'
-                timeEnd = '10:10AM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-    
-            elif shift[0][0]=="malam":
-                timeStart = '09:30PM'
-                timeEnd = '10:10PM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowInTimePeriod(timeStart, timeEnd, timeNow)
-                
+            timeNow = datetime.strptime(timeNow, "%H:%M:%S")
+            if str(tglkhusus)=='()':
+                print(shift)
+                print(shift[0][1])
+                timeEnd = datetime.strptime(str(shift[0][1]), "%H:%M:%S")
+                print(timeEnd)
+                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                b= timeEnd-a
+                print(b)
+                timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                print(timeStart)
+                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+            else:
+                print(tglkhusus)
+                print(tglkhusus[0][1])
+                timeEnd = datetime.strptime(str(tglkhusus[0][1]), "%H:%M:%S")
+                print(timeEnd)
+                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                b= timeEnd-a
+                print(b)
+                timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                print(timeStart)
+                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             file.save(os.path.join(app.config['FOLDER_ABSEN'], renamefile))
             if status=='kamu absen terlalu cepat':
                 cur.close()
@@ -275,7 +275,6 @@ def apiabsen():
                     cur.close()
                 return jsonify({"msg":status,"waktu":timeNow,"tanggal":tanggal})
         else:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamefile))
             return jsonify({"msg":"maaf kamu sudah absen"})
     else:
         cur.close()
@@ -296,62 +295,39 @@ def apipulang():
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        cur.execute("SELECT shift from shift where nip= %s",(nip,))
-        shift = cur.fetchall()
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
-        det=a.tm_sec
+        sc=a.tm_sec
         thn=a.tm_year
         bln=a.tm_mon
         hari=a.tm_mday
-
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        cur.execute("SELECT * from datapulang where nip= %s and tanggal = %s ",(nip,tanggal))
+        print(tanggal)
+        timeNow = str(hr)+':'+str(mn)+':'+str(sc)
+        cur.execute("SELECT * from datapulang where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
-        if hr>=12:
-            if hr==12:
-                hr=12
-            else:
-                hr = hr-12
-            w='PM'
-        else:
-            if hr==0:
-                hr=12
-            w='AM'
         if str(cek) == '()':
-            timeNow = str(hr)+':'+str(mn)+str(w)+''
-            timeNow = datetime.strptime(timeNow, "%I:%M%p")
-            if shift[0][0]=="pagi":
-                timeStart = '02:00PM'
-                timeEnd = '02:18PM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowpulang(timeStart, timeEnd, timeNow)
-                
-            elif shift[0][0]=="siang":
-                timeStart = '09:00PM'
-                timeEnd = '09:18PM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowpulang(timeStart, timeEnd, timeNow)
-                
-            elif shift[0][0]=="middle":
-                timeStart = '05:00PM'
-                timeEnd = '05:18PM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowpulang(timeStart, timeEnd, timeNow)
-    
-            elif shift[0][0]=="malam":
-                timeStart = '07:00AM'
-                timeEnd = '07:18AM'
-                timeEnd = datetime.strptime(timeEnd, "%I:%M%p")
-                timeStart = datetime.strptime(timeStart, "%I:%M%p")
-                status=isNowpulang(timeStart, timeEnd, timeNow)
-                
-            file.save(os.path.join(app.config['FOLDER_PULANG'], filename))
-            timeNow = str(hr)+':'+str(mn)+str(det)+str(w)+''
+            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
+            shift = cur.fetchall()
+            print(shift)
+            cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
+            tglkhusus = cur.fetchall()
+            renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
+            timeNow = datetime.strptime(timeNow, "%H:%M:%S")
+            if str(tglkhusus)=='()':
+                timeEnd = datetime.strptime(str(shift[0][1]), "%H:%M:%S")
+                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                b= timeEnd-a
+                timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+            else:
+                timeEnd = datetime.strptime(str(tglkhusus[0][1]), "%H:%M:%S")
+                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                b= timeEnd-a
+                timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+            file.save(os.path.join(app.config['FOLDER_PULANG'], renamefile))
             if status=='kamu pulang terlalu cepat':
                 statusdb="terlalu cepat"
                 cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
