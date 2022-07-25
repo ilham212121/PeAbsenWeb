@@ -1,3 +1,4 @@
+from email.mime import image
 import os
 import re
 from time import time
@@ -7,12 +8,21 @@ from sqlalchemy import case
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import jsonify, make_response, redirect, render_template, request, session, url_for
+from flask import Flask, jsonify, make_response, redirect, render_template, request, session, url_for
 import time
 import datetime
+from skimage import io, color, filters, util ,morphology
+from skimage.transform import rescale, resize, downscale_local_mean
 from datetime import datetime
 from functools import wraps
+from PIL import Image 
 from flask_login import login_user, logout_user, login_required,current_user
+from flask import send_from_directory
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 def isNowTanggal(startTgl, endTgl, nowTgl):
     if startTgl < endTgl:
@@ -132,8 +142,8 @@ def data_karyawan():
 def laporan_absen():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT `id`, dataabsen.nip, karyawan.nama,shift.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
-        ' FROM dataabsen INNER JOIN shift on dataabsen.nip = shift.nip INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
+        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
@@ -215,7 +225,6 @@ def apiabsen():
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
-        print(file.filename)
         a=time.localtime()
         hr=a.tm_hour
         mn=a.tm_min
@@ -224,41 +233,32 @@ def apiabsen():
         bln=a.tm_mon
         hari=a.tm_mday
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        print(tanggal)
         timeNow = str(hr)+':'+str(mn)+':'+str(sc)
         cur.execute("SELECT * from dataabsen where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
             cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
             shift = cur.fetchall()
-            print(shift)
             cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
             tglkhusus = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
             if str(tglkhusus)=='()':
-                print(shift)
-                print(shift[0][1])
                 timeEnd = datetime.strptime(str(shift[0][1]), "%H:%M:%S")
-                print(timeEnd)
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
-                print(b)
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                print(timeStart)
                 status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             else:
-                print(tglkhusus)
-                print(tglkhusus[0][1])
                 timeEnd = datetime.strptime(str(tglkhusus[0][1]), "%H:%M:%S")
-                print(timeEnd)
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
-                print(b)
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                print(timeStart)
                 status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             file.save(os.path.join(app.config['FOLDER_ABSEN'], renamefile))
+            img = Image.open(os.path.join(app.config['FOLDER_ABSEN'],a))
+            resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
+            resizedimg.save(os.path.join(app.config['FOLDER_ABSEN'],a),optimize=True,quality=95)
             if status=='kamu absen terlalu cepat':
                 cur.close()
                 return jsonify({"msg":status})
@@ -303,14 +303,12 @@ def apipulang():
         bln=a.tm_mon
         hari=a.tm_mday
         tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        print(tanggal)
         timeNow = str(hr)+':'+str(mn)+':'+str(sc)
         cur.execute("SELECT * from datapulang where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
             cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
             shift = cur.fetchall()
-            print(shift)
             cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
             tglkhusus = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
@@ -328,6 +326,9 @@ def apipulang():
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
                 status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             file.save(os.path.join(app.config['FOLDER_PULANG'], renamefile))
+            img = Image.open(os.path.join(app.config['FOLDER_PULANG'],renamefile))
+            resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
+            resizedimg.save(os.path.join(app.config['FOLDER_PULANG'],renamefile),optimize=True,quality=95)
             if status=='kamu pulang terlalu cepat':
                 statusdb="terlalu cepat"
                 cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
@@ -419,5 +420,3 @@ def update_profile():
                 mysql.connection.commit()
                 cur.close()
                 return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
-                
-    
