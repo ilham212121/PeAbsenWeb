@@ -1,12 +1,12 @@
 import os
 import string
-from flask import Flask
+from flask import Flask, url_for
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
 mysql = MySQL()
-FOLDER_ABSEN = 'application/static/upload/absen/'
-FOLDER_PULANG = 'application/static/upload/pulang/'
+FOLDER_ABSEN = 'application/images/absen/'
+FOLDER_PULANG = 'application/images/pulang/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):     
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
