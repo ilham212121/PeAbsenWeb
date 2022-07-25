@@ -150,7 +150,13 @@ def laporan_absen():
 @app.route('/laporan_pulang') 
 @roles_required('admin','HRD','karu')
 def laporan_pulang():
-    return render_template('dashboard/laporan_pulang.html')
+    cur = mysql.connection.cursor()
+    cur.execute(
+        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
+        ' GROUP by tanggal desc, waktu desc')
+    datapulang = cur.fetchall()
+    return render_template('dashboard/laporan_pulang.html',datapulang=datapulang)
 @app.route('/api/login',methods=['POST'])
 def apilogindashboard():
     cur = mysql.connection.cursor()
