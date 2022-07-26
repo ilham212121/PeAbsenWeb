@@ -74,17 +74,17 @@
                                     <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karyawan') }}">
                                         Data Karyawan
                                     </a>
+                                    {% if session['role'] =='HRD' or 'admin' %}
+                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_hrd') }}">
+                                        Data Hrd
+                                    </a>
+                                    {% endif %}
                                     {% if session['role'] =='admin' %}
                                     <a id="data_admin"style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_admin') }}">
                                         Data Admin
                                     </a>
                                     {% endif %}
-                                    {% if session['role'] =='data'%}
-                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_hrd') }}">
-                                        Data Hrd
-                                    </a>
-                                    {% endif %}
-                                    {% if session['role'] =='data'%}
+                                    {% if session['role'] =='admin' or 'HRD' or 'karu'%}
                                     <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karu') }}">
                                         Data Kepala Ruangan
                                     </a>
