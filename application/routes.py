@@ -313,9 +313,9 @@ def apipulang():
         cur.execute("SELECT * from datapulang where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
-            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
+            cur.execute("SELECT jadwal.shift,shift.pulang from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
             shift = cur.fetchall()
-            cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
+            cur.execute("SELECT jadwal_khusus.shift,shift.pulang from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
             tglkhusus = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
