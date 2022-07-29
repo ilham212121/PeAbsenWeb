@@ -3,7 +3,10 @@ from flask import Blueprint, Flask, jsonify, make_response, redirect, render_tem
 from application.auth import session,roles_required
 
 web = Blueprint('auth', __name__)
-
+@web.route('/form/<init>') 
+@roles_required('admin','HRD')
+def form(init):
+    return render_template('dashboard/data_admin.html',init=init)
 @web.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
@@ -67,7 +70,16 @@ def jadwal():
 @web.route('/shift') 
 @roles_required('admin','HRD','karu')
 def shift():
-    return render_template('dashboard/shift.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM shift GROUP by berangkat ASC")
+    shift = cur.fetchall()
+    print(shift)
+    for i in shift:
+        print(i)
+        if str(shift[i][4])=="deleted":
+            del shift[i]
+    print(shift)
+    return render_template('dashboard/shift.html',shift=shift)
 @web.route('/admin/warga',methods=['GET'])
 @roles_required('admin','HRD')
 def warga():
