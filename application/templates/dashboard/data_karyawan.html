@@ -25,6 +25,7 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Email</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">No Hp</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Alamat</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Aksi</a></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,6 +40,7 @@
                                 <td>{{ row.5 }}</td>
                                 <td>{{ row.6 }}</td>
                                 <td>{{ row.7 }}</td>
+                                <td><a href="/Edit/{{row.0}} "><Button>Edit</Button></a><a href="/Delete/{{row.0}}"><Button>Hapus</Button></a></td>
                             </tr>
                                 {% else %}
                                 <tr>
