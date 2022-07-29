@@ -1,6 +1,6 @@
 import os
 import string
-from flask import Flask, url_for
+from flask import Flask, render_template, url_for
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
@@ -37,8 +37,21 @@ from application.auth import auth as auth_blueprint
 app.register_blueprint(auth_blueprint)
 
 # blueprint for non-auth parts of app
-from application.routes import routes as routes_blueprint
-app.register_blueprint(name="routes",blueprint=routes_blueprint)
-
+# bluprint for api in android users
+from application.mobile import mobile as mobile_blueprint
+app.register_blueprint(name="mobile",blueprint=mobile_blueprint)
+# blueprint for non-auth parts of app
+# blueprint for api in web users (CRUD)
+from application.web import web as web_blueprint
+app.register_blueprint(name="web",blueprint=web_blueprint)
+@app.errorhandler(404)
+def errorhandler(e):
+    return render_template('404.html')
+@app.errorhandler(401)
+def errorhandler(e):
+    return render_template('401.html')
+@app.errorhandler(500)
+def errorhandler(e):
+    return render_template('500.html')
 login_manager.init_app(app)
 mysql.init_app(app)
