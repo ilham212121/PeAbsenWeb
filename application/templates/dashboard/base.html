@@ -49,7 +49,7 @@
                     <div class="sb-sidenav-menu">
                         <div  class="nav">
 
-                            <a id="dash"class="nav-link" href="{{ url_for('dashboard') }}" style="color: #E5DBCF;">
+                            <a id="dash"class="nav-link" href="{{ url_for('routes.routedashboard') }}" style="color: #E5DBCF;">
                                 <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -61,8 +61,8 @@
                             </a>
                             <div  class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
-                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('laporan_absen') }}" style="color: #E5DBCF;">Laporan Absen</a>
-                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('laporan_pulang') }}" style="color: #E5DBCF;">Laporan Pulang</a>
+                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('routes.laporan_absen') }}" style="color: #E5DBCF;">Laporan Absen</a>
+                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('routes.laporan_pulang') }}" style="color: #E5DBCF;">Laporan Pulang</a>
                                 </nav>
                             </div>
                             <a id="data" style="color: #E5DBCF;" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -72,21 +72,21 @@
                             </a>
                             <div style="color: #E5DBCF;" class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages" style="color: #E5DBCF;">
-                                    <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karyawan') }}">
+                                    <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.data_karyawan') }}">
                                         Data Karyawan
                                     </a>
                                     {% if session['role'] =='HRD' or 'admin' %}
-                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_hrd') }}">
+                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.data_hrd') }}">
                                         Data Hrd
                                     </a>
                                     {% endif %}
                                     {% if session['role'] =='admin' %}
-                                    <a id="data_admin"style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_admin') }}">
+                                    <a id="data_admin"style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.data_admin') }}">
                                         Data Admin
                                     </a>
                                     {% endif %}
                                     {% if session['role'] =='admin' or 'HRD' or 'karu'%}
-                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('data_karu') }}">
+                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.data_karu') }}">
                                         Data Kepala Ruangan
                                     </a>
                                     {% endif %}
@@ -100,16 +100,16 @@
                             </a>
                             <div  class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
-                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
-                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('shift') }}" style="color: #E5DBCF;">shift</a>
+                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('routes.jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
+                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('routes.shift') }}" style="color: #E5DBCF;">shift</a>
                                 </nav>
                             </div>
                             <div class="sb-sidenav-menu-heading" style="color: #E5DBCF;">Cetak</div>
-                            <a id="cetak_laporan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('cetak_laporan') }}">
+                            <a id="cetak_laporan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.cetak_laporan') }}">
                                 <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Cetak Laporan
                             </a>
-                            <a id="cetak_data" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('cetak_data') }}">
+                            <a id="cetak_data" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('routes.cetak_data') }}">
                                 <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Cetak Data
                             </a>
