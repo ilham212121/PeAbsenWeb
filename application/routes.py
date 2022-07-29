@@ -19,6 +19,9 @@ from PIL import Image
 from flask_login import login_user, logout_user, login_required,current_user
 from flask import send_from_directory
 
+
+auth = Blueprint('auth', __name__)
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -123,6 +126,58 @@ def data_hrd():
     cur.execute("SELECT * FROM hrd")
     hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
+
+@main.route('/admin/warga',methods=['GET'])
+@login_required
+def warga():
+    warga = mysql.connection.cursor()
+    warga.execute("SELECT * FROM data_warga")
+    data_warga = warga.fetchall()
+    warga.close()
+    return render_template('admin/data_warga.html',data_warga=data_warga)
+@main.route('/deletehrd/<id>')
+@login_required
+def deletehrd(id):
+    try:
+        if request.method == 'GET':
+            warga = mysql.connection.cursor()
+            warga.execute("DELETE FROM hrd where id = "+id)
+            mysql.connection.commit()
+    except Exception as e:
+        return make_response(e)
+    return redirect(url_for('main.warga'))
+@main.route('/formupdatehrd/<id>', methods=['GET'])
+@login_required
+def formupdatehrd(id):
+    warga = mysql.connection.cursor()
+    warga.execute("SELECT * FROM hrd where id ="+id)
+    data_warga = warga.fetchall()
+    warga.close()
+    print(data_warga)
+    return render_template('admin/edit_warga.html',data_warga=data_warga)
+@main.route('/updateuser/<id>',methods=['POST'])
+@login_required
+def updateuser(id):
+    warga = mysql.connection.cursor()
+    nama = request.form['nama']
+    alamat = request.form['alamat']
+    kontak = request.form['kontak']
+    password = request.form['password']
+    email = request.form['email']
+    warga.execute("UPDATE data_warga SET id = "+id+",nama ='"+ nama+"',no_rumah = '" +alamat+"',kontak='"+ kontak+"',password = '"+password+"',email = '"+email+"' WHERE  id ="+id)
+    mysql.connection.commit()
+    data_warga = warga.fetchall()
+    return redirect(url_for('main.warga',data_warga=data_warga))
+@main.route('/addhrd/<id>',methods=['POST'])
+def atributuser(id):
+    warga = mysql.connection.cursor()
+    user = request.form['user']
+    berat = request.form['berat(KG)']
+    gram = "gram"
+    warga.execute("INSERT INTO hrd (jenis,user,berat,satuan) values (%s,%s,%s,%s)",(jenis,user,berat,gram,))
+    mysql.connection.commit()
+    return "Hasil Scan Telah Disimpan"
+    
 @app.route('/data_karu') 
 @roles_required('admin','HRD','karu')
 def data_karu():
@@ -426,3 +481,45 @@ def update_profile():
                 mysql.connection.commit()
                 cur.close()
                 return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
+
+@main.route('/admin/warga',methods=['GET'])
+@login_required
+def warga():
+    warga = mysql.connection.cursor()
+    warga.execute("SELECT * FROM data_warga")
+    data_warga = warga.fetchall()
+    warga.close()
+    return render_template('admin/data_warga.html',data_warga=data_warga)
+@main.route('/deleteuser/<id>')
+@login_required
+def deleteuser(id):
+    try:
+        if request.method == 'GET':
+            warga = mysql.connection.cursor()
+            warga.execute("DELETE FROM data_warga where id = "+id)
+            mysql.connection.commit()
+    except Exception as e:
+        return make_response(e)
+    return redirect(url_for('main.warga'))
+@main.route('/formupdate/<id>', methods=['GET'])
+@login_required
+def formupdate(id):
+    warga = mysql.connection.cursor()
+    warga.execute("SELECT * FROM data_warga where id ="+id)
+    data_warga = warga.fetchall()
+    warga.close()
+    print(data_warga)
+    return render_template('admin/edit_warga.html',data_warga=data_warga)
+@main.route('/updateuser/<id>',methods=['POST'])
+@login_required
+def updateuser(id):
+    warga = mysql.connection.cursor()
+    nama = request.form['nama']
+    alamat = request.form['alamat']
+    kontak = request.form['kontak']
+    password = request.form['password']
+    email = request.form['email']
+    warga.execute("UPDATE data_warga SET id = "+id+",nama ='"+ nama+"',no_rumah = '" +alamat+"',kontak='"+ kontak+"',password = '"+password+"',email = '"+email+"' WHERE  id ="+id)
+    mysql.connection.commit()
+    data_warga = warga.fetchall()
+    return redirect(url_for('main.warga',data_warga=data_warga))
