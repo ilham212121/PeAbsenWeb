@@ -8,7 +8,8 @@ from sqlalchemy import case
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import Flask, jsonify, make_response, redirect, render_template, request, session, url_for
+from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, session, url_for,send_from_directory
+
 import time
 import datetime
 from skimage import io, color, filters, util ,morphology
@@ -17,15 +18,8 @@ from datetime import datetime
 from functools import wraps
 from PIL import Image 
 from flask_login import login_user, logout_user, login_required,current_user
-from flask import send_from_directory
 
-
-auth = Blueprint('auth', __name__)
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+routes = Blueprint('auth', __name__)
 
 def isNowTanggal(startTgl, endTgl, nowTgl):
     if startTgl < endTgl:
@@ -77,7 +71,7 @@ def roles_required(*role_names):
                 return redirect(url_for('index'))
         return decorated_route
     return decorator
-@app.route('/') 
+@routes.route('/') 
 def index():
     if 'loggedin' in session:
         # User is loggedin show them the home page
@@ -90,109 +84,45 @@ def index():
             return render_template('dashboard/index.html', username=session['username'])
     else:
         return render_template('index.html')
-@app.errorhandler(404)
+@routes.errorhandler(404)
 def errorhandler(e):
     return render_template('404.html')
-@app.errorhandler(401)
+@routes.errorhandler(401)
 def errorhandler(e):
     return render_template('401.html')
-@app.errorhandler(500)
+@routes.errorhandler(500)
 def errorhandler(e):
     return render_template('500.html')
-@app.route('/dashboard') 
-def dashboard():
-    if 'loggedin' in session:
-        # User is loggedin show them the home page
-        role_names=['admin','HRD','karu']
-        if not session['role'] in role_names:
-            print('The user does not have this role.')
-            return redirect(url_for('index'))
-        else:
-            print('The user is in this role.')
-            return render_template('dashboard/index.html', username=session['username'])
-    else:
-        return redirect(url_for('index'))
-@app.route('/data_admin') 
+@routes.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM admin")
     admin = cur.fetchall()
     return render_template('dashboard/data_admin.html',admin=admin)
-@app.route('/data_hrd')
+@routes.route('/data_hrd')
 @roles_required('admin','HRD')
 def data_hrd():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM hrd")
     hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
-
-@main.route('/admin/warga',methods=['GET'])
-@login_required
-def warga():
-    warga = mysql.connection.cursor()
-    warga.execute("SELECT * FROM data_warga")
-    data_warga = warga.fetchall()
-    warga.close()
-    return render_template('admin/data_warga.html',data_warga=data_warga)
-@main.route('/deletehrd/<id>')
-@login_required
-def deletehrd(id):
-    try:
-        if request.method == 'GET':
-            warga = mysql.connection.cursor()
-            warga.execute("DELETE FROM hrd where id = "+id)
-            mysql.connection.commit()
-    except Exception as e:
-        return make_response(e)
-    return redirect(url_for('main.warga'))
-@main.route('/formupdatehrd/<id>', methods=['GET'])
-@login_required
-def formupdatehrd(id):
-    warga = mysql.connection.cursor()
-    warga.execute("SELECT * FROM hrd where id ="+id)
-    data_warga = warga.fetchall()
-    warga.close()
-    print(data_warga)
-    return render_template('admin/edit_warga.html',data_warga=data_warga)
-@main.route('/updateuser/<id>',methods=['POST'])
-@login_required
-def updateuser(id):
-    warga = mysql.connection.cursor()
-    nama = request.form['nama']
-    alamat = request.form['alamat']
-    kontak = request.form['kontak']
-    password = request.form['password']
-    email = request.form['email']
-    warga.execute("UPDATE data_warga SET id = "+id+",nama ='"+ nama+"',no_rumah = '" +alamat+"',kontak='"+ kontak+"',password = '"+password+"',email = '"+email+"' WHERE  id ="+id)
-    mysql.connection.commit()
-    data_warga = warga.fetchall()
-    return redirect(url_for('main.warga',data_warga=data_warga))
-@main.route('/addhrd/<id>',methods=['POST'])
-def atributuser(id):
-    warga = mysql.connection.cursor()
-    user = request.form['user']
-    berat = request.form['berat(KG)']
-    gram = "gram"
-    warga.execute("INSERT INTO hrd (jenis,user,berat,satuan) values (%s,%s,%s,%s)",(jenis,user,berat,gram,))
-    mysql.connection.commit()
-    return "Hasil Scan Telah Disimpan"
     
-@app.route('/data_karu') 
+@routes.route('/data_karu') 
 @roles_required('admin','HRD','karu')
 def data_karu():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM karu")
     karu = cur.fetchall()
     return render_template('dashboard/data_karu.html',karu=karu)
-@app.route('/data_karyawan') 
+@routes.route('/data_karyawan') 
 @roles_required('admin','HRD','karu')
 def data_karyawan():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM karyawan")
     karyawan = cur.fetchall()
     return render_template('dashboard/data_karyawan.html',karyawan=karyawan)
-@app.route('/laporan_absen') 
+@routes.route('/laporan_absen') 
 @roles_required('admin','HRD','karu')
 def laporan_absen():
     cur = mysql.connection.cursor()
@@ -202,7 +132,7 @@ def laporan_absen():
         ' GROUP by tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
-@app.route('/laporan_pulang') 
+@routes.route('/laporan_pulang') 
 @roles_required('admin','HRD','karu')
 def laporan_pulang():
     cur = mysql.connection.cursor()
@@ -212,7 +142,7 @@ def laporan_pulang():
         ' GROUP by tanggal desc, waktu desc')
     datapulang = cur.fetchall()
     return render_template('dashboard/laporan_pulang.html',datapulang=datapulang)
-@app.route('/api/login',methods=['POST'])
+@routes.route('/api/login',methods=['POST'])
 def apilogindashboard():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -243,7 +173,7 @@ def apilogindashboard():
         session['username'] = datalogin[0][2]
         cur.close()
         return redirect(url_for('dashboard'))
-@app.route('/api/login/karyawan',methods=['POST'])
+@routes.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -263,7 +193,7 @@ def apilogin():
         datalogin = cur.fetchall()
         cur.close()
         return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
-@app.route('/logout')
+@routes.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():
     session.pop('loggedin', None)
@@ -272,7 +202,7 @@ def logout():
     session.pop('username', None)
     # Redirect to login page
     return redirect(url_for('index'))
-@app.route('/apiabsen',methods=['POST'])
+@routes.route('/apiabsen',methods=['POST'])
 def apiabsen():
     cur = mysql.connection.cursor()
     if 'image' not in request.files:
@@ -340,7 +270,7 @@ def apiabsen():
     else:
         cur.close()
         return "foto yang anda kirim invalid"
-@app.route('/apipulang',methods=['POST'])
+@routes.route('/apipulang',methods=['POST'])
 def apipulang():
     cur = mysql.connection.cursor()
     if 'image' not in request.files:
@@ -413,7 +343,7 @@ def apipulang():
     else:
         cur.close()
         return jsonify({"msg":"foto yang anda kirim invalid"})
-@app.route('/api/karyawan/history/absen', methods=['POST'])
+@routes.route('/api/karyawan/history/absen', methods=['POST'])
 def history_absen():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -426,7 +356,7 @@ def history_absen():
         
         respon.append(dictlogs)
     return jsonify({"data":respon,"msg":'get history sukses'})
-@app.route('/api/karyawan/history/pulang', methods=['POST'])
+@routes.route('/api/karyawan/history/pulang', methods=['POST'])
 def history_pulang():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -439,15 +369,15 @@ def history_pulang():
         
         respon.append(dictlogs)
     return jsonify({"data":respon,"msg":'get history sukses'})
-@app.route('/cetak_laporan') 
+@routes.route('/cetak_laporan') 
 @roles_required('admin','HRD','karu')
 def cetak_laporan():
     return render_template('dashboard/charts.html')
-@app.route('/cetak_data') 
+@routes.route('/cetak_data') 
 @roles_required('admin','HRD','karu')
 def cetak_data():
     return render_template('dashboard/tables.html')
-@app.route('/api/karyawan/update_profile', methods=['POST']) 
+@routes.route('/api/karyawan/update_profile', methods=['POST']) 
 def update_profile():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
@@ -482,16 +412,16 @@ def update_profile():
                 cur.close()
                 return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
 
-@main.route('/admin/warga',methods=['GET'])
-@login_required
+@routes.route('/admin/warga',methods=['GET'])
+@roles_required('admin','HRD')
 def warga():
     warga = mysql.connection.cursor()
     warga.execute("SELECT * FROM data_warga")
     data_warga = warga.fetchall()
     warga.close()
     return render_template('admin/data_warga.html',data_warga=data_warga)
-@main.route('/deleteuser/<id>')
-@login_required
+@routes.route('/deleteuser/<id>')
+@roles_required('admin','HRD')
 def deleteuser(id):
     try:
         if request.method == 'GET':
@@ -501,8 +431,8 @@ def deleteuser(id):
     except Exception as e:
         return make_response(e)
     return redirect(url_for('main.warga'))
-@main.route('/formupdate/<id>', methods=['GET'])
-@login_required
+@routes.route('/formupdate/<id>', methods=['GET'])
+@roles_required('admin','HRD')
 def formupdate(id):
     warga = mysql.connection.cursor()
     warga.execute("SELECT * FROM data_warga where id ="+id)
@@ -510,8 +440,8 @@ def formupdate(id):
     warga.close()
     print(data_warga)
     return render_template('admin/edit_warga.html',data_warga=data_warga)
-@main.route('/updateuser/<id>',methods=['POST'])
-@login_required
+@routes.route('/updateuser/<id>',methods=['POST'])
+@roles_required('admin','HRD')
 def updateuser(id):
     warga = mysql.connection.cursor()
     nama = request.form['nama']
