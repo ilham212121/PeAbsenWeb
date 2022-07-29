@@ -2,49 +2,44 @@
 {% block content %}
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Data Kepala Ruangan</h1>
+        <h1 class="mt-4">Jadwal</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item active">karu</li>
+            <li class="breadcrumb-item active">Jadwal</li>
         </ol>
         <div class="card mb-4">
             <div class="card-header" style="background-color: #E6B794;">
                 <i class="fas fa-table me-1"></i>
-                Data Kepala Ruangan
+                Data Jadwal
             </div>
+            <a href="/add/"><button>Tambah</button></a>
             <div class="card-body">
                 <div class="dataTable-container" >
                     <table id="datatablesSimple" class="dataTable-table">
                         <thead>
                             <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NO</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Penempatan</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Email</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Gender</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal Lahir</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">No Hp</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Alamat</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Shif</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Aksi</a></th>
                             </tr>
                         </thead>
                         <tbody>
                             
-                                {% for row in karu %}
+                                {% for row in jadwal %}
                                 <tr>
                                 <td>{{ row.0 }}</td>
                                 <td>{{ row.1 }}</td>
                                 <td>{{ row.2 }}</td>
                                 <td>{{ row.3 }}</td>
                                 <td>{{ row.4 }}</td>
-                                <td>{{ row.5 }}</td>
-                                <td>{{ row.6 }}</td>
-                                <td>{{ row.7 }}</td>
                                 <td><a href="/Edit/{{row.0}} "><Button>Edit</Button></a><a href="/Delete/{{row.0}}"><Button>Hapus</Button></a></td>
                             </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="10">Tidak Ada Data</td>
+                                    <td colspan="5">Tidak Ada Data</td>
                                 </tr>
                                 {% endfor %}
                         </tbody>

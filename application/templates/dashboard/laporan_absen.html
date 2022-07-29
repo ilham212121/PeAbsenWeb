@@ -21,6 +21,7 @@
                                 <option value="anggrek">Anggrek</option>
                                 <option value="bougenvile">Bougenvile</option>
                                 <option value="mawar">Mawar</option>
+                                <option value="IT">IT</option>
                                 <option value="semua">Semua</option>
                             </select> pilih ruangan</label>
                     </div>
@@ -283,6 +284,49 @@
                         </tbody>
                     </table>
                 </div>
+                <div id="IT" class="dataTable-container" style="display:none">
+                    <table id="datatablesSimple" class="dataTable-table">
+                        <thead>
+                            <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                {% for row in dataabsen %}
+                                {% if row.3=='iT'%}
+                                <tr>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/assets/absen/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
+                                {% endif %}
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                            </tr>
+                                {% endif %}
+                                {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
 
             </div>
         </div>
@@ -337,6 +381,13 @@
             bugenvile.style.display = "none"
             mawar.style.display = "block"
             semua.style.display = "none"
+        } else if (combo == "IT") {
+            melati.style.display = "none"
+            dahlia.style.display = "none"
+            anggrek.style.display = "none"
+            bugenvile.style.display = "none"
+            mawar.style.display = "block"
+            semua.style.display = "none"
         } else {
             melati.style.display = "none"
             dahlia.style.display = "none"
@@ -351,5 +402,7 @@
 </script>
 
 {% endblock %}
+
+
 
 
