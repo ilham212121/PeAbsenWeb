@@ -109,3 +109,7 @@ def updateuser(id):
     mysql.connection.commit()
     data_warga = warga.fetchall()
     return redirect(url_for('main.warga',data_warga=data_warga))
+@web.route('/form/')
+@roles_required('admin','HRD')
+def form():
+    return render_template ('dashboard/form.html')
