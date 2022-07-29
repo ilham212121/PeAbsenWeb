@@ -5,8 +5,8 @@ from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
 mysql = MySQL()
-FOLDER_ABSEN = 'application/images/absen/'
-FOLDER_PULANG = 'application/images/pulang/'
+FOLDER_ABSEN = 'application/static/assets/absen/'
+FOLDER_PULANG = 'application/static/assets/pulang/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):     
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -35,4 +35,9 @@ def load_user(user_id):
         datalogin = data.fetchall()
         return datalogin.query.get(int(user_id))
 mysql.init_app(app)
-from application import routes
+from application.auth import auth as auth_blueprint
+app.register_blueprint(auth_blueprint)
+
+# blueprint for non-auth parts of app
+from application.routes import main as main_blueprint
+app.register_blueprint(main_blueprint)
