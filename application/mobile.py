@@ -1,11 +1,11 @@
 import os
 from time import time
+import time
+import datetime
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask import Blueprint, jsonify,request
-import time
-import datetime
 from datetime import datetime
 from PIL import Image 
 
@@ -166,7 +166,7 @@ def history_absen():
     cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
     datahistory= cur.fetchall()
     respon=[]
-    for i in enumerate(datahistory):
+    for i in range(len(datahistory)):
         dictlogs={}
         dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
         respon.append(dictlogs)
@@ -178,7 +178,7 @@ def history_pulang():
     cur.execute('SELECT * FROM datapulang WHERE nip = %s GROUP BY tanggal DESC',(nip,))
     datahistory= cur.fetchall()
     respon=[]
-    for i in enumerate(datahistory):
+    for i in range(len(datahistory)):
         dictlogs={}
         dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
         respon.append(dictlogs)
