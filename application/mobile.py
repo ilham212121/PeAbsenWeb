@@ -3,13 +3,11 @@ from time import time
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
-from application.auth import session,roles_required
+from flask import Blueprint, jsonify,request
 import time
 import datetime
 from datetime import datetime
 from PIL import Image 
-from flask_login import login_user, logout_user, login_required,current_user
 
 mobile = Blueprint('auth', __name__)
 def isNowInTimePeriod(startTime, endTime, nowTime):
@@ -41,40 +39,32 @@ def apiabsen():
     if 'image' not in request.files:
         cur.close()
         return jsonify({"msg":"tidak ada form image"})
-    file = request.files['image']
-    nip=request.form['nip']
-    latitude=request.form['latitude']
-    longitude= request.form['longitude']
+    file = request.files['image'],nip=request.form['nip']
+    latitude=request.form['latitude'],longitude= request.form['longitude']
     if file.filename == '':
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         a=time.localtime()
-        hr=a.tm_hour
-        mn=a.tm_min
-        sc=a.tm_sec
-        thn=a.tm_year
-        bln=a.tm_mon
-        hari=a.tm_mday
-        tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        timeNow = str(hr)+':'+str(mn)+':'+str(sc)
+        tanggal=""+str(a.tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
+        timeNow = str(a.tm_hour)+':'+str(a.tm_min)+':'+str(a.tm_sec)
         cur.execute("SELECT * from dataabsen where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
-            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
-            shift = cur.fetchall()
-            cur.execute("SELECT jadwal_khusus.shift,shift.berangkat from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
-            tglkhusus = cur.fetchall()
+            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
+            jadwal = cur.fetchall()
+            cur.execute("SELECT tukar_dinas.shift,shift.berangkat from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
+            tuker_dinas = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
-            if str(tglkhusus)=='()':
-                timeEnd = datetime.strptime(str(shift[0][1]), "%H:%M:%S")
+            if str(tuker_dinas)=='()':
+                timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
                 status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             else:
-                timeEnd = datetime.strptime(str(tglkhusus[0][1]), "%H:%M:%S")
+                timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
@@ -113,38 +103,31 @@ def apipulang():
     nip=request.form['nip']
     latitude=request.form['latitude']
     longitude= request.form['longitude']
-    
     if file.filename == '':
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         a=time.localtime()
-        hr=a.tm_hour
-        mn=a.tm_min
-        sc=a.tm_sec
-        thn=a.tm_year
-        bln=a.tm_mon
-        hari=a.tm_mday
-        tanggal=""+str(thn)+"-"+str(bln)+"-"+str(hari)+""
-        timeNow = str(hr)+':'+str(mn)+':'+str(sc)
+        tanggal=""+str(a.tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
+        timeNow = str(a.tm_hour)+':'+str(a.tm_min)+':'+str(a.tm_sec)
         cur.execute("SELECT * from datapulang where nip = %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
-            cur.execute("SELECT jadwal.shift,shift.pulang from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(bln)))
-            shift = cur.fetchall()
-            cur.execute("SELECT jadwal_khusus.shift,shift.pulang from jadwal_khusus INNER JOIN shift ON jadwal_khusus.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
-            tglkhusus = cur.fetchall()
+            cur.execute("SELECT jadwal.shift,shift.pulang from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
+            jadwal = cur.fetchall()
+            cur.execute("SELECT tukar_dinas.shift,shift.pulang from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
+            tuker_dinas = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
-            if str(tglkhusus)=='()':
-                timeEnd = datetime.strptime(str(shift[0][1]), "%H:%M:%S")
+            if str(tuker_dinas)=='()':
+                timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
                 status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             else:
-                timeEnd = datetime.strptime(str(tglkhusus[0][1]), "%H:%M:%S")
+                timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
                 a=datetime.strptime("00:30:00", "%H:%M:%S")
                 b= timeEnd-a
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
@@ -183,7 +166,7 @@ def history_absen():
     cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
     datahistory= cur.fetchall()
     respon=[]
-    for i,j in enumerate(datahistory):
+    for i in enumerate(datahistory):
         dictlogs={}
         dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
         respon.append(dictlogs)
@@ -195,7 +178,7 @@ def history_pulang():
     cur.execute('SELECT * FROM datapulang WHERE nip = %s GROUP BY tanggal DESC',(nip,))
     datahistory= cur.fetchall()
     respon=[]
-    for i,j in enumerate(datahistory):
+    for i in enumerate(datahistory):
         dictlogs={}
         dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
         respon.append(dictlogs)
@@ -204,12 +187,8 @@ def history_pulang():
 @mobile.route('/api/karyawan/update_profile', methods=['POST']) 
 def update_profile():
     cur = mysql.connection.cursor()
-    nip = request.form['nip']
-    old_pswd = request.form['old_pswd']
-    new_pswd = request.form['new_pswd']
-    email = request.form['email']
-    no_hp = request.form['no_hp']
-    alamat = request.form['alamat']
+    nip = request.form['nip'],old_pswd = request.form['old_pswd'],new_pswd = request.form['new_pswd']
+    email = request.form['email'],no_hp = request.form['no_hp'],alamat = request.form['alamat']
     if old_pswd == '':
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         new_data = cur.fetchall()
