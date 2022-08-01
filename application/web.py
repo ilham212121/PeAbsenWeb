@@ -1,3 +1,4 @@
+from ast import Tuple
 from application import app,mysql,allowed_file
 from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
 from application.auth import session,roles_required
@@ -73,13 +74,12 @@ def shift():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM shift GROUP by berangkat ASC")
     shift = cur.fetchall()
-    print(shift)
-    for i in shift:
-        print(i)
-        if str(shift[i][4])=="deleted":
-            del shift[i]
-    print(shift)
-    return render_template('dashboard/shift.html',shift=shift)
+    listx = list(shift) 
+    for i in range(len(listx)):
+        if listx[i][5]=="deleted":
+            listx.remove(listx[i]) 
+    shiftt = tuple(listx)
+    return render_template('dashboard/shift.html',shift=shiftt)
 @web.route('/admin/warga',methods=['GET'])
 @roles_required('admin','HRD')
 def warga():
