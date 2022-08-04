@@ -15,6 +15,8 @@
 	<link rel="icon" href="../static/assets/icons/favicon.ico"/>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../../static/css/dashboard.css" rel="stylesheet" />
+        
+
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -93,12 +95,12 @@
                                    
                                 </nav>
                             </div>
-                            <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseJadwal" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns" style="color: #E5DBCF;"></i></div>
                                 Jadwal
                                 <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div  class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <div  class="collapse" id="collapseJadwal" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
                                     <a id="laporan_absen" class="nav-link" href="{{ url_for('web.jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
                                     <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">shift</a>
@@ -145,5 +147,6 @@
         <script src="../../static/assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="../../static/js/datatables-simple-demo.js"></script>
+        
     </body>
 </html>

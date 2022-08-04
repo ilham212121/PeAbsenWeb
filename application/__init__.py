@@ -1,6 +1,6 @@
 import os
 import string
-from flask import Flask, render_template, url_for
+from flask import Flask, jsonify, render_template, url_for
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
@@ -52,6 +52,6 @@ def errorhandler(e):
     return render_template('401.html')
 @app.errorhandler(500)
 def errorhandler(e):
-    return render_template('500.html')
+    return jsonify({"msg":e})
 login_manager.init_app(app)
 mysql.init_app(app)

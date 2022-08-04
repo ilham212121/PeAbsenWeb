@@ -14,7 +14,8 @@ def isNowInTimePeriod(startTime, endTime, nowTime):
     if startTime < endTime:
         if nowTime < startTime:
             wait=startTime-nowTime
-            return "kamu absen terlalu cepat silahkan tunggu "+wait+" lagi"
+            print(str(wait))
+            return "kamu absen terlalu cepat silahkan tunggu "+str(wait)+" lagi"
         if nowTime > endTime:
             return "kamu terlambat"
         if nowTime >= startTime and nowTime <= endTime:
@@ -39,8 +40,10 @@ def apiabsen():
     if 'image' not in request.files:
         cur.close()
         return jsonify({"msg":"tidak ada form image"})
-    file = request.files['image'],nip=request.form['nip']
-    latitude=request.form['latitude'],longitude= request.form['longitude']
+    file = request.files['image']
+    nip=request.form['nip']
+    latitude=request.form['latitude']
+    longitude= request.form['longitude']
     if file.filename == '':
         cur.close()
         return jsonify({"msg":"tidak ada file image yang dipilih"})
@@ -55,24 +58,21 @@ def apiabsen():
             jadwal = cur.fetchall()
             cur.execute("SELECT tukar_dinas.shift,shift.berangkat from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
             tuker_dinas = cur.fetchall()
-            renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
+            renamefile= secure_filename(str(tanggal)+"-"+str(nip)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
             if str(tuker_dinas)=='()':
                 timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
-                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                a=datetime.strptime("00:30:00","%H:%M:%S")
                 b= timeEnd-a
                 timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+                status=isNowInTimePeriod(timeStart,timeEnd,timeNow)
             else:
                 timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
-                a=datetime.strptime("00:30:00", "%H:%M:%S")
+                a=datetime.strptime("00:30:00","%H:%M:%S")
                 b= timeEnd-a
-                timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
-            file.save(os.path.join(app.config['FOLDER_ABSEN'], renamefile))
-            img = Image.open(os.path.join(app.config['FOLDER_ABSEN'],a))
-            resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
-            resizedimg.save(os.path.join(app.config['FOLDER_ABSEN'],a),optimize=True,quality=95)
+                timeStart = datetime.strptime(str(b),"%H:%M:%S")
+                status=isNowInTimePeriod(timeStart,timeEnd,timeNow)
+            file.save(os.path.join(app.config['FOLDER_ABSEN'], str(renamefile)))
             if status=='kamu absen terlalu cepat':
                 cur.close()
                 return jsonify({"msg":status})
@@ -92,7 +92,7 @@ def apiabsen():
             return jsonify({"msg":"maaf kamu sudah absen"})
     else:
         cur.close()
-        return "foto yang anda kirim invalid"
+        return jsonify({"foto yang anda kirim invalid"})
 @mobile.route('/apipulang',methods=['POST'])
 def apipulang():
     cur = mysql.connection.cursor()
@@ -118,24 +118,27 @@ def apipulang():
             jadwal = cur.fetchall()
             cur.execute("SELECT tukar_dinas.shift,shift.pulang from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
             tuker_dinas = cur.fetchall()
-            renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
+            renamefile= secure_filename(str(tanggal)+"-"+str(nip)+"-"+str(a.tm_hour)+'-'+str(a.tm_min)+'-'+str(a.tm_sec)+".jpg")
             timeNow = datetime.strptime(timeNow, "%H:%M:%S")
             if str(tuker_dinas)=='()':
-                timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
-                a=datetime.strptime("00:30:00", "%H:%M:%S")
-                b= timeEnd-a
-                timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+                if str(jadwal)=='()':
+                    return jsonify({"msg":"maaf jadwal belum ada"})
+                else:
+                    timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
+                    a=datetime.strptime("00:30:00", "%H:%M:%S")
+                    b= timeEnd-a
+                    timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                    status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
             else:
-                timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
-                a=datetime.strptime("00:30:00", "%H:%M:%S")
-                b= timeEnd-a
-                timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
-            file.save(os.path.join(app.config['FOLDER_PULANG'], renamefile))
-            img = Image.open(os.path.join(app.config['FOLDER_PULANG'],renamefile))
-            resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
-            resizedimg.save(os.path.join(app.config['FOLDER_PULANG'],renamefile),optimize=True,quality=95)
+                if str(jadwal)=='()':
+                    return jsonify({"msg":"maaf jadwal belum ada"})
+                else:
+                    timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
+                    a=datetime.strptime("00:30:00", "%H:%M:%S")
+                    b= timeEnd-a
+                    timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                    status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+            file.save(os.path.join(app.config['FOLDER_PULANG'],renamefile))
             if status=='kamu pulang terlalu cepat':
                 statusdb="terlalu cepat"
                 cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
@@ -187,8 +190,12 @@ def history_pulang():
 @mobile.route('/api/karyawan/update_profile', methods=['POST']) 
 def update_profile():
     cur = mysql.connection.cursor()
-    nip = request.form['nip'],old_pswd = request.form['old_pswd'],new_pswd = request.form['new_pswd']
-    email = request.form['email'],no_hp = request.form['no_hp'],alamat = request.form['alamat']
+    nip = request.form['nip']
+    old_pswd = request.form['old_pswd'] 
+    new_pswd = request.form['new_pswd']
+    email = request.form['email']
+    no_hp = request.form['no_hp']
+    alamat = request.form['alamat']
     if old_pswd == '':
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         new_data = cur.fetchall()

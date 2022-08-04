@@ -5,9 +5,37 @@ from application.auth import session,roles_required
 
 web = Blueprint('auth', __name__)
 @web.route('/form/<init>') 
-@roles_required('admin','HRD')
+@roles_required('admin','HRD','karu')
 def form(init):
-    return render_template('dashboard/data_admin.html',init=init)
+    return render_template('dashboard/form.html',init=init)
+@web.route('/Editform/<init>/<no>') 
+@roles_required('admin','HRD','karu')
+def editform(init,no):
+    cur = mysql.connection.cursor()
+    if init=='admin':
+        cur.execute("SELECT * FROM admin where nip= %s",(no,))
+        admin = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin=admin,hrd="",karyawan="",karu="",jadwal="",shift="")
+    if init=='hrd':
+        cur.execute("SELECT * FROM hrd where nip= %s",(no,))
+        hrd = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd=hrd,karyawan="",karu="",jadwal="",shift="")
+    if init=='karyawan':
+        cur.execute("SELECT * FROM karyawan where nip= %s",(no,))
+        karyawan = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan=karyawan,karu="",jadwal="",shift="")
+    if init=='karu':
+        cur.execute("SELECT * FROM karu where nip= %s",(no,))
+        karu = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu=karu,jadwal="",shift="")
+    if init=='jadwal':
+        cur.execute("SELECT * FROM jadwal where id= %s",(no,))
+        jadwal = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal=jadwal,shift="")
+    if init=='shift':
+        cur.execute("SELECT * FROM shift where id= %s",(no,))
+        shift = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal="",shift=shift)
 @web.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
@@ -22,7 +50,7 @@ def data_hrd():
     cur.execute("SELECT * FROM hrd")
     hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
-@web.route('/data_karu') 
+@web.route('/data_karu')
 @roles_required('admin','HRD','karu')
 def data_karu():
     cur = mysql.connection.cursor()
@@ -41,7 +69,7 @@ def data_karyawan():
 def laporan_absen():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, dataabsen.status'
         ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
@@ -51,7 +79,7 @@ def laporan_absen():
 def laporan_pulang():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, datapulang.status'
         ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     datapulang = cur.fetchall()
