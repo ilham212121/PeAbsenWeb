@@ -1,15 +1,28 @@
 from functools import wraps
+from time import time
+import time
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, render_template, redirect, session, url_for,request,flash, jsonify
 auth = Blueprint('auth', __name__)
 
+a=time.localtime()
+tanggal=""+str(a.tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
 def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
         def decorated_route(*args, **kwargs):
             if 'loggedin' in session:
             # User is loggedin show them the home page
+                print(session['time'])
+                print(tanggal)
+                if session['time'] != tanggal:
+                    print('session expired')
+                    session.pop('loggedin', None)
+                    session.pop('id', None)
+                    session.pop('role', None)
+                    session.pop('username', None)
+                    return redirect(url_for('auth.index'))
                 if not session['role'] in role_names:
                     print('The user does not have this role.')
                     return redirect(url_for('auth.index'))
@@ -19,7 +32,7 @@ def roles_required(*role_names):
             else:
                 return redirect(url_for('auth.index'))
         return decorated_route
-    return decorator
+    return decorator 
 
 @auth.route('/') 
 def index():
@@ -76,12 +89,14 @@ def apilogindashboard():
         session['id'] = datalogin[0]
         session['role'] = datalogin[1]
         session['username'] = datalogin[2]
+        session['time'] = tanggal
         cur.close()
         return redirect(url_for('auth.dashboard'))
 @auth.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
     cur = mysql.connection.cursor()
     nip = request.form['nip']
+    refresh_token=""
     password = request.form['password']
     cur.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
     datalogin= cur.fetchall()

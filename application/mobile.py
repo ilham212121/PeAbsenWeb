@@ -5,7 +5,7 @@ import datetime
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import Blueprint, jsonify, redirect,request, url_for
+from flask import Blueprint, jsonify, make_response, redirect,request, url_for
 from datetime import datetime
 from PIL import Image 
 from flask_cors import CORS
@@ -173,12 +173,12 @@ class history_absen(Resource):
         return jsonify({"data":respon,"msg":'get history sukses'})
 
 class history_absenold(Resource):
-    def post():
-        return redirect(url_for(history_absen))
+    def get():
+        return make_response(redirect(url_for(history_absen)))
 
 class history_pulangold(Resource):
-    def post():
-        return redirect(url_for(history_pulang))
+    def get():
+        return make_response(redirect(url_for(history_pulang)))
 
 class history_pulang(Resource):
     def get(nip):

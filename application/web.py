@@ -116,26 +116,17 @@ def warga():
     data_warga = warga.fetchall()
     warga.close()
     return render_template('admin/data_warga.html',data_warga=data_warga)
-@web.route('/deleteuser/<id>')
+@web.route('/deleteuser/<id>',methods=['DELETE'])
 @roles_required('admin','HRD')
 def deleteuser(id):
     try:
-        if request.method == 'GET':
+        if request.method == 'DELETE':
             warga = mysql.connection.cursor()
             warga.execute("DELETE FROM data_warga where id = "+id)
             mysql.connection.commit()
     except Exception as e:
         return make_response(e)
-    return redirect(url_for('main.warga'))
-@web.route('/formupdate/<id>', methods=['GET'])
-@roles_required('admin','HRD')
-def formupdate(id):
-    warga = mysql.connection.cursor()
-    warga.execute("SELECT * FROM data_warga where id ="+id)
-    data_warga = warga.fetchall()
-    warga.close()
-    print(data_warga)
-    return render_template('admin/edit_warga.html',data_warga=data_warga)
+    return redirect(url_for('auth.index'))
 @web.route('/updateuser/<id>',methods=['POST'])
 @roles_required('admin','HRD')
 def updateuser(id):
