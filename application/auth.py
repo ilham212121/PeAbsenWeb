@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, redirect, session, url_for,request
 auth = Blueprint('auth', __name__)
 
 a=time.localtime()
-tanggal=""+str(a.tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
+tanggal=""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
 def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
@@ -15,18 +15,20 @@ def roles_required(*role_names):
             if 'loggedin' in session:
             # User is loggedin show them the home page
                 print(session['time'])
-                print(tanggal)
-                if session['time'] != tanggal:
+                if session['time'] != ""+str(time.gmtime().tm_year)+"-"+str(time.localtime().tm_mon)+"-"+str(time.localtime().tm_mday)+"":
                     print('session expired')
                     session.pop('loggedin', None)
                     session.pop('id', None)
                     session.pop('role', None)
                     session.pop('username', None)
+                    session.pop('time', None)
                     return redirect(url_for('auth.index'))
                 if not session['role'] in role_names:
                     print('The user does not have this role.')
                     return redirect(url_for('auth.index'))
                 else:
+                    print(session['time'])
+                    print(""+str(time.localtime().tm_year)+"-"+str(time.localtime().tm_mon)+"-"+str(time.localtime().tm_mday)+"")
                     print('The user is in this role.')
                     return original_route(*args, **kwargs)
             else:

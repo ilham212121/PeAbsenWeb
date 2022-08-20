@@ -161,8 +161,9 @@ class apipulang(Resource):
             return jsonify({"msg":"foto yang anda kirim invalid"})
 
 class history_absen(Resource):
-    def get(nip):
+    def get():
         cur = mysql.connection.cursor()
+        nip='220712001'
         cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
         datahistory= cur.fetchall()
         respon=[]
@@ -225,10 +226,10 @@ class update_profile(Resource):
                     mysql.connection.commit()
                     return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
 
-api.add_resource(history_absenold, '/api/karyawan/history/pulang', methods=['GET'])
-api.add_resource(history_pulangold, '/api/karyawan/history/absen', methods=['GET'])
+api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['GET'])
+api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['GET'])
 api.add_resource(apiabsen, '/api/v1/events/absen', methods=['POST'])
 api.add_resource(apipulang, '/api/v1/events/pulang', methods=['POST'])
-api.add_resource(history_absen, '/api/v1/karyawan/history/absen/<nip>', methods=['GET'])
+api.add_resource(history_absen, '/api/v1/karyawan/history/absen', methods=['GET'])
 api.add_resource(history_pulang, '/api/v1/karyawan/history/pulang/<nip>', methods=['GET'])
 api.add_resource(update_profile, '/api/v1/karyawan/update_profile', methods=['PUT'])
