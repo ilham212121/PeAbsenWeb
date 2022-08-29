@@ -140,3 +140,15 @@ def updateuser(id):
     mysql.connection.commit()
     data_warga = warga.fetchall()
     return redirect(url_for('main.warga',data_warga=data_warga))
+@web.route('/coba')
+def coba():
+    cur = mysql.connection.cursor()
+    nip='220712001'
+    cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
+    datahistory= cur.fetchall()
+    respon=[]
+    for i in range(len(datahistory)):
+        dictlogs={}
+        dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
+        respon.append(dictlogs)
+    return jsonify({"data":respon,"msg":'get history sukses'})

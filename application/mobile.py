@@ -38,7 +38,7 @@ def isNowpulang(startTime, endTime, nowTime):
     else: 
         return nowTime >= startTime or nowTime <= endTime
 class apiabsen(Resource):
-    def post():
+    def post(self):
         cur = mysql.connection.cursor()
         if 'image' not in request.files:
             return jsonify({"msg":"tidak ada form image"})
@@ -94,7 +94,7 @@ class apiabsen(Resource):
         else:
             return jsonify({"foto yang anda kirim invalid"})
 class apipulang(Resource):
-    def apipulang():
+    def post(self):
         cur = mysql.connection.cursor()
         if 'image' not in request.files:
             return jsonify({"msg":"tidak ada form image"})
@@ -161,9 +161,8 @@ class apipulang(Resource):
             return jsonify({"msg":"foto yang anda kirim invalid"})
 
 class history_absen(Resource):
-    def get():
+    def get(self,nip):
         cur = mysql.connection.cursor()
-        nip='220712001'
         cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
         datahistory= cur.fetchall()
         respon=[]
@@ -171,20 +170,19 @@ class history_absen(Resource):
             dictlogs={}
             dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
             respon.append(dictlogs)
-        return jsonify({"data":respon,"msg":'get history sukses'})
+        return make_response(jsonify({"data":respon,"msg":'get history sukses'}))
 
 class history_absenold(Resource):
-    def get():
+    def get(self):
         return make_response(redirect(url_for(history_absen)))
 
 class history_pulangold(Resource):
-    def get():
+    def get(self):
         return make_response(redirect(url_for(history_pulang)))
 
 class history_pulang(Resource):
-    def get(nip):
+    def get(self,nip):
         cur = mysql.connection.cursor()
-        nip = request.form['nip']
         cur.execute('SELECT * FROM datapulang WHERE nip = %s GROUP BY tanggal DESC',(nip,))
         datahistory= cur.fetchall()
         respon=[]
@@ -195,7 +193,7 @@ class history_pulang(Resource):
         return jsonify({"data":respon,"msg":'get history sukses'})
 
 class update_profile(Resource):
-    def put():
+    def put(self):
         cur = mysql.connection.cursor()
         nip = request.form['nip']
         old_pswd = request.form['old_pswd'] 
@@ -230,6 +228,6 @@ api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['GET'
 api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['GET'])
 api.add_resource(apiabsen, '/api/v1/events/absen', methods=['POST'])
 api.add_resource(apipulang, '/api/v1/events/pulang', methods=['POST'])
-api.add_resource(history_absen, '/api/v1/karyawan/history/absen', methods=['GET'])
+api.add_resource(history_absen, '/api/v1/karyawan/history/absen/<nip>', methods=['GET'])
 api.add_resource(history_pulang, '/api/v1/karyawan/history/pulang/<nip>', methods=['GET'])
 api.add_resource(update_profile, '/api/v1/karyawan/update_profile', methods=['PUT'])
