@@ -170,7 +170,7 @@ class history_absen(Resource):
             dictlogs={}
             dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
             respon.append(dictlogs)
-        return make_response(jsonify({"data":respon,"msg":'get history sukses'}))
+        return make_response(jsonify([{"data":respon,"msg":'get history sukses'}]))
 
 class history_absenold(Resource):
     def get(self):
@@ -190,7 +190,7 @@ class history_pulang(Resource):
             dictlogs={}
             dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
             respon.append(dictlogs)
-        return jsonify({"data":respon,"msg":'get history sukses'})
+        return jsonify([{"data":respon,"msg":'get history sukses'}])
 
 class update_profile(Resource):
     def put(self):
