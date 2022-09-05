@@ -192,6 +192,16 @@ class history_pulang(Resource):
             respon.append(dictlogs)
         return jsonify([{"data":respon,"msg":'get history sukses'}])
 
+class profile(Resource):
+    def get(self,token):
+        cur = mysql.connection.cursor()
+        print(token)
+        cur.execute("SELECT nip FROM login WHERE token = %s ",(token,))
+        nip=cur.fetchone()
+        cur.execute("SELECT * FROM karyawan WHERE nip = %s ",(nip,))
+        dataprofile= cur.fetchone()
+        return jsonify({"data":{"nip":dataprofile[0],"nama":dataprofile[1],"posisi":dataprofile[2],"gender":dataprofile[3],"ttl":str(dataprofile[4]),"email":dataprofile[5],"no_hp":dataprofile[6],"alamat":dataprofile[7]},"msg":'get profile sukses'})
+
 class update_profile(Resource):
     def put(self):
         cur = mysql.connection.cursor()
@@ -231,3 +241,4 @@ api.add_resource(apipulang, '/api/v1/events/pulang', methods=['POST'])
 api.add_resource(history_absen, '/api/v1/karyawan/history/absen/<nip>', methods=['GET'])
 api.add_resource(history_pulang, '/api/v1/karyawan/history/pulang/<nip>', methods=['GET'])
 api.add_resource(update_profile, '/api/v1/karyawan/update_profile', methods=['PUT'])
+api.add_resource(profile, '/api/v1/karyawan/profile/<token>', methods=['GET'])

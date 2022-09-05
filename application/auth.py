@@ -1,4 +1,6 @@
 from functools import wraps
+import random
+import string
 from time import time
 import time
 from application import app,mysql,allowed_file
@@ -97,10 +99,12 @@ def apilogindashboard():
 @auth.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
     cur = mysql.connection.cursor()
-    nip = request.form['nip']
-    refresh_token=""
-    password = request.form['password']
-    cur.execute("SELECT * FROM login WHERE role='karyawan'and nip = %s" , (nip,))
+    nip = request.json['nip']
+    access_token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
+    print(access_token)
+    refresh_token=access_token
+    password = request.json['password']
+    cur.execute("SELECT * FROM login WHERE role = 'karyawan'and nip = %s" , (nip,))
     datalogin= cur.fetchall()
     if str(datalogin) == '()':
         cur.close()
@@ -111,10 +115,12 @@ def apilogin():
         print("maaf password salah")
         return jsonify({"msg":"maaf password salah"})
     else:
+        cur.execute("UPDATE login SET token = %s WHERE role = 'karyawan' and nip = %s" , (refresh_token,nip))
+        mysql.connection.commit()
         cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
         datalogin = cur.fetchall()
         cur.close()
-        return jsonify({"data":[{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]}],"msg":"login berhasil"})
+        return jsonify({"data":{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]},"msg":"login berhasil","token":refresh_token}),201
 @auth.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():
