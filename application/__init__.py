@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD']  = ''
-app.config['MYSQL_DB'] = 'pe_absen'
+app.config['MYSQL_DB'] = 'e_attandance'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config.update(dict(
 SECRET_KEY="powerful secretkey",

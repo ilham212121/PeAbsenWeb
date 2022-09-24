@@ -99,10 +99,10 @@ def apilogindashboard():
 @auth.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
     cur = mysql.connection.cursor()
-    nip = request.json['nip']
+    nip = request.form['nip']
     access_token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
     refresh_token=access_token
-    password = request.json['password']
+    password = request.form['password']
     cur.execute("SELECT * FROM login WHERE role = 'karyawan'and nip = %s" , (nip,))
     datalogin= cur.fetchall()
     if str(datalogin) == '()':

@@ -173,12 +173,14 @@ class history_absen(Resource):
         return make_response(jsonify([{"data":respon,"msg":'get history sukses'}]))
 
 class history_absenold(Resource):
-    def get(self):
-        return make_response(redirect(url_for(history_absen)))
+    def post(self):
+        nip = request.form['nip']
+        return redirect("/api/v1/karyawan/history/absen/"+nip)
 
 class history_pulangold(Resource):
-    def get(self):
-        return make_response(redirect(url_for(history_pulang)))
+    def post(self):
+        nip = request.form['nip']
+        return redirect("/api/v1/karyawan/history/pulang/"+nip)
 
 class history_pulang(Resource):
     def get(self,nip):
@@ -234,8 +236,8 @@ class update_profile(Resource):
                     mysql.connection.commit()
                     return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
 
-api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['GET'])
-api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['GET'])
+api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['POST'])
+api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['POST'])
 api.add_resource(apiabsen, '/api/v1/events/absen', methods=['POST'])
 api.add_resource(apipulang, '/api/v1/events/pulang', methods=['POST'])
 api.add_resource(history_absen, '/api/v1/karyawan/history/absen/<nip>', methods=['GET'])
