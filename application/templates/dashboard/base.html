@@ -12,15 +12,17 @@
                 background-color: rgba(255, 255, 255, 0.459);
             }
         </style>
-	<link rel="icon" href="../static/assets/icons/favicon.ico"/>
+	<link rel="icon" href="../static/assets/icons/logo.png"/>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../../static/css/dashboard.css" rel="stylesheet" />
+        
+
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark" style="background-color: #56382D;">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Pengelola Absensi </a>
+            <a class="navbar-brand ps-3" href="index.html">Pengelola Absensi</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -93,12 +95,12 @@
                                    
                                 </nav>
                             </div>
-                            <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseJadwal" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns" style="color: #E5DBCF;"></i></div>
                                 Jadwal
                                 <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div  class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <div  class="collapse" id="collapseJadwal" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
                                     <a id="laporan_absen" class="nav-link" href="{{ url_for('web.jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
                                     <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">shift</a>
@@ -145,5 +147,6 @@
         <script src="../../static/assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="../../static/js/datatables-simple-demo.js"></script>
+        
     </body>
 </html>

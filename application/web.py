@@ -5,9 +5,37 @@ from application.auth import session,roles_required
 
 web = Blueprint('auth', __name__)
 @web.route('/form/<init>') 
-@roles_required('admin','HRD')
+@roles_required('admin','HRD','karu')
 def form(init):
-    return render_template('dashboard/data_admin.html',init=init)
+    return render_template('dashboard/form.html',init=init)
+@web.route('/Editform/<init>/<no>') 
+@roles_required('admin','HRD','karu')
+def editform(init,no):
+    cur = mysql.connection.cursor()
+    if init=='admin':
+        cur.execute("SELECT * FROM admin where nip= %s",(no,))
+        admin = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin=admin,hrd="",karyawan="",karu="",jadwal="",shift="")
+    if init=='hrd':
+        cur.execute("SELECT * FROM hrd where nip= %s",(no,))
+        hrd = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd=hrd,karyawan="",karu="",jadwal="",shift="")
+    if init=='karyawan':
+        cur.execute("SELECT * FROM karyawan where nip= %s",(no,))
+        karyawan = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan=karyawan,karu="",jadwal="",shift="")
+    if init=='karu':
+        cur.execute("SELECT * FROM karu where nip= %s",(no,))
+        karu = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu=karu,jadwal="",shift="")
+    if init=='jadwal':
+        cur.execute("SELECT * FROM jadwal where id= %s",(no,))
+        jadwal = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal=jadwal,shift="")
+    if init=='shift':
+        cur.execute("SELECT * FROM shift where id= %s",(no,))
+        shift = cur.fetchall()
+        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal="",shift=shift)
 @web.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
@@ -22,7 +50,7 @@ def data_hrd():
     cur.execute("SELECT * FROM hrd")
     hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
-@web.route('/data_karu') 
+@web.route('/data_karu')
 @roles_required('admin','HRD','karu')
 def data_karu():
     cur = mysql.connection.cursor()
@@ -41,7 +69,7 @@ def data_karyawan():
 def laporan_absen():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, dataabsen.status'
         ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
@@ -51,7 +79,7 @@ def laporan_absen():
 def laporan_pulang():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, `status`'
+        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, datapulang.status'
         ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     datapulang = cur.fetchall()
@@ -88,26 +116,17 @@ def warga():
     data_warga = warga.fetchall()
     warga.close()
     return render_template('admin/data_warga.html',data_warga=data_warga)
-@web.route('/deleteuser/<id>')
+@web.route('/deleteuser/<id>',methods=['DELETE'])
 @roles_required('admin','HRD')
 def deleteuser(id):
     try:
-        if request.method == 'GET':
+        if request.method == 'DELETE':
             warga = mysql.connection.cursor()
             warga.execute("DELETE FROM data_warga where id = "+id)
             mysql.connection.commit()
     except Exception as e:
         return make_response(e)
-    return redirect(url_for('main.warga'))
-@web.route('/formupdate/<id>', methods=['GET'])
-@roles_required('admin','HRD')
-def formupdate(id):
-    warga = mysql.connection.cursor()
-    warga.execute("SELECT * FROM data_warga where id ="+id)
-    data_warga = warga.fetchall()
-    warga.close()
-    print(data_warga)
-    return render_template('admin/edit_warga.html',data_warga=data_warga)
+    return redirect(url_for('auth.index'))
 @web.route('/updateuser/<id>',methods=['POST'])
 @roles_required('admin','HRD')
 def updateuser(id):
@@ -121,7 +140,15 @@ def updateuser(id):
     mysql.connection.commit()
     data_warga = warga.fetchall()
     return redirect(url_for('main.warga',data_warga=data_warga))
-@web.route('/form/')
-@roles_required('admin','HRD')
-def form():
-    return render_template ('dashboard/form.html')
+@web.route('/coba')
+def coba():
+    cur = mysql.connection.cursor()
+    nip='220712001'
+    cur.execute('SELECT * FROM dataabsen WHERE nip = %s GROUP BY tanggal DESC',(nip,))
+    datahistory= cur.fetchall()
+    respon=[]
+    for i in range(len(datahistory)):
+        dictlogs={}
+        dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
+        respon.append(dictlogs)
+    return jsonify({"data":respon,"msg":'get history sukses'})

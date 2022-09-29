@@ -1,6 +1,6 @@
 import os
 import string
-from flask import Flask, render_template, url_for
+from flask import Flask, jsonify, render_template, url_for
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD']  = ''
-app.config['MYSQL_DB'] = 'pe_absen'
+app.config['MYSQL_DB'] = 'e_attandance'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config.update(dict(
 SECRET_KEY="powerful secretkey",
@@ -52,6 +52,6 @@ def errorhandler(e):
     return render_template('401.html')
 @app.errorhandler(500)
 def errorhandler(e):
-    return render_template('500.html')
+    return jsonify({"msg":e})
 login_manager.init_app(app)
 mysql.init_app(app)
