@@ -50,8 +50,11 @@ def errorhandler(e):
 @app.errorhandler(401)
 def errorhandler(e):
     return render_template('401.html')
+@app.errorhandler(400)
+def errorhandler(e):
+    return jsonify({"msg":"server error"})
 @app.errorhandler(500)
 def errorhandler(e):
-    return jsonify({"msg":e})
+    return jsonify({"msg":"server error"})
 login_manager.init_app(app)
 mysql.init_app(app)

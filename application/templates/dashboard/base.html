@@ -69,7 +69,7 @@
                             </div>
                             <a id="data" style="color: #E5DBCF;" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open" style="color: #E5DBCF;"></i></div>
-                                Data
+                                Data User
                                 <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div style="color: #E5DBCF;" class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
@@ -97,24 +97,16 @@
                             </div>
                             <a id="laporan" class="nav-link collapsed"style="color: #E5DBCF;" href="#" data-bs-toggle="collapse" data-bs-target="#collapseJadwal" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns" style="color: #E5DBCF;"></i></div>
-                                Jadwal
+                                Data Master
                                 <div style="color: #E5DBCF;" class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div  class="collapse" id="collapseJadwal" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
                                     <a id="laporan_absen" class="nav-link" href="{{ url_for('web.jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
-                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">shift</a>
+                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">Shift</a>
                                 </nav>
                             </div>
-                            <div class="sb-sidenav-menu-heading" style="color: #E5DBCF;">Cetak</div>
-                            <a id="cetak_laporan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.cetak_laporan') }}">
-                                <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Cetak Laporan
-                            </a>
-                            <a id="cetak_data" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.cetak_data') }}">
-                                <div style="color: #E5DBCF;" class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Cetak Data
-                            </a>
+                      
                         </div>
                     </div>
                     <div class="sb-sidenav-footer" style="color: #E5DBCF; background-color: #56382D;">

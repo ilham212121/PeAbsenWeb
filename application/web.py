@@ -3,6 +3,10 @@ from application import app,mysql,allowed_file
 from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
 from application.auth import session,roles_required
 
+from time import time
+import time
+from datetime import datetime
+
 web = Blueprint('auth', __name__)
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
@@ -102,12 +106,20 @@ def shift():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM shift GROUP by berangkat ASC")
     shift = cur.fetchall()
+    day= datetime.strptime("2","%d")
     listx = list(shift) 
     for i in range(len(listx)):
-        if listx[i][5]=="deleted":
-            listx.remove(listx[i]) 
+        if listx[i][0]=="malam":
+            a = listx[i][2]-listx[i][1]+day
+            b = str(a.hour)+':'+str(a.minute)+'0:0'+str(a.second)
+            c = (b,)
+            listx[i] = listx[i]+c
+        else:
+            a = listx[i][2]-listx[i][1]
+            b = (a,)
+            listx[i]= listx[i]+b
     shiftt = tuple(listx)
-    return render_template('dashboard/shift.html',shift=shiftt)
+    return render_template('dashboard/shift.html',shift=shiftt,day=day)
 @web.route('/admin/warga',methods=['GET'])
 @roles_required('admin','HRD')
 def warga():
