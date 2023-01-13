@@ -1,4 +1,4 @@
-#!C:\Users\rizky\PeAbsenWeb\env\Scripts\python.exe
+#!c:\users\ilham\documents\github\peabsenweb\env\scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'future==0.18.2','console_scripts','pasteurize'
 import re
 import sys
