@@ -13,7 +13,7 @@ from flask_restful import Resource, Api
 mobile = Blueprint('auth', __name__)
 api = Api(app)
 CORS(app)
-def isNowInTimePeriod(startTime, endTime, nowTime):
+def isNowAbsen(startTime, endTime, nowTime):
     if startTime < endTime:
         if nowTime < startTime:
             wait=startTime-nowTime
@@ -26,7 +26,7 @@ def isNowInTimePeriod(startTime, endTime, nowTime):
         return 
     else: 
         return nowTime >= startTime or nowTime <= endTime
-def isNowpulang(startTime, endTime, nowTime):
+def isNowPulang(startTime, endTime, nowTime):
     if startTime < endTime:
         if nowTime < startTime:
             return "kamu pulang terlalu cepat"
@@ -55,28 +55,23 @@ class apiabsen(Resource):
             cur.execute("SELECT * from dataabsen where nip = %s and tanggal = %s ",(nip,tanggal))
             cek = cur.fetchall()
             if str(cek) == '()':
-                cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
+                cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.nama = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
                 jadwal = cur.fetchall()
-                cur.execute("SELECT tukar_dinas.shift,shift.berangkat from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
-                tuker_dinas = cur.fetchall()
                 renamefile= secure_filename(str(tanggal)+"-"+str(nip)+".jpg")
                 timeNow = datetime.strptime(timeNow, "%H:%M:%S")
-                if str(tuker_dinas)=='()':
+                if str(jadwal)=='()':
+                    print("maaf jadwal belum ada")
+                    return jsonify({"msg":"maaf jadwal belum ada"})
+                else:
                     timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
                     a=datetime.strptime("00:30:00","%H:%M:%S")
                     b= timeEnd-a
                     timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                    status=isNowInTimePeriod(timeStart,timeEnd,timeNow)
-                else:
-                    timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
-                    a=datetime.strptime("00:30:00","%H:%M:%S")
-                    b= timeEnd-a
-                    timeStart = datetime.strptime(str(b),"%H:%M:%S")
-                    status=isNowInTimePeriod(timeStart,timeEnd,timeNow)
+                    status=isNowAbsen(timeStart,timeEnd,timeNow)
                 file.save(os.path.join(app.config['FOLDER_ABSEN'], str(renamefile)))
-                img = Image.open(os.path.join(app.config['FOLDER_PULANG'],renamefile))
+                img = Image.open(os.path.join(app.config['FOLDER_ABSEN'],renamefile))
                 resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
-                resizedimg.save(os.path.join(app.config['FOLDER_PULANG'],renamefile),optimize=True,quality=95)
+                resizedimg.save(os.path.join(app.config['FOLDER_ABSEN'],renamefile),optimize=True,quality=95)
                 if status=='kamu absen terlalu cepat':
                     return jsonify({"msg":status})
                 if status=="kamu terlambat":
@@ -89,6 +84,7 @@ class apiabsen(Resource):
                     cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                     if mysql.connection.commit():
                         return jsonify({"msg":status,"waktu":timeNow,"tanggal":tanggal})
+                return jsonify({"msg":status})
             else:
                 return jsonify({"msg":"maaf kamu sudah absen"})
         else:
@@ -97,12 +93,16 @@ class apipulang(Resource):
     def post(self):
         cur = mysql.connection.cursor()
         if 'image' not in request.files:
+            print("tidak ada form image")
             return jsonify({"msg":"tidak ada form image"})
         file = request.files['image']
         nip=request.form['nip']
+        print(nip)
         latitude=request.form['latitude']
+        print(latitude)
         longitude= request.form['longitude']
         if file.filename == '':
+            print("tidak ada file image yang dipilih")
             return jsonify({"msg":"tidak ada file image yang dipilih"})
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -112,52 +112,47 @@ class apipulang(Resource):
             cur.execute("SELECT * from datapulang where nip = %s and tanggal = %s ",(nip,tanggal))
             cek = cur.fetchall()
             if str(cek) == '()':
-                cur.execute("SELECT jadwal.shift,shift.pulang from jadwal INNER JOIN shift ON shift.shift = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
+                cur.execute("SELECT jadwal.shift,shift.pulang from jadwal INNER JOIN shift ON shift.nama = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
                 jadwal = cur.fetchall()
-                cur.execute("SELECT tukar_dinas.shift,shift.pulang from tukar_dinas INNER JOIN shift ON tukar_dinas.shift = shift.shift where nip = %s AND tanggal = %s",(nip,tanggal))
-                tuker_dinas = cur.fetchall()
                 renamefile= secure_filename(str(tanggal)+"-"+str(nip)+"-"+str(a.tm_hour)+'-'+str(a.tm_min)+'-'+str(a.tm_sec)+".jpg")
                 timeNow = datetime.strptime(timeNow, "%H:%M:%S")
-                if str(tuker_dinas)=='()':
-                    if str(jadwal)=='()':
-                        return jsonify({"msg":"maaf jadwal belum ada"})
-                    else:
-                        timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
-                        a=datetime.strptime("00:30:00", "%H:%M:%S")
-                        b= timeEnd-a
-                        timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                        status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+                if str(jadwal)=='()':
+                    print("maaf jadwal belum ada")
+                    return jsonify({"msg":"maaf jadwal belum ada"})
                 else:
-                    if str(jadwal)=='()':
-                        return jsonify({"msg":"maaf jadwal belum ada"})
-                    else:
-                        timeEnd = datetime.strptime(str(tuker_dinas[0][1]), "%H:%M:%S")
-                        a=datetime.strptime("00:30:00", "%H:%M:%S")
-                        b= timeEnd-a
-                        timeStart = datetime.strptime(str(b), "%H:%M:%S")
-                        status=isNowInTimePeriod(timeStart,timeEnd , timeNow)
+                    timeEnd = datetime.strptime(str(jadwal[0][1]), "%H:%M:%S")
+                    a=datetime.strptime("00:30:00", "%H:%M:%S")
+                    b= timeEnd-a
+                    timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                    status=isNowPulang(timeStart,timeEnd , timeNow)
                 file.save(os.path.join(app.config['FOLDER_PULANG'],renamefile))
                 img = Image.open(os.path.join(app.config['FOLDER_PULANG'],renamefile))
                 resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
                 resizedimg.save(os.path.join(app.config['FOLDER_PULANG'],renamefile),optimize=True,quality=95)
                 if status=='kamu pulang terlalu cepat':
+                    print("terlalu cepat")
                     statusdb="terlalu cepat"
-                    cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
+                    cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                     if mysql.connection.commit():
                         return jsonify({"msg":status})
-                elif status=="kamu pulang terlalu lambat dari jawdwal apakah kamu lembur?":
+                elif status=="kamu pulang terlalu lambat dari jadwal apakah kamu lembur?":
+                    print("lembur?")
                     statusdb="lembur?"
-                    cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
+                    cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
                     if mysql.connection.commit():
                         return jsonify({"msg":status})
                 elif status=="kamu pulang sesuai jadwal shift":
+                    print("tepat waktu")
                     statusdb="tepat waktu"
                     cur.execute("INSERT INTO datapulang(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,filename,statusdb))
                     if mysql.connection.commit():
                         return jsonify({"msg":status})
+                return jsonify({"msg":status})
             else:
-                 return jsonify({"msg":"maaf anda sudah absen pulang"})
+                print("maaf anda sudah absen pulang")
+                return jsonify({"msg":"maaf anda sudah absen pulang"})
         else:
+            print("foto yang anda kirim invalid")
             return jsonify({"msg":"foto yang anda kirim invalid"})
 
 class history_absen(Resource):

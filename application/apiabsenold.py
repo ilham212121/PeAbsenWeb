@@ -35,7 +35,7 @@ def apiabsen():
         cur.execute("SELECT * from dataabsen where nip= %s and tanggal = %s ",(nip,tanggal))
         cek = cur.fetchall()
         if str(cek) == '()':
-            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON jadwal.shift = shift.shift where nip = %s,tanggal = %s",(nip,tanggal))
+            cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON jadwal.shift = shift.nama where nip = %s,tanggal = %s",(nip,tanggal))
             shift = cur.fetchall()
             renamefile= secure_filename(str(nip)+str(tanggal)+str(timeNow)+".jpg")
             timeNow = datetime.strptime(timeNow, "%I:%M%p")

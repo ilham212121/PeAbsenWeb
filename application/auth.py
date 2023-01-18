@@ -130,3 +130,4 @@ def logout():
     session.pop('username', None)
     # Redirect to login page
     return redirect(url_for('auth.index'))
+

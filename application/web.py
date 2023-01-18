@@ -1,13 +1,57 @@
 from ast import Tuple
+import json, numpy
 from application import app,mysql,allowed_file
 from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
 from application.auth import session,roles_required
 
+from time import time
+import time,random
+from datetime import datetime
+{
+    "total pegawai":{
+        "total hari":{
+            "tanggal ",
+            "shift"
+        }
+
+    }
+}
 web = Blueprint('auth', __name__)
+@web.get("/update/<ruangan>/<bulan>/<tahun>")
+def update(ruangan,bulan,tahun):
+    cur = mysql.connection.cursor()
+    print(ruangan)
+    print(bulan)
+    print(tahun)
+    cur.execute("SELECT nip, karyawan.nama FROM karyawan WHERE ruangan = '"+ruangan+"' ORDER by nama ASC")
+    datapegawai = cur.fetchall()
+    cur.execute("SELECT tanggal, shift FROM jadwal inner join karyawan on jadwal.nip = karyawan.nip where karyawan.ruangan = '"+ ruangan+"'")
+    datajadwalabsen = cur.fetchall()
+    cobajadwal=[[{"id":"#shift-01-07-2022","value":1},{"id":"#shift-02-07-2022","value":2}],[{"id":"#shift-01-07-2022","value":1},{"id":"#shift-02-07-2022","value":2}]]
+    datapegawai= jsonify(datapegawai)
+    cobapegawai=[{"nip":"123","NAMA":"COBA"},{"nip":"123","NAMA":"COBA"}]
+    datajadwalabsen= jsonify(datajadwalabsen)
+    # datajadwalabsenfix = []
+    # for i in datapegawai:
+    #     dictlog=[]
+    #     for x in datajadwalabsen:
+    #         dictlog.append(datajadwalabsen[x], datajadwalabsen[1])
+    #         datajadwalabsenfix.append(dictlog)
+    # print(json.loads(datajadwalabsen))
+    response = jsonify({"data_pegawai":cobapegawai,"data_jadwal":cobajadwal})
+    #response = numpy.array(datapegawai,datajadwalabsen)
+    return response
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
 def form(init):
-    return render_template('dashboard/form.html',init=init)
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Nama FROM RUANGAN")
+    ruangan = cur.fetchall()
+    cur.execute("SELECT Nama FROM SHIFT")
+    shift = cur.fetchall()
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    tahun = datetime.today().year
+    return render_template('dashboard/form.html', init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
 @web.route('/Editform/<init>/<no>') 
 @roles_required('admin','HRD','karu')
 def editform(init,no):
@@ -69,21 +113,27 @@ def data_karyawan():
 def laporan_absen():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, dataabsen.status'
-        ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
-        ' GROUP by tanggal desc, waktu desc')
+        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
+        ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
+        ' GROUP by jadwal.tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
-    return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen)
+    cur.execute(
+        'SELECT nama from ruangan')
+    ruangan = cur.fetchall()
+    return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen,ruangan=ruangan)
 @web.route('/laporan_pulang') 
 @roles_required('admin','HRD','karu')
 def laporan_pulang():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.shift,`latitude`, `longitude`, `foto`, `tanggal`, `waktu`, datapulang.status'
-        ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.shift = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
+        'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, datapulang.tanggal, `waktu`, datapulang.status'
+        ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
         ' GROUP by tanggal desc, waktu desc')
     datapulang = cur.fetchall()
-    return render_template('dashboard/laporan_pulang.html',datapulang=datapulang)
+    cur.execute(
+        'SELECT nama from ruangan')
+    ruangan = cur.fetchall()
+    return render_template('dashboard/laporan_pulang.html',datapulang=datapulang,ruangan=ruangan)
 @web.route('/cetak_laporan') 
 @roles_required('admin','HRD','karu')
 def cetak_laporan():
@@ -100,14 +150,22 @@ def jadwal():
 @roles_required('admin','HRD','karu')
 def shift():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM shift GROUP by berangkat ASC")
+    cur.execute("SELECT * FROM shift")
     shift = cur.fetchall()
+    day= datetime.strptime("2","%d")
     listx = list(shift) 
     for i in range(len(listx)):
-        if listx[i][5]=="deleted":
-            listx.remove(listx[i]) 
+        if listx[i][1]=="malam":
+            a = listx[i][3]-listx[i][2]+day
+            b = str(a.hour)+':'+str(a.minute)+'0:0'+str(a.second)
+            c = (b,)
+            listx[i] = listx[i]+c
+        else:
+            a = listx[i][3]-listx[i][2]
+            b = (a,)
+            listx[i]= listx[i]+b
     shiftt = tuple(listx)
-    return render_template('dashboard/shift.html',shift=shiftt)
+    return render_template('dashboard/shift.html',shift=shiftt,day=day)
 @web.route('/admin/warga',methods=['GET'])
 @roles_required('admin','HRD')
 def warga():

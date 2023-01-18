@@ -1,28 +1,18 @@
 {% extends "dashboard/base.html" %}
 {% block content %}
-<head>
-<link rel="stylesheet" type="text/css" href="../../static/vendor/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="../../static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="../../static/vendor/animate/animate.css"> 
-<link rel="stylesheet" type="text/css" href="../../static/vendor/css-hamburgers/hamburgers.min.css">
-<link rel="stylesheet" type="text/css" href="../../static/vendor/animsition/css/animsition.min.css">
-<link rel="stylesheet" type="text/css" href="../../static/vendor/select2/select2.min.css"> 
-<link rel="stylesheet" type="text/css" href="../../static/vendor/daterangepicker/daterangepicker.css">
-<link rel="stylesheet" type="text/css" href="../../static/css/util.css">
-<link rel="stylesheet" type="text/css" href="../../static/css/main.css">
-</head>
+
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Dashboard</h1>
+        <h1 class="mt-4">tambah data {{ init }}</h1>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">tambah data</li>
+            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Tambah Data {{ init }} </li>
         </ol>
-        tambahkan data
+        
         <div class="row">
             <div class="card mb-4">
                 <div class="card-body">
                 {% if init == 'admin'%}
-                {% for row in admin %}
                     <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                         <label>NIP</label><br>
                         <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
@@ -37,31 +27,23 @@
                             <input class="input100" id="email" type="email" ><br>
                             <label>Jenis Kelamin</label><br>
                             <label><select id="gender" class="input100" >
-                                    {% if row.3=='L'%}
                                     <option class="input100" value="L" selected>Laki-Laki</option>
                                     <option class="input100" value="P">Perempuan</option>
-                                    {% endif %}
-                                    {% if row.3=='P'%}
-                                    <option class="input100" value="L">Laki-Laki</option>
-                                    <option class="input100" value="P" selected>Perempuan</option>
-                                    {% endif %}
                                 </select></label><br>
                             <label>Tanggal Lahir</label><br>
                             <input class="input100" id="ttl" type="date"><br>
                             <label>Nomor Hp</label><br>
                             <input class="input100" id="no_hp" type="number"><br>
                             <label>Alamat</label><br>
-                            <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                            <textarea class="input100" id="alamat"></textarea><br>
                             <div class="container-login100-form-btn">
                                 <button class="login100-form-btn">
-                                    Update
+                                    Simpan
                                 </button>
                             </div>
                     </form>
-                {% endfor %}
                 {% endif %}
                 {% if init == 'hrd'%}
-                {% for row in hrd %}
                 <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <label>NIP</label><br>
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
@@ -76,31 +58,24 @@
                         <input class="input100" id="email" type="email"><br>
                         <label>Jenis Kelamin</label><br>
                         <label><select id="gender" class="input100">
-                                {% if row.3=='L'%}
                                 <option class="input100" value="L" selected>Laki-Laki</option>
                                 <option class="input100" value="P">Perempuan</option>
-                                {% endif %}
-                                {% if row.3=='P'%}
-                                <option class="input100" value="L">Laki-Laki</option>
-                                <option class="input100" value="P" selected>Perempuan</option>
-                                {% endif %}
+                               
                             </select></label><br>
                         <label>Tanggal Lahir</label><br>
                         <input class="input100" id="ttl" type="date"><br>
                         <label>Nomor Hp</label><br>
                         <input class="input100" id="no_hp" type="number"><br>
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                        <textarea class="input100" id="alamat"></textarea><br>
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn">
-                                Update
+                                Simpan
                             </button>
                         </div>
                 </form>
-                {% endfor %}
                 {% endif %}
                 {% if init == 'karu'%}
-                {% for row in karu %}
                 <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <label>NIP</label><br>
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
@@ -115,31 +90,24 @@
                         <input class="input100" id="email" type="email" ><br>
                         <label>Jenis Kelamin</label><br>
                         <label><select id="gender" class="input100" >
-                                {% if row.3=='L'%}
                                 <option class="input100" value="L" selected>Laki-Laki</option>
                                 <option class="input100" value="P">Perempuan</option>
-                                {% endif %}
-                                {% if row.3=='P'%}
-                                <option class="input100" value="L">Laki-Laki</option>
-                                <option class="input100" value="P" selected>Perempuan</option>
-                                {% endif %}
+                              
                             </select></label><br>
                         <label>Tanggal Lahir</label><br>
                         <input class="input100" id="ttl" type="date" ><br>
                         <label>Nomor Hp</label><br>
                         <input class="input100" id="no_hp" type="number"><br>
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                        <textarea class="input100" id="alamat"></textarea><br>
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn">
-                                Update
+                                Simpan
                             </button>
                         </div>
                 </form>
-                {% endfor %}
                 {% endif %}
                 {% if init == 'karyawan'%}
-                {% for row in karyawan %}
                 <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <label>NIP</label><br>
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
@@ -154,14 +122,9 @@
                         <input class="input100" id="email" type="email" ><br>
                         <label>Jenis Kelamin</label><br>
                         <label><select id="gender" class="input100" >
-                                {% if row.3=='L'%}
                                 <option class="input100" value="L" selected>Laki-Laki</option>
                                 <option class="input100" value="P">Perempuan</option>
-                                {% endif %}
-                                {% if row.3=='P'%}
-                                <option class="input100" value="L">Laki-Laki</option>
-                                <option class="input100" value="P" selected>Perempuan</option>
-                                {% endif %}
+                              
                             </select></label><br>
                         <label>Tanggal Lahir</label><br>
                         <input class="input100" id="ttl" type="date" ><br>
@@ -171,53 +134,52 @@
                         <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn">
-                                Update
+                                Simpan
                             </button>
                         </div>
                 </form>
-                {% endfor %}
                 {% endif %}
                 {% if init == 'jadwal'%}
-                {% for row in jadwal %}
-                <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                    <label>NIP</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nip" placeholder="nip" >
-                        <span class="focus-input100"></span>
-                    </div>
-                    <label>Nama</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nama" ><br>
-                        <label>Email</label><br>
+                <form method="post" action="#" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                    <center><label>Pilih Ruangan</label><br>
+                    <label><select id="ruangan" class="input100">
+                        {% for ruang in ruangan %}
+                        <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                    {% endfor %}
 
-                        <input class="input100" id="email" type="email" ><br>
-                        <label>Jenis Kelamin</label><br>
-                        <label><select id="gender" class="input100" >
-                                {% if row.3=='L'%}
-                                <option class="input100" value="L" selected>Laki-Laki</option>
-                                <option class="input100" value="P">Perempuan</option>
-                                {% endif %}
-                                {% if row.3=='P'%}
-                                <option class="input100" value="L">Laki-Laki</option>
-                                <option class="input100" value="P" selected>Perempuan</option>
-                                {% endif %}
-                            </select></label><br>
-                        <label>Tanggal Lahir</label><br>
-                        <input class="input100" id="ttl" type="date"><br>
-                        <label>Nomor Hp</label><br>
-                        <input class="input100" id="no_hp" type="number"><br>
-                        <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                    </select></label><br>
+                    <label>Bulan</label><br>
+                    <label><select id="bulan" class="input100">
+                        <option class="input100" value="{{bulan[0]}}" selected>{{ bulan[0] }}</option>
+                        <option class="input100" value="{{bulan[1]}}" >{{ bulan[1] }}</option>
+                        <option class="input100" value="{{bulan[2]}}" >{{ bulan[2] }}</option>
+                        <option class="input100" value="{{bulan[3]}}" >{{ bulan[3] }}</option>
+                        <option class="input100" value="{{bulan[4]}}" >{{ bulan[4] }}</option>
+                        <option class="input100" value="{{bulan[5]}}" >{{ bulan[5] }}</option>
+                        <option class="input100" value="{{bulan[6]}}" >{{ bulan[6] }}</option>
+                        <option class="input100" value="{{bulan[7]}}" >{{ bulan[7] }}</option>
+                        <option class="input100" value="{{bulan[8]}}" >{{ bulan[8] }}</option>
+                        <option class="input100" value="{{bulan[9]}}" >{{ bulan[9] }}</option>
+                        <option class="input100" value="{{bulan[10]}}" >{{ bulan[10] }}</option>
+                        <option class="input100" value="{{bulan[11]}}" >{{ bulan[11] }}</option>
+
+                    </select></label><br>
+                    <label>Tahun</label><br>
+                    
+					<div class="wrap-input100 validate-input" data-validate = "Please enter password">
+						<input id="tahun" class="input100" type="number" name="tahun" placeholder="tahun" value="{{ tahun }}">
+						<span class="focus-input100"></span>
+					</div><br>
+                    </center>
+                        
                         <div class="container-login100-form-btn">
-                            <button class="login100-form-btn">
-                                Update
+                            <button type="button"id="btn-show-pegawai"  class="login100-form-btn">
+                                Tampilkan Pegawai
                             </button>
                         </div>
                 </form>
-                {% endfor %}
                 {% endif %}
                 {% if init == 'shift'%}
-                {% for row in shift %}
                 <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <label>NIP</label><br>
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
@@ -232,35 +194,245 @@
                         <input class="input100" id="email" type="email" ><br>
                         <label>Jenis Kelamin</label><br>
                         <label><select id="gender" class="input100" >
-                                {% if row.3=='L'%}
                                 <option class="input100" value="L" selected>Laki-Laki</option>
                                 <option class="input100" value="P">Perempuan</option>
-                                {% endif %}
-                                {% if row.3=='P'%}
-                                <option class="input100" value="L">Laki-Laki</option>
-                                <option class="input100" value="P" selected>Perempuan</option>
-                                {% endif %}
-                            </select></label><br>
+                             </select></label><br>
                         <label>Tanggal Lahir</label><br>
                         <input class="input100" id="ttl" type="date" ><br>
                         <label>Nomor Hp</label><br>
                         <input class="input100" id="no_hp" type="number" ><br>
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                        <textarea class="input100" id="alamat"></textarea><br>
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn">
-                                Update
+                                Simpan
                             </button>
                         </div>
                 </form>
-                {% endfor %}
                 {% endif %}
             </div>
             </div>
         </div>
     </div>
-</main>
+    <button onclick="update()" >click me</button>
+    <div class="data">
+        <p id="output"></p>
+        </div>
+        
+        <h4 class="text-center">TABLE PEGAWAI & SHIFT</h4>
 
+        <div class="table-responsive mb-4" id="container-table"></div>
+        <table id="myTable"></table>
+</main>
+<!-- BEGIN VENDOR JS-->
+<script src="../../static/app-assets/vendors/js/jquery-ui.min.js"></script>
+<script src="../../static/app-assets/vendors/js/core/popper.min.js"></script>
+<script src="../../static/app-assets/vendors/js/core/bootstrap.min.js"></script>
+<script src="../../static/app-assets/vendors/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../static/app-assets/vendors/js/prism.min.js"></script>
+<script src="../../static/app-assets/vendors/js/jquery.matchHeight-min.js"></script>
+<script src="../../static/app-assets/vendors/js/screenfull.min.js"></script>
+<script src="../../static/app-assets/vendors/js/pace/pace.min.js"></script>
+<!-- BEGIN VENDOR JS-->
+<!-- BEGIN CONVEX JS-->
+<script src="../../static/app-assets/js/app-sidebar.js"></script>
+<script src="../../static/app-assets/js/notification-sidebar.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/datatables.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/dataTables.buttons.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.flash.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.html5.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.print.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/jszip.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/pdfmake.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/vfs_fonts.js"></script>
+<script src="../../static/app-assets/vendors/js/axios.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+        var ruangan = $('#ruangan').val();
+        var bulan = $('#bulan').val();
+        var tahun = $('#tahun').val();
+        function initDatatable() {
+                $("#datatable").DataTable({
+                    paging: false,
+                    ordering: false,
+                    language:{
+                        search: 'Pencarian Nama',
+                        searchPlaceholder: 'Masukan nama..',
+                    },
+                });
+            }
+        function createTable(callback) {
+                statusBtnShowPegawai(true);
+                var container = $("#container-table");
+                container.html("");
+                ///////////////////
+                var table = '<table id="datatable" class="table table-bordered table-stripped table-consended table-absensi table-sm">';
+                table += '<thead class="text-white" id="thead-table"></thead>';
+                table += '<tbody id="table-pegawai"></tbody>';
+                table += '</table>';
+                container.html(table);
+                setTimeout(() => {
+                    callback();
+                }, 500);
+            }
+            function statusBtnShowPegawai(status = false) {
+                var btnShowPegawai = $('#btn-show-pegawai');
+                if (status) {
+                    var icon = '<i class="fa fa-spin fa-spinner mr-1"></i>';
+                    var text = 'Tunggu sebentar...';
+                    btnShowPegawai.html(icon + text);
+                    btnShowPegawai.attr('disabled','disabled');
+                } else {
+                    var icon = '<i class="fa fa-search mr-1"></i>';
+                    var text = 'Tampilkan Pegawai';
+                    btnShowPegawai.html(icon + text);
+                    btnShowPegawai.removeAttr('disabled');
+                }
+            }
+            function initSetSelectJadwal(dataJadwalAll) {
+                setTimeout(function() {
+                    for (var i in dataJadwalAll) {
+                        var dataJadwal = dataJadwalAll[i];
+                        for (var x in dataJadwal) {
+                            console.log(dataJadwal[x].id)
+                            $(dataJadwal[x].id).val(dataJadwal[x].value);
+                        }
+                    }
+                }, 500);
+            }
+            
+            function showPegawaiByRuang(ruang_id,bulan,tahun) {
+                var url = "/update/"+ruang_id+"/"+bulan+"/"+tahun;
+                var formData = {
+                    ruang_id: ruang_id,
+                    bulan: bulan,
+                    tahun: tahun
+                };
+                axios.post(url, formData)
+                    .then(function(response) {
+                        var data = response.data.data;
+                        var dataPegawai = data.data_pegawai;
+                        var dataJadwal = data.data_jadwal;
+                        for (var i in dataPegawai) {
+                            tambahBaris(dataPegawai[i], bulan, tahun);
+                            if (i >= parseInt(dataPegawai.length - 1)) {
+                                initSetSelectJadwal(dataJadwal);
+                                statusBtnShowPegawai(false);
+                                initDatatable();
+                            }
+                        }
+                    })
+                    .catch(function(error) {
+                        statusBtnShowPegawai(false);
+                        toastr.error(error);
+                    });
+            }
+
+            function tambahBaris(data, bulan, tahun) {
+                if (!$("#baris" + data.nip).length) {
+                    generateRow(data.nip, data.nama, bulan, tahun);
+                }
+            }
+            function checkSunday(hari, bulan, tahun) {
+                var date = new Date(tahun + '-' + bulan + '-' + hari);
+                if (parseInt(date.getDay()) == 0) {
+                    return true;
+                }
+                return false;
+            }
+            function getNamaHari(hari, bulan, tahun) {
+                var date = new Date(tahun + '-' + bulan + '-' + hari);
+                var day = parseInt(date.getDay());
+                switch(day) {
+                    case 0: return "Minggu";
+                    case 1: return "Senin";
+                    case 2: return "Selasa";
+                    case 3: return "Rabu";
+                    case 4: return "Kamis";
+                    case 5: return "Jumat";
+                    case 6: return "Sabtu";
+                    default: return "undefined";
+                }
+            }
+            function headerTable(bulan, tahun) {
+                if (bulan !== "" && tahun !== "") {
+                    var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+                    var html = '<tr><th class="bg-info text-center">INFO<br>PEGAWAI</th>';
+                    for (var hari = 1; hari <= jumlahHari; hari++) {
+                        var namaHari = getNamaHari(hari, bulan, tahun) + '<br>' + hari;
+                        if (checkSunday(hari, bulan, tahun)) {
+                            html += '<th class="bg-danger text-center">' + namaHari + '</th>';
+                        } else {
+                            html += '<th class="bg-primary text-center">' + namaHari + '</th>';
+                        }
+                    }
+                    $('#thead-table').html(html);
+                } else {
+                    $('#thead-table').html("");
+                }
+            }
+
+            function generateIdSelect(hari, bulan, tahun, nip) {
+                var elementId = [hari, bulan, tahun, nip];
+                return 'shift-' + elementId.join('-');
+            }
+
+            function generateRow(nip, nama, bulan, tahun) {
+                var html = '<tr><td>' + nama + '<br>' + nip + '</td>';
+                var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+                for (var hari = 1; hari <= jumlahHari; hari++) {
+                    var idSelect = generateIdSelect(hari,bulan,tahun,nip);
+                    if (checkSunday(hari, bulan, tahun)) {
+                        html += '<td class="table-danger">';
+                    } else {
+                        html += '<td>';
+                    }
+                    html += '<select id="' + idSelect +'" class="form-control form-control-sm" onchange="updateOrInsertData(\''+nip+'\',\''+hari+'\',\''+idSelect+'\')">';
+                    html += '<option value="0">Libur/Cuti/Kosong</option>';
+
+                    html += '</select>';
+                    html += '</td>';
+                }
+                html += '</tr>';
+                $("#table-pegawai").append($(html));
+            }
+
+            function alertWarning(message = "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: message
+                });
+            }
+            function update(){
+            $.get("/update/"+ruangan+"/"+bulan+"/"+tahun, function(data){
+                $("#output").html(data);
+            console.log(data);
+            var data = JSON.parse(data);
+            console.log(data);
+            var dataPegawai = JSON.parse(data.data_pegawai);
+            console.log(dataPegawai);
+            var dataJadwal = JSON.parse(data_jadwal);
+            console.log(dataJadwal);
+            
+            for (var i in dataPegawai.length) {
+                console.log(dataPegawai.nama[i])
+                tambahBaris(dataPegawai.nama[i], bulan, tahun);
+                    if (i >= parseInt(dataPegawai.length - 1)) {
+                        initSetSelectJadwal(dataJadwal);
+                        statusBtnShowPegawai(false);
+                        initDatatable();
+                    }
+                }
+            });
+        }
+    </script>
 <script src="../../static/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="../../static/vendor/animsition/js/animsition.min.js"></script>
 <script src="../../static/vendor/bootstrap/js/popper.js"></script>
