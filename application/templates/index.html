@@ -23,7 +23,31 @@
 					<span class="login100-form-title">
 						Sign In
 					</span>
+					{% if message: %}	
+					{% if message == "maaf nip tidak ada" %}	
+					<div class="wrap-input100 validate-input m-b-16" style="border-radius: red;" data-validate="Please enter nip">
+						<input class="input100" type="text" name="nip" placeholder="nip">
+						<span class="focus-input100"></span>
+					</div>
+					<p style="color: red;">{{ message }}</p>
 
+					<div class="wrap-input100 validate-input" style="border-radius: red;"  data-validate = "Please enter password">
+						<input class="input100" type="password" name="password" placeholder="Password">
+						<span class="focus-input100"></span>
+					</div>
+					{% elif message == "maaf password salah" %}			
+					<div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
+						<input class="input100" type="text" name="nip" placeholder="nip">
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input"style="border-radius: red;"  data-validate = "Please enter password">
+						<input class="input100" type="password" name="password" placeholder="Password">
+						<span class="focus-input100"></span>
+					</div>
+					<p style="color: red;">{{ message }}</p>
+					{% endif %}
+					{% else %}
 					<div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
 						<input class="input100" type="text" name="nip" placeholder="nip">
 						<span class="focus-input100"></span>
@@ -33,6 +57,8 @@
 						<input class="input100" type="password" name="password" placeholder="Password">
 						<span class="focus-input100"></span>
 					</div>
+					{% endif %}
+
 
 					<div class="text-right p-t-13 p-b-23">
 						<span class="txt1">

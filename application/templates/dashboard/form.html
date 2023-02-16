@@ -472,8 +472,11 @@
         // }
         function updateOrInsertData(nip, hari, element) {
                 var selectShift = $("#" + element);
-                var url = "/updateOrInsertJawal";
+                console.log(selectShift,nip,hari)
+            
+                var url = "/updateOrInsertJadwal";
                 var shiftId = selectShift.val();
+                console.log(shiftId)
                 var formData = {
                     nip: nip,
                     hari: hari,
@@ -482,9 +485,11 @@
                     tahun: $('#tahun').val(),
                     ruangan: $('#ruangan').val()
                 };
+                console.log(formData)
                 selectShift.attr('disabled', 'disabled');
                 axios.post(url, formData)
                     .then(function(response) {
+                        console.log(response)
                         let data = response.data.data;
                         let meta = response.data.meta;
                         toastr.success(meta.message);

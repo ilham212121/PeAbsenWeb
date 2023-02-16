@@ -44,28 +44,44 @@ def update(ruangan,bulan,tahun):
     print(cobajadwal)
     return response
 @web.post("/updateOrInsertJadwal")
-def updateOrInsertJadwal(nip,hari,shift_id,bulan,tahun,ruangan):
-    print(nip)
+def updateOrInsertJadwal():
+    nip = request.json["nip"]
+    hari = request.json["hari"]
+    shift_id = request.json["shift_id"]
+    bulan = request.json["bulan"]
+    tahun = request.json["tahun"]
+    ruangan = request.json["ruangan"]
     cur = mysql.connection.cursor()
-    tanggal = datetime("Y-m-d",(tahun,bulan,hari))
+    tanggal= tahun+"-"+bulan+"-"+hari
+    #tanggal = datetime.strptime(tanggal,"%Y-%m-%d")
     print(tanggal)
+    listshift = ["pagi","middle","siang","malam"]
+    for i in range(len(listshift)) :
+        print(i)
+        if str(i+1) == shift_id:
+            shift = listshift[i]
+
     cur.execute("SELECT tanggal, shift  FROM jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
     datajadwalabsen = cur.fetchall()
-    if datajadwalabsen == "()":
-        cur.execute("INSERT INTO jadwal(nip,shift,ruangan,tanggal,bulan) VALUES(%s,%s,%s,%s,%s )",(nip,shift_id,ruangan,tanggal,bulan))
+    print(datajadwalabsen)
+    if datajadwalabsen == ():
+        print("kosong")
+        cur.execute("INSERT INTO jadwal(nip,shift,ruangan,tanggal,bulan) VALUES(%s,%s,%s,%s,%s )",(nip,shift,ruangan,tanggal,bulan))
         mysql.connection.commit()
         return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil menambahkan Data","status":"success"}})
     else:
-        if shift_id == 0:
+        print("ada")
+        if shift_id == "0":
             #delete data
-            cur.execute("DELETE jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
+            cur.execute("DELETE FROM jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
             mysql.connection.commit()
-            return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil hapus Data","status":"success"}})
+            return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil hapus Data","status":"success"}})
         else:
             #update data
-            cur.execute("DELETE jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
+            cur.execute("UPDATE `jadwal` SET `shift`=%s WHERE nip = %s and tanggal = %s ",(shift,nip,tanggal))
             mysql.connection.commit()
-            return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
+            return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
+    return "coba"
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
 def form(init):
@@ -170,7 +186,10 @@ def cetak_data():
 @web.route('/jadwal') 
 @roles_required('admin','HRD','karu')
 def jadwal():
-    return render_template('dashboard/jadwal.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM jadwal")
+    jadwal = cur.fetchall()
+    return render_template('dashboard/jadwal.html',jadwal=jadwal)
 @web.route('/shift') 
 @roles_required('admin','HRD','karu')
 def shift():
@@ -221,8 +240,7 @@ def updateuser(id):
     email = request.form['email']
     warga.execute("UPDATE data_warga SET id = "+id+",nama ='"+ nama+"',no_rumah = '" +alamat+"',kontak='"+ kontak+"',password = '"+password+"',email = '"+email+"' WHERE  id ="+id)
     mysql.connection.commit()
-    data_warga = warga.fetchall()
-    return redirect(url_for('main.warga',data_warga=data_warga))
+    return redirect(url_for('main.warga'))
 @web.route('/coba')
 def coba():
     cur = mysql.connection.cursor()

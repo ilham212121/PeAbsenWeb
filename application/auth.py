@@ -50,7 +50,8 @@ def index():
             print('The user is in this role.')
             return render_template('dashboard/index.html', username=session['username'])
     else:
-        return render_template('index.html')
+        message = request.args.get('alert')
+        return render_template('index.html',message=message)
 @auth.route('/dashboard') 
 def dashboard():
     if 'loggedin' in session:
@@ -71,12 +72,14 @@ def apilogindashboard():
     password = request.form['password']
     cur.execute("SELECT * FROM login WHERE nip = %s" , (nip,))
     datalogin = cur.fetchone()
-    if str(datalogin) == '':
+    print(datalogin)
+    if datalogin == None:
+        print("laka")
         cur.close()
-        return "maaf nip tida ada"
+        return redirect(url_for('auth.index',alert="maaf nip tidak ada"))
     elif not check_password_hash(datalogin[1],password):
         cur.close()
-        return "maaf password salah"
+        return redirect(url_for('auth.index',alert="maaf password salah"))
     else:
         if datalogin[2]=='admin':
             cur.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))

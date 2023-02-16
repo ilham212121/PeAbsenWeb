@@ -3,6 +3,7 @@ import string
 from flask import Flask, jsonify, render_template, url_for
 from flask_login import LoginManager
 from flask_mysqldb import MySQL 
+from flask_cors import CORS
 app = Flask(__name__)
 mysql = MySQL()
 FOLDER_ABSEN = 'application/static/assets/absen/'
@@ -58,3 +59,4 @@ def errorhandler(e):
     return jsonify({"msg":"server error"})
 login_manager.init_app(app)
 mysql.init_app(app)
+CORS(app)
