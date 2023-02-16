@@ -150,24 +150,24 @@
                     </select></label><br>
                     <label>Bulan</label><br>
                     <label><select id="bulan" class="input100">
-                        <option class="input100" value="{{bulan[0]}}" selected>{{ bulan[0] }}</option>
-                        <option class="input100" value="{{bulan[1]}}" >{{ bulan[1] }}</option>
-                        <option class="input100" value="{{bulan[2]}}" >{{ bulan[2] }}</option>
-                        <option class="input100" value="{{bulan[3]}}" >{{ bulan[3] }}</option>
-                        <option class="input100" value="{{bulan[4]}}" >{{ bulan[4] }}</option>
-                        <option class="input100" value="{{bulan[5]}}" >{{ bulan[5] }}</option>
-                        <option class="input100" value="{{bulan[6]}}" >{{ bulan[6] }}</option>
-                        <option class="input100" value="{{bulan[7]}}" >{{ bulan[7] }}</option>
-                        <option class="input100" value="{{bulan[8]}}" >{{ bulan[8] }}</option>
-                        <option class="input100" value="{{bulan[9]}}" >{{ bulan[9] }}</option>
-                        <option class="input100" value="{{bulan[10]}}" >{{ bulan[10] }}</option>
-                        <option class="input100" value="{{bulan[11]}}" >{{ bulan[11] }}</option>
+                        <option class="input100" value="1" selected>{{ bulan[0] }}</option>
+                        <option class="input100" value="2" >{{ bulan[1] }}</option>
+                        <option class="input100" value="3" >{{ bulan[2] }}</option>
+                        <option class="input100" value="4" >{{ bulan[3] }}</option>
+                        <option class="input100" value="5" >{{ bulan[4] }}</option>
+                        <option class="input100" value="6" >{{ bulan[5] }}</option>
+                        <option class="input100" value="7" >{{ bulan[6] }}</option>
+                        <option class="input100" value="8" >{{ bulan[7] }}</option>
+                        <option class="input100" value="9" >{{ bulan[8] }}</option>
+                        <option class="input100" value="10" >{{ bulan[9] }}</option>
+                        <option class="input100" value="11" >{{ bulan[10] }}</option>
+                        <option class="input100" value="12" >{{ bulan[11] }}</option>
 
                     </select></label><br>
                     <label>Tahun</label><br>
                     
 					<div class="wrap-input100 validate-input" data-validate = "Please enter password">
-						<input id="tahun" class="input100" type="number" name="tahun" placeholder="tahun" value="{{ tahun }}">
+						<input id="tahun" class="input100" type="number" name="tahun" placeholder="2023" value="2023">
 						<span class="focus-input100"></span>
 					</div><br>
                     </center>
@@ -251,12 +251,6 @@
     
 <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
-        var ruangan = $('#ruangan').val();
-        var bulan = $('#bulan').val();
-        var tahun = $('#tahun').val();
         function initDatatable() {
                 $("#datatable").DataTable({
                     paging: false,
@@ -307,18 +301,23 @@
                 }, 500);
             }
             
-            function showPegawaiByRuang(ruang_id,bulan,tahun) {
-                var url = "/update/"+ruang_id+"/"+bulan+"/"+tahun;
+            function showPegawaiByRuang(ruangan,bulan,tahun) {
+                var url = "/update/"+ruangan+"/"+bulan+"/"+tahun;
                 var formData = {
-                    ruang_id: ruang_id,
+                    ruang_id: ruangan,
                     bulan: bulan,
                     tahun: tahun
                 };
                 axios.post(url, formData)
                     .then(function(response) {
-                        var data = response.data.data;
+                        console.log(response);
+                        var data = response.data;
+                        console.log(data);
                         var dataPegawai = data.data_pegawai;
+                        console.log(dataPegawai);
                         var dataJadwal = data.data_jadwal;
+                        console.log(dataJadwal);
+                        console.log(dataPegawai.length)
                         for (var i in dataPegawai) {
                             tambahBaris(dataPegawai[i], bulan, tahun);
                             if (i >= parseInt(dataPegawai.length - 1)) {
@@ -335,6 +334,7 @@
             }
 
             function tambahBaris(data, bulan, tahun) {
+                console.log(data,data.nip,tahun,bulan)
                 if (!$("#baris" + data.nip).length) {
                     generateRow(data.nip, data.nama, bulan, tahun);
                 }
@@ -384,8 +384,10 @@
             }
 
             function generateRow(nip, nama, bulan, tahun) {
+                console.log(nip,nama,bulan,tahun)
                 var html = '<tr><td>' + nama + '<br>' + nip + '</td>';
                 var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+                console.log(jumlahHari)
                 for (var hari = 1; hari <= jumlahHari; hari++) {
                     var idSelect = generateIdSelect(hari,bulan,tahun,nip);
                     if (checkSunday(hari, bulan, tahun)) {
@@ -395,11 +397,16 @@
                     }
                     html += '<select id="' + idSelect +'" class="form-control form-control-sm" onchange="updateOrInsertData(\''+nip+'\',\''+hari+'\',\''+idSelect+'\')">';
                     html += '<option value="0">Libur/Cuti/Kosong</option>';
-
+                    const fruits = ["Pagi", "Middle 1 (9-16)","Siang", "Malam","Middle 2 (10-17)","Middle 3 (11-18)","Middle 4 (12-19)"];
+                    fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
                     html += '</select>';
                     html += '</td>';
                 }
                 html += '</tr>';
+                console.log(html)
                 $("#table-pegawai").append($(html));
             }
 
@@ -410,28 +417,84 @@
                     text: message
                 });
             }
-            function update(){
-            $.get("/update/"+ruangan+"/"+bulan+"/"+tahun, function(data){
-                $("#output").html(data);
-            console.log(data);
-            var data = JSON.parse(data);
-            console.log(data);
-            var dataPegawai = JSON.parse(data.data_pegawai);
-            console.log(dataPegawai);
-            var dataJadwal = JSON.parse(data_jadwal);
-            console.log(dataJadwal);
-            
-            for (var i in dataPegawai.length) {
-                console.log(dataPegawai.nama[i])
-                tambahBaris(dataPegawai.nama[i], bulan, tahun);
-                    if (i >= parseInt(dataPegawai.length - 1)) {
-                        initSetSelectJadwal(dataJadwal);
-                        statusBtnShowPegawai(false);
-                        initDatatable();
+            $(function() {
+                $("#ruang").select2({width:'100%'});
+                $("#menu-jadwal-absensi").addClass("active");
+                $("#btn-show-pegawai").click(function() {
+                    $('#container-table').html("");
+                    /////////////////////////////
+                    var ruang = $('#ruangan').val();
+                    var bulan = $('#bulan').val();
+                    var tahun = $('#tahun').val();
+                    if (ruang == "") {
+                        alertWarning('Silahkan pilih ruangan.');
+                    } else if (bulan == "") {
+                        alertWarning('Silahkan pilih bulan.');
+                    } else if (tahun == "") {
+                        alertWarning('Silahkan masukan tahun.');
+                    } else if (tahun.length != 4) {
+                        alertWarning('Silahkan masukan tahun dengan benar.');
+                    } else {
+                        createTable(() => {
+                            headerTable(bulan,tahun);
+                            showPegawaiByRuang(ruang,bulan,tahun);
+                        });
                     }
-                }
+                });
             });
-        }
+        //     function update(){
+        //     var ruangan = $('#ruangan').val();
+        //     var bulan = $('#bulan').val();
+        //     var tahun = $('#tahun').val();
+        //     console.log(tahun)
+        //     $.get("/update/"+ruangan+"/"+bulan+"/"+tahun, function(data){
+        //         $("#output").html(data);
+        //     console.log(data);
+        //     var data = data;
+        //     console.log(data);
+        //     var dataPegawai = data.data_pegawai;
+        //     console.log(dataPegawai);
+        //     var dataJadwal = data.data_jadwal;
+        //     console.log(dataJadwal);
+        //     console.log(dataPegawai.length)
+        //     for (var i in dataPegawai) {
+        //         console.log("jln")
+        //         console.log(dataPegawai[i])
+        //         tambahBaris(dataPegawai[i], bulan, tahun);
+        //         console.log(tambahBaris(dataPegawai[i], bulan, tahun));
+        //             if (i >= parseInt(dataPegawai.length - 1)) {
+        //                 initSetSelectJadwal(dataJadwal);
+        //                 statusBtnShowPegawai(false);
+        //                 initDatatable();
+        //             }
+        //         }
+        //     });
+        // }
+        function updateOrInsertData(nip, hari, element) {
+                var selectShift = $("#" + element);
+                var url = "/updateOrInsertJawal";
+                var shiftId = selectShift.val();
+                var formData = {
+                    nip: nip,
+                    hari: hari,
+                    shift_id: shiftId,
+                    bulan: $('#bulan').val(),
+                    tahun: $('#tahun').val(),
+                    ruangan: $('#ruangan').val()
+                };
+                selectShift.attr('disabled', 'disabled');
+                axios.post(url, formData)
+                    .then(function(response) {
+                        let data = response.data.data;
+                        let meta = response.data.meta;
+                        toastr.success(meta.message);
+                        selectShift.removeAttr('disabled');
+                    })
+                    .catch(function(error) {
+                        toastr.error('Gagal simpan data!');
+                        selectShift.removeAttr('disabled');
+                    });
+            }
     </script>
 <script src="../../static/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="../../static/vendor/animsition/js/animsition.min.js"></script>

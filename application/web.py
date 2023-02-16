@@ -17,7 +17,7 @@ from datetime import datetime
     }
 }
 web = Blueprint('auth', __name__)
-@web.get("/update/<ruangan>/<bulan>/<tahun>")
+@web.post("/update/<ruangan>/<bulan>/<tahun>")
 def update(ruangan,bulan,tahun):
     cur = mysql.connection.cursor()
     print(ruangan)
@@ -27,9 +27,10 @@ def update(ruangan,bulan,tahun):
     datapegawai = cur.fetchall()
     cur.execute("SELECT tanggal, shift FROM jadwal inner join karyawan on jadwal.nip = karyawan.nip where karyawan.ruangan = '"+ ruangan+"'")
     datajadwalabsen = cur.fetchall()
-    cobajadwal=[[{"id":"#shift-01-07-2022","value":1},{"id":"#shift-02-07-2022","value":2}],[{"id":"#shift-01-07-2022","value":1},{"id":"#shift-02-07-2022","value":2}]]
+    cobajadwal=[]
     datapegawai= jsonify(datapegawai)
-    cobapegawai=[{"nip":"123","NAMA":"COBA"},{"nip":"123","NAMA":"COBA"}]
+    cobapegawai=[{"nip":"123","nama":"COBA"},{"nip":"123","nama":"COBA"}]
+    
     datajadwalabsen= jsonify(datajadwalabsen)
     # datajadwalabsenfix = []
     # for i in datapegawai:
@@ -40,7 +41,31 @@ def update(ruangan,bulan,tahun):
     # print(json.loads(datajadwalabsen))
     response = jsonify({"data_pegawai":cobapegawai,"data_jadwal":cobajadwal})
     #response = numpy.array(datapegawai,datajadwalabsen)
+    print(cobajadwal)
     return response
+@web.post("/updateOrInsertJadwal")
+def updateOrInsertJadwal(nip,hari,shift_id,bulan,tahun,ruangan):
+    print(nip)
+    cur = mysql.connection.cursor()
+    tanggal = datetime("Y-m-d",(tahun,bulan,hari))
+    print(tanggal)
+    cur.execute("SELECT tanggal, shift  FROM jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
+    datajadwalabsen = cur.fetchall()
+    if datajadwalabsen == "()":
+        cur.execute("INSERT INTO jadwal(nip,shift,ruangan,tanggal,bulan) VALUES(%s,%s,%s,%s,%s )",(nip,shift_id,ruangan,tanggal,bulan))
+        mysql.connection.commit()
+        return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil menambahkan Data","status":"success"}})
+    else:
+        if shift_id == 0:
+            #delete data
+            cur.execute("DELETE jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
+            mysql.connection.commit()
+            return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil hapus Data","status":"success"}})
+        else:
+            #update data
+            cur.execute("DELETE jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
+            mysql.connection.commit()
+            return jsonify({"data":"null","meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
 def form(init):
@@ -49,7 +74,7 @@ def form(init):
     ruangan = cur.fetchall()
     cur.execute("SELECT Nama FROM SHIFT")
     shift = cur.fetchall()
-    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
     tahun = datetime.today().year
     return render_template('dashboard/form.html', init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
 @web.route('/Editform/<init>/<no>') 
