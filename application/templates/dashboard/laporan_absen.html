@@ -10,7 +10,9 @@
         <div class="card mb-4">
             <div class="card-header" style="background-color: #E6B794;">
                 <i class="fas fa-table me-1"></i>
-                Data Absensi
+                Data Absensi berangkat
+                
+                <i class="fas fa-download me-1" style="float: right;" onclick="createPDF()"></i>
             </div>
             <div class="card-body">
                 <div class="dataTable-top">
@@ -24,27 +26,25 @@
                     </div>
                     <div></div>
                 </div>
-                {%for ruang in ruangan %}
-                <div id="{{ruang.0}}" class="dataTable-container" style="display:none">
-                    <table id="datatablesSimple" class="dataTable-table">
+                <div>
+                    <!-- <table id="example" class="dataTable-table display" style="width:100%">
                         <thead>
                             <tr>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Status</a></th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                           
                                 {% for row in dataabsen %}
-                                {% if row.3 == ruang.0 %}
                                 <tr>
                                     <td>{{ row.1 }}</td>
                                     <td>{{ row.2 }}</td>
@@ -61,27 +61,40 @@
                                 {% if row.10=='telat'%}
                                 <td style="color: red;">{{ row.10 }}</td>
                                 {% endif %}
-                            </tr>
-                                    {% endif %}
-                                    {% endfor %}
+                                </tr>
+                                    {% else %}
+                                <tr>
+                                    <td colspan="10">Tidak Ada Data</td>
+                                </tr>
+                                {% endfor %} 
                         </tbody>
-                    </table>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Office</th>
+                                <th>Age</th>
+                                <th>Start date</th>
+                                <th>Salary</th>
+                            </tr>
+                        </tfoot>
+                    </table> -->
                 </div>
-                {% endfor %}
-                <div id="semua" class="dataTable-container" style="display:none">
-                    <table id="datatablesSimple" class="dataTable-table">
+                {%for ruang in ruangan %}
+                <div id="{{ruang.0}}" class="dataTable-container" style="display:none">
+                    <br><table id="table{{ruang.0}}" class="dataTable-table display" style="width:100%" >
                         <thead>
                             <tr>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">tanggal</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Status</a></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,35 +125,140 @@
                         </tbody>
                     </table>
                 </div>
+                {% endfor %}
+                
+                <div id="semua" class="dataTable-container" style="display:none">
+                    <table id="tablesemua"class="dataTable-table display" style="width:100%" >
+                        <thead>
+                            <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Status</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                                {% for row in dataabsen %}
+                                <tr>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/assets/absen/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
+                                {% endif %}
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                                </tr>
+                                    {% else %}
+                                <tr>
+                                    <td colspan="10">Tidak Ada Data</td>
+                                </tr>
+                                {% endfor %} 
+                        </tbody>
+                     
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </main>
+
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="../../static/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="../../static/assets/demo/chart-bar-demo.js"></script>           
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 <script>
-    function RUANGAN() {
+    var table = $('#tablesemua').DataTable( {
+        paging: true,
+        searching: true
+    } );
+    console.log(table)
+    function clik(){
+    table.destroy();
+    table = $('#tablesemua').DataTable( {
+        searching: false
+    } );
+}
+</script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+    // Simple-DataTables
+    // https://github.com/fiduswriter/Simple-DataTables/wiki
+
+    var list_ruangan = '{{ruangan|tojson}}';
+    
+    list_ruangan= JSON.parse(list_ruangan);
+    
+    // for(let ruangan of list_ruangan) {
+    //     console.log("table"+ruangan)
+    //     $("#table"+ruangan).DataTable({        
+    //                 paging: true, 
+    //                 searching: true
+    //             });
+    // }
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
+
+})
+
+function RUANGAN() {
         let combo = document.getElementById("ruangan").value;
         var semua = document.getElementById("semua");
         var list_ruangan = '{{ruangan|tojson}}';
+        
         list_ruangan= JSON.parse(list_ruangan);
         function tampilsemua(){
             if (combo == "semua") {
                 semua.style.display = "block"
+                const tablesemua = document.getElementById("tablesemua");
+                table.destroy()
+                table = $("#tablesemua").DataTable({        
+                    paging: true, 
+                    searching: true
+                })
+                console.log(table)
             }
         }
         function asyncFunction (item, cb) {
             setTimeout(() => {
                 console.log('done with', item);
                 var datatable = document.getElementById(item);
+                const tbl = document.getElementById("table"+item);
                 console.log(combo)
                 if (combo == item) {
                     datatable.style.display = "block";
                     semua.style.display = "none"
                     console.log("ketemu")
+                    table.destroy()
+                    table = $("#table"+combo).DataTable({        
+                    paging: true, 
+                    searching: true
+                });
                 }
                 else {
                     datatable.style.display = "none"
                     semua.style.display = "none"
-
                 }
                 cb();
             }, 100);
@@ -151,15 +269,46 @@
             
             });
         })
-
         Promise.all(requests).then(() => tampilsemua());
     }
- 
- 
+
+    function createPDF() {
+        let combo = document.getElementById("ruangan").value;
+        table.destroy()
+        table = $("#table"+combo).DataTable( {
+            paging: false,
+            searching: false
+        });
+        
+        var sTable = document.getElementById(combo).innerHTML;
+        var style = "<style>";
+        style = style + "table {width: 100%;font: 17px Calibri;}";
+        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+        style = style + "padding: 2px 3px;text-align: center;}";
+        style = style + "</style>";
+
+        // CREATE A WINDOW OBJECT.
+        var win = window.open('', '', 'height=700,width=700');
+
+        win.document.write('<html><head>');
+        win.document.write('<title>LAPORAN ABSEN RUANGAN '+combo+'</title>');   // <title> FOR PDF HEADER.
+        win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
+        win.document.write('</head>');
+        win.document.write('<body>');
+        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+        win.document.write('</body></html>');
+
+        win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+
+        win.print();    // PRINT THE CONTENTS.
+        table.destroy()
+        table = $("#table"+combo).DataTable( {
+            paging: true,
+            searching: true
+        } );
+    }
 </script>
-
 {% endblock %}
-
 
 
 

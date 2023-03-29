@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <form action="/profile/update" method="post">
+        <input type="hidden" name="nip" value="{{profile[0]}}">
+        <input type="text" name="nama" id="" value="{{profile[1]}}">
+        <input type="email" name="email" value="{{profile[2]}}">
+        <input type="text" name="gender" id="" value="{{profile[3]}}">
+        <input type="date" name="ttl" value="{{profile[4]}}">
+        <input type="number" name="no_hp" value="{{profile[5]}}">
+        <textarea name="alamat" id="" cols="30" rows="10">{{profile[6]}}</textarea>
+    </form>
+</body>
+</html>

@@ -7,15 +7,7 @@ from application.auth import session,roles_required
 from time import time
 import time,random
 from datetime import datetime
-{
-    "total pegawai":{
-        "total hari":{
-            "tanggal ",
-            "shift"
-        }
 
-    }
-}
 web = Blueprint('auth', __name__)
 @web.post("/update/<ruangan>/<bulan>/<tahun>")
 def update(ruangan,bulan,tahun):
@@ -29,7 +21,7 @@ def update(ruangan,bulan,tahun):
     datajadwalabsen = cur.fetchall()
     cobajadwal=[]
     datapegawai= jsonify(datapegawai)
-    cobapegawai=[{"nip":"123","nama":"COBA"},{"nip":"123","nama":"COBA"}]
+    cobapegawai=[{"nip":"220712001","nama":"Bambang"},{"nip":"220712002","nama":"Farid"},{"nip":"220712003","nama":"Gilang"}]
     
     datajadwalabsen= jsonify(datajadwalabsen)
     # datajadwalabsenfix = []
@@ -55,14 +47,18 @@ def updateOrInsertJadwal():
     tanggal= tahun+"-"+bulan+"-"+hari
     #tanggal = datetime.strptime(tanggal,"%Y-%m-%d")
     print(tanggal)
-    listshift = ["pagi","middle","siang","malam"]
+    print(shift_id)
+    cur.execute("SELECT nama  FROM shift ")
+    listshift = cur.fetchall()
     for i in range(len(listshift)) :
         print(i)
         if str(i+1) == shift_id:
-            shift = listshift[i]
+            shift = listshift[i][0]
+            break
 
     cur.execute("SELECT tanggal, shift  FROM jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
     datajadwalabsen = cur.fetchall()
+    print(shift)
     print(datajadwalabsen)
     if datajadwalabsen == ():
         print("kosong")
@@ -82,6 +78,15 @@ def updateOrInsertJadwal():
             mysql.connection.commit()
             return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
     return "coba"
+@web.route('/profile') 
+@roles_required('admin','HRD','karu')
+def profile():
+    id = session['id']
+    role = session['role']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT login.nip, nama, email, gender, ttl, alamat, no_hp FROM login inner join %s on %s.nip = login.nip WHERE  nip = %s ",(role,role,id,))
+    dataprofile = cur.fetchone()
+    return render_template('profile.html',dataprofile=dataprofile)
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
 def form(init):
@@ -198,9 +203,10 @@ def shift():
     shift = cur.fetchall()
     day= datetime.strptime("2","%d")
     listx = list(shift) 
+
     for i in range(len(listx)):
         if listx[i][1]=="malam":
-            a = listx[i][3]-listx[i][2]+day
+            a = listx[i][3]-listx[i][2]+day #timedelta(days=1)
             b = str(a.hour)+':'+str(a.minute)+'0:0'+str(a.second)
             c = (b,)
             listx[i] = listx[i]+c

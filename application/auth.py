@@ -48,7 +48,7 @@ def index():
             return redirect(url_for('auth.index'))
         else:
             print('The user is in this role.')
-            return render_template('dashboard/index.html', username=session['username'])
+            return redirect(url_for('auth.dashboard'))
     else:
         message = request.args.get('alert')
         return render_template('index.html',message=message)
@@ -62,7 +62,99 @@ def dashboard():
             return redirect(url_for('auth.index'))
         else:
             print('The user is in this role.')
-            return render_template('dashboard/index.html', username=session['username'])
+            cur = mysql.connection.cursor()
+            print(tanggal)
+            cur.execute(
+                'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
+                ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
+                ' WHERE dataabsen.status = "telat" AND dataabsen.tanggal = "'+tanggal+'"'
+                ' GROUP by dataabsen.status DESC')
+            datatelat = cur.fetchall()
+            print(datatelat)
+            tahun=str(time.gmtime().tm_year)
+            bulan=a.tm_mon
+            nmbulan=''
+            jumlahHari=''
+            if bulan==1: 
+                nmbulan="jan"
+                jumlahHari=31
+            elif bulan==2:
+                nmbulan="feb"
+                if((tahun %4 == 0 and tahun % 100 !=0) or tahun % 400 == 0):
+                    jumlahHari = 29
+                else:
+                    jumlahHari = 28
+            elif bulan==3:
+                nmbulan="mar"
+                jumlahHari= 31
+            elif bulan==4:
+                nmbulan="apr"
+                jumlahHari = 30
+            elif bulan==5:
+                nmbulan="mei"
+                jumlahHari = 31
+            elif bulan== 6:
+                nmbulan="jun"
+                jumlahHari = 30
+            elif bulan== 7:
+                nmbulan="jul"
+                jumlahHari = 31
+            elif bulan== 8:
+                nmbulan="agu"
+                jumlahHari = 31
+            elif bulan== 9:
+                nmbulan="sep"
+                jumlahHari = 30
+            elif bulan== 10:
+                nmbulan="okt"
+                jumlahHari = 31
+            elif bulan== 11:
+                nmbulan="nov"
+                jumlahHari = 30
+            elif bulan== 12:
+                nmbulan="des"
+                jumlahHari =31
+            
+            tgl = a.tm_mday
+
+            cur.execute(
+                'SELECT nama from ruangan')
+            ruangan = cur.fetchall()
+            
+            print(jumlahHari)
+            setengahbln = jumlahHari/2
+            if tgl < setengahbln:
+                lbl = []
+                data =[]
+                for i in 1..setengahbln:
+                    print(i)
+                    lbl.append(str(nmbulan)+" "+str(i))
+                    cari = ""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(i)+""
+                    cur.execute('SELECT jml_telat from statistik_org_telat where tanggal = %s',(cari,))
+                    item = cur.fetchone()
+                    if item == None:
+                        data.append(0)
+                    else:
+                        data.append(item)
+                
+            else:
+                lbl = []
+                data =[]
+                mulai = int(setengahbln)
+                for i in range(mulai,jumlahHari):
+                    print(i)
+                    lbl.append(str(nmbulan)+" "+str(i))
+                    cari = ""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(i)+""
+                    print(cari)
+                    cur.execute('SELECT jml_telat from statistik_org_telat where tanggal = %s',(cari,))
+                    item = cur.fetchone()
+                    print(item)
+                    if item == None:
+                        data.append(0)
+                    else:
+                        data.append(item)
+            print(data)
+            return render_template('dashboard/index.html', username=session['username'],datatelat=datatelat,ruangan=ruangan,tahun=tahun,bulan=bulan,nmbulan=nmbulan,tgl=tgl, lbl=lbl,data=data)   
     else:
         return redirect(url_for('auth.index'))
 @auth.route('/api/login',methods=['POST'])
