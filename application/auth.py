@@ -10,6 +10,10 @@ auth = Blueprint('auth', __name__)
 
 a=time.localtime()
 tanggal=""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(a.tm_mday)+""
+
+def convertTuple(tup):
+    return ''.join([str(x) for x in tup])
+
 def roles_required(*role_names):
     def decorator(original_route):
         @wraps(original_route)
@@ -130,7 +134,7 @@ def dashboard():
                     print(i)
                     lbl.append(str(nmbulan)+" "+str(i))
                     cari = ""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(i)+""
-                    cur.execute('SELECT jml_telat from statistik_org_telat where tanggal = %s',(cari,))
+                    cur.execute('SELECT Count(*) from dataabsen where tanggal = %s and status= "telat" ',(cari,))
                     item = cur.fetchone()
                     if item == None:
                         data.append(0)
@@ -146,7 +150,7 @@ def dashboard():
                     lbl.append(str(nmbulan)+" "+str(i))
                     cari = ""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(i)+""
                     print(cari)
-                    cur.execute('SELECT jml_telat from statistik_org_telat where tanggal = %s',(cari,))
+                    cur.execute('SELECT Count(*) from dataabsen where tanggal = %s and status= "telat" ',(cari,))
                     item = cur.fetchone()
                     print(item)
                     if item == None:
@@ -154,7 +158,18 @@ def dashboard():
                     else:
                         data.append(item)
             print(data)
-            return render_template('dashboard/index.html', username=session['username'],datatelat=datatelat,ruangan=ruangan,tahun=tahun,bulan=bulan,nmbulan=nmbulan,tgl=tgl, lbl=lbl,data=data)   
+            cur.execute('SELECT Count(*) from karyawan where posisi ="Perawat"')
+            perawat = cur.fetchone()
+            cur.execute('SELECT Count(*) from karyawan where posisi ="Dokter Umum"')
+            dokter_umum = cur.fetchone()
+            cur.execute('SELECT Count(*) from karu ')
+            karu = cur.fetchone() 
+            cur.execute('SELECT Count(*) from admin')
+            admin = cur.fetchone()
+            lblkaryawan = ['perawat','dokter umum', 'kepala ruangan','admin']
+            datakaryawan = [[int(convertTuple(perawat))],[int(convertTuple(dokter_umum))],[int(convertTuple(karu))],[int(convertTuple(admin))]]
+            print(datakaryawan)
+            return render_template('dashboard/index.html', username=session['username'],datatelat=datatelat,ruangan=ruangan,nmbulan=nmbulan, lbl=lbl,data=data,lblkaryawan=lblkaryawan,datakaryawan=datakaryawan)   
     else:
         return redirect(url_for('auth.index'))
 @auth.route('/api/login',methods=['POST'])

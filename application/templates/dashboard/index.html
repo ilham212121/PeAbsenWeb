@@ -10,32 +10,33 @@
         Di Aplikasi
         RSU Islam Harapan Anda
         <div class="row">
-            <div class="col-xl-6">
+            <div class="col-xl-6" id="cetakareachart">
                 <div class="card mb-4">
                     <div class="card-header" style="background-color: #E6B794;">
                         <i class="fas fa-chart-area me-1"></i>
                     statistika kedisplinan pegawai
-                    <i class="fas fa-download me-1" style="float: right;"></i>
+                    <i class="fas fa-download me-1" style="float: right;" onclick="cetakareachart()"></i>
                     </div>
                     <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
                 </div>
             </div>
-            <div class="col-xl-6">
+            <div class="col-xl-6" id="cetakbarchart">
                 <div class="card mb-4">
                     <div class="card-header" style="background-color: #E6B794;">
                         <i class="fas fa-chart-bar me-1"></i>
-                        Bar Chart Example
-                        <i class="fas fa-download me-1" style="float: right;"></i>
+                        Data jumlah Karyawan
+                        <i class="fas fa-download me-1" style="float: right;" onclick="cetakbarchart()"></i>
                     </div>
                     <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
                 </div>
             </div>
         </div>
+        
         <div class="card mb-4">
             <div class="card-header" style="background-color: #E6B794;">
                 <i class="fas fa-table me-1"></i>
                 Data Karyawan yang Telat hari ini
-                <i class="fas fa-download me-1" style="float: right;" ></i>
+                <i class="fas fa-download me-1" style="float: right;" onclick="cetaktable()" ></i>
             </div>
             <div class="card-body">
                 <div class="dataTable-top">
@@ -48,40 +49,98 @@
                     </select> pilih ruangan</label>
                 </div>
                 </div>
-                <table id="datatablesSimple">
-
-                    <thead>
-                        <tr>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Shift</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Latitude</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Longitude</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Foto</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Waktu</a></th>
-                            <th data-sortable=""><a href="#" class="dataTable-sorter">Status</a></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {% for row in datatelat %}
-                        <tr>
-                            <td>{{ row.1 }}</td>
-                            <td>{{ row.2 }}</td>
-                            <td>{{ row.3 }}</td>
-                            <td>{{ row.4 }}</td>
-                            <td>{{ row.5 }}</td>
-                            <td>{{ row.6 }}</td>
-                            <td><img src="../../static/assets/absen/{{ row.7 }}" width="100px" height="100px"></td>
-                            <td>{{ row.8 }}</td>
-                            <td>{{ row.9 }}</td>
-                            <td style="color: red;">{{ row.10 }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {%for ruang in ruangan %}
+                <div id="{{ruang.0}}" class="dataTable-container" style="display:none">
+                    <br><table id="table{{ruang.0}}" class="dataTable-table display" style="width:100%" >
+                        <thead>
+                            <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Status</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                                {% for row in datatelat %}
+                                <tr>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/assets/absen/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
+                                {% endif %}
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                                </tr>
+                                    {% else %}
+                                <tr>
+                                    <td colspan="10">Tidak Ada Data</td>
+                                </tr>
+                                {% endfor %} 
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+                
+                <div id="semua" class="dataTable-container" style="display:none">
+                    <table id="tablesemua"class="dataTable-table display" style="width:100%" >
+                        <thead>
+                            <tr>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >tanggal</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Waktu</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Status</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                                {% for row in datatelat %}
+                                <tr>
+                                    <td>{{ row.1 }}</td>
+                                    <td>{{ row.2 }}</td>
+                                    <td>{{ row.3 }}</td>
+                                    <td>{{ row.4 }}</td>
+                                    <td>{{ row.5 }}</td>
+                                    <td>{{ row.6 }}</td>
+                                    <td><img src="../../static/assets/absen/{{ row.7 }}" width="100px" height="100px"></td>
+                                    <td>{{ row.8 }}</td>
+                                    <td>{{ row.9 }}</td>
+                                {% if row.10=='tepat waktu'%}
+                                <td style="color: green;">{{ row.10 }}</td>
+                                {% endif %}
+                                {% if row.10=='telat'%}
+                                <td style="color: red;">{{ row.10 }}</td>
+                                {% endif %}
+                                </tr>
+                                    {% else %}
+                                <tr>
+                                    <td colspan="10">Tidak Ada Data</td>
+                                </tr>
+                                {% endfor %} 
+                        </tbody>
+                     
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -93,35 +152,55 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="../../static/js/scripts.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-<script src="../../static/assets/demo/chart-bar-demo.js"></script>           
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script> 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@1.5.3/dist/jspdf.min.js"></script>        
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="../../static/app-assets/vendors/js/toastr.min.js"></script>
 <script>
-    function RUANGAN() {
+        var table = $('#tablesemua').DataTable( {
+            paging: true,
+            searching: true
+        } );
+        console.log(table)
+</script>
+<script>
+function RUANGAN() {
         let combo = document.getElementById("ruangan").value;
         var semua = document.getElementById("semua");
         var list_ruangan = '{{ruangan|tojson}}';
+        
         list_ruangan= JSON.parse(list_ruangan);
         function tampilsemua(){
             if (combo == "semua") {
                 semua.style.display = "block"
+                const tablesemua = document.getElementById("tablesemua");
+                table.destroy()
+                table = $("#tablesemua").DataTable({        
+                    paging: true, 
+                    searching: true
+                })
+                console.log(table)
             }
         }
         function asyncFunction (item, cb) {
             setTimeout(() => {
                 console.log('done with', item);
                 var datatable = document.getElementById(item);
+                const tbl = document.getElementById("table"+item);
                 console.log(combo)
                 if (combo == item) {
                     datatable.style.display = "block";
                     semua.style.display = "none"
                     console.log("ketemu")
+                    table.destroy()
+                    table = $("#table"+combo).DataTable({        
+                    paging: true, 
+                    searching: true
+                });
                 }
                 else {
                     datatable.style.display = "none"
                     semua.style.display = "none"
-
                 }
                 cb();
             }, 100);
@@ -132,10 +211,8 @@
             
             });
         })
-
         Promise.all(requests).then(() => tampilsemua());
     }
-
 
 </script>
 <script>
@@ -146,40 +223,36 @@ Chart.defaults.global.defaultFontColor = '#292b2c';
 
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
-var tahun = '{{tahun}}';
-var bulan = '{{bulan}}';
-var nmbulan = '{{nmbulan}}';
-var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
-console.log(jumlahHari)
-var tgl ='{{tgl}}';
-var setengahbln = jumlahHari/2;
-console.log(setengahbln)
-if (tgl < setengahbln){
-    var lbl = []
-    for (let i = 1; i < setengahbln; i++){
-        console.log(i)
-        lbl.push(nmbulan+" "+Math.floor(i))
-    }
-}
-else{
-    var lbl = []
-    for (let i = Math.floor(setengahbln); i < jumlahHari; i++){
-        console.log(i)
-        lbl.push(nmbulan+" "+Math.floor(i))
-    }
-}
+// var tahun = '{{tahun}}';
+// var bulan = '{{bulan}}';
+// var nmbulan = '{{nmbulan}}';
+// var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+// console.log(jumlahHari)
+// var tgl ='{{tgl}}';
+// var setengahbln = jumlahHari/2;
+// console.log(setengahbln)
+// if (tgl < setengahbln){
+//     var lbl = []
+//     for (let i = 1; i < setengahbln; i++){
+//         console.log(i)
+//         lbl.push(nmbulan+" "+Math.floor(i))
+//     }
+// }
+// else{
+//     var lbl = []
+//     for (let i = Math.floor(setengahbln); i < jumlahHari; i++){
+//         console.log(i)
+//         lbl.push(nmbulan+" "+Math.floor(i))
+//     }
+// }
 var lbl = '{{lbl|tojson}}'
 var data = '{{data|tojson}}'
-console.log(lbl)
-console.log(String.fromCharCode(parseInt(lbl,16)))
-console.log(data)
-console.log(JSON.parse(data))
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: JSON.parse(lbl),
     datasets: [{
-      label: "Sessions",
+      label: "jml telat",
       lineTension: 0.3,
       backgroundColor: "rgba(2,117,216,0.2)",
       borderColor: "rgba(2,117,216,1)",
@@ -222,5 +295,112 @@ var myLineChart = new Chart(ctx, {
     }
   }
 });
+</script>
+<script>
+    // Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#292b2c';
+
+// Bar Chart Example
+var ctx = document.getElementById("myBarChart");
+var lblkaryawan = '{{lblkaryawan|tojson}}'
+var datakaryawan = '{{datakaryawan|tojson}}'
+var myBarChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: JSON.parse(lblkaryawan),
+    datasets: [{
+      label: "jumlah",
+      backgroundColor: "rgba(2,117,216,1)",
+      borderColor: "rgba(2,117,216,1)",
+      data: JSON.parse(datakaryawan),
+    }],
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'month'
+        },
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          maxTicksLimit: 6
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          min: 0,
+          max: 10,
+          maxTicksLimit: 5
+        },
+        gridLines: {
+          display: true
+        }
+      }],
+    },
+    legend: {
+      display: false
+    }
+  }
+});
+
+</script>
+<script>
+       function cetakareachart() {
+        var canvas = document.getElementById("myAreaChart");
+        var canvas_img = canvas.toDataURL("image/png",1.0); //JPEG will not match background color
+        var pdf = new jsPDF('landscape','in', 'letter'); //orientation, units, page size
+        pdf.addImage(canvas_img, 'png', .5, 1.75, 10, 5); //image, type, padding left, padding top, width, height
+        pdf.autoPrint(); //print window automatically opened with pdf
+        var blob = pdf.output("bloburl");
+        window.open(blob);
+       }
+       function cetakbarchart() {
+        var canvas = document.getElementById("myBarChart");
+        var canvas_img = canvas.toDataURL("image/png",1.0); //JPEG will not match background color
+        var pdf = new jsPDF('landscape','in', 'letter'); //orientation, units, page size
+        pdf.addImage(canvas_img, 'png', .5, 1.75, 10, 5); //image, type, padding left, padding top, width, height
+        pdf.autoPrint(); //print window automatically opened with pdf
+        var blob = pdf.output("bloburl");
+        window.open(blob);
+       }
+        function cetaktable() {
+        let combo = document.getElementById("ruangan").value;
+        table.destroy()
+        table = $("#table"+combo).DataTable( {
+            paging: false,
+            searching: false
+        });
+        
+        var sTable = document.getElementById(combo).innerHTML;
+        var style = "<style>";
+        style = style + "table {width: 100%;font: 17px Calibri;}";
+        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+        style = style + "padding: 2px 3px;text-align: center;}";
+        style = style + "</style>";
+
+        // CREATE A WINDOW OBJECT.
+        var win = window.open('', '', 'height=700,width=700');
+
+        win.document.write('<html><head>');
+        win.document.write('<title>LAPORAN ABSEN RUANGAN '+combo+'</title>');   // <title> FOR PDF HEADER.
+        win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
+        win.document.write('</head>');
+        win.document.write('<body>');
+        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+        win.document.write('</body></html>');
+
+        win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+
+        win.print();    // PRINT THE CONTENTS.
+        table.destroy()
+        table = $("#table"+combo).DataTable( {
+            paging: true,
+            searching: true
+        } );
+    }
+    
 </script>
 {% endblock %}
