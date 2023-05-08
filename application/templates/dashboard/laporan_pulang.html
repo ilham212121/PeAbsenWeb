@@ -81,7 +81,7 @@
                     </table> -->
                 </div>
                 {%for ruang in ruangan %}
-                <div id="{{ruang.0}}" class="dataTable-container" style="display:none">
+                <div id="{{ruang.0}}" class="table-responsive dataTable-container" style="display:none">
                     <br><table id="table{{ruang.0}}" class="dataTable-table display" style="width:100%" >
                         <thead>
                             <tr>
@@ -98,7 +98,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
                                 {% for row in datapulang %}
                                 <tr>
                                     <td>{{ row.1 }}</td>
@@ -130,14 +129,14 @@
                 </div>
                 {% endfor %}
                 
-                <div id="semua" class="dataTable-container" style="display:none">
+                <div id="semua" class="table-responsive dataTable-container" style="display:none">
                     <table id="tablesemua"class="dataTable-table display" style="width:100%" >
                         <thead>
                             <tr>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+h                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
@@ -147,7 +146,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
+
                                 {% for row in datapulang %}
                                 <tr>
                                     <td>{{ row.1 }}</td>

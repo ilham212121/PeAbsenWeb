@@ -1,8 +1,10 @@
 from functools import wraps
+import pandas as pd
 import random
-import string
+import string,os
 from time import time
 import time
+import xlsxwriter
 from application import app,mysql,allowed_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, render_template, redirect, session, url_for,request,flash, jsonify
@@ -130,7 +132,7 @@ def dashboard():
             if tgl < setengahbln:
                 lbl = []
                 data =[]
-                for i in 1..setengahbln:
+                for i in range(1,int(setengahbln)):
                     print(i)
                     lbl.append(str(nmbulan)+" "+str(i))
                     cari = ""+str(time.gmtime().tm_year)+"-"+str(a.tm_mon)+"-"+str(i)+""
@@ -140,7 +142,6 @@ def dashboard():
                         data.append(0)
                     else:
                         data.append(item)
-                
             else:
                 lbl = []
                 data =[]
@@ -158,6 +159,7 @@ def dashboard():
                     else:
                         data.append(item)
             print(data)
+            print(session['role'])
             cur.execute('SELECT Count(*) from karyawan where posisi ="Perawat"')
             perawat = cur.fetchone()
             cur.execute('SELECT Count(*) from karyawan where posisi ="Dokter Umum"')
@@ -169,7 +171,92 @@ def dashboard():
             lblkaryawan = ['perawat','dokter umum', 'kepala ruangan','admin']
             datakaryawan = [[int(convertTuple(perawat))],[int(convertTuple(dokter_umum))],[int(convertTuple(karu))],[int(convertTuple(admin))]]
             print(datakaryawan)
-            return render_template('dashboard/index.html', username=session['username'],datatelat=datatelat,ruangan=ruangan,nmbulan=nmbulan, lbl=lbl,data=data,lblkaryawan=lblkaryawan,datakaryawan=datakaryawan)   
+
+            # Create an new Excel file and add a worksheet.
+            excellpth = os.path.join(app.config['FOLDER_EXCELL'], 'table-kedisiplinan.xlsx')
+            workbook = xlsxwriter.Workbook(excellpth)
+            worksheet = workbook.add_worksheet()
+
+            # Insert an image.
+            imgpth = os.path.join(app.config['FOLDER_ABSEN'], '2207120012022-7-1676AM.jpg')
+            worksheet.write('A1', 'bulan')
+            worksheet.write('B1', 'jumlah telat')
+
+            for i in range(len(lbl)):
+                print(str(i+2)+'y', data[int(i)])
+                worksheet.write('A'+str(i+2)+'', lbl[int(i)])
+                worksheet.write('B'+str(i+2)+'', data[int(i)][0])
+           
+            workbook.close()
+            
+            excellpth = os.path.join(app.config['FOLDER_EXCELL'], 'table-karyawan.xlsx')
+            workbook = xlsxwriter.Workbook(excellpth)
+            worksheet = workbook.add_worksheet()
+
+            # Widen the first column to make the text clearer.
+            worksheet.write('A1', 'posisi karyawan')
+            worksheet.write('B1', 'jumlah karyawan')
+
+            for i in range(len(lblkaryawan)):
+                worksheet.write('A'+str(i+2)+'', lblkaryawan[int(i)])
+                worksheet.write('B'+str(i+2)+'', datakaryawan[int(i)][0])
+
+            workbook.close()
+            
+            excellpth = os.path.join(app.config['FOLDER_EXCELL'], 'table-telat-hari-ini.xlsx')
+            lbltlt = ['NIP','Nama','Ruangan','Shift','Latitude','Longitude','Foto','Tanggal','Waktu','Status']
+            
+            workbook = xlsxwriter.Workbook(excellpth)
+            worksheet = workbook.add_worksheet()
+            
+            # Widen the image column to make space for the image clearer.
+            worksheet.set_column("G:G", 23)
+            print(range(len(lbltlt)))
+            kolom = ["A","B","C","D","E","F","G","H","I","J"]
+            for j in range(len(datatelat)):
+                worksheet.set_row(int(j+1), 125)
+                for i in  range(len(kolom)):
+                    print(kolom[int(i)])
+                    # Insert an image.
+                    worksheet.write(str(kolom[i])+'1', lbltlt[int(i)])
+                    if str(kolom[int(i)]) == "G":
+                        imgpth = os.path.join(app.config['FOLDER_ABSEN'], datatelat[j][int(i+1)])
+                        worksheet.insert_image(str(kolom[int(i)])+str(j+2),imgpth,{'x_scale': 0.5, 'y_scale': 0.5})
+                    else:
+                        #insert data
+                        worksheet.write(str(kolom[i])+str(j+2), datatelat[j][int(i+1)])
+                    
+            workbook.close()
+            # data={}
+            # z= ''
+            # for i in datatelat :
+            #     a = []
+            #     for j in datatelat[i]:
+            #         a.append(datatelat[i][j])
+            #     b = ''
+            # data = {'p': ['computer', 'printer', 'tablet', 'monitor'],
+            #         'price': [1200, 150, 300, 450]
+            #         }
+
+            # df = pd.DataFrame(data)
+
+            # df.to_excel(r'C:\Users\Ilhkam\Documents\GitHub\PeAbsenWeb\application\static\api\table-kedisiplin.xlsx', index=False)
+            # data = {'product_name': ['computer', 'printer', 'tablet', 'monitor'],
+            #         'price': [1200, 150, 300, 450]
+            #         }
+
+            # df = pd.DataFrame(data)
+
+            # df.to_excel(r'C:\Users\Ilham\Documents\GitHub\PeAbsenWeb\application\static\api\table-karyawan.xlsx', index=False)
+            # data = {'product_name': ['computer', 'printer', 'tablet', 'monitor'],
+            #         'price': [1200, 150, 300, 450]
+            #         }
+
+            # df = pd.DataFrame(data)
+
+            # df.to_excel(r'C:\Users\Ilham\Documents\GitHub\PeAbsenWeb\application\static\api\table-telat-hari-ini.xlsx', index=False)
+            
+            return render_template('dashboard/index.html',datatelat=datatelat,ruangan=ruangan,nmbulan=nmbulan, lbl=lbl,data=data,lblkaryawan=lblkaryawan,datakaryawan=datakaryawan)   
     else:
         return redirect(url_for('auth.index'))
 @auth.route('/api/login',methods=['POST'])

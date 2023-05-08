@@ -8,11 +8,13 @@ app = Flask(__name__)
 mysql = MySQL()
 FOLDER_ABSEN = 'application/static/assets/absen/'
 FOLDER_PULANG = 'application/static/assets/pulang/'
+FOLDER_EXCELL = 'application/static/api/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):     
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 app.config['FOLDER_ABSEN'] = FOLDER_ABSEN
 app.config['FOLDER_PULANG'] = FOLDER_PULANG
+app.config['FOLDER_EXCELL'] = FOLDER_EXCELL
 app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= 'localhost'
 app.config['MYSQL_USER'] = 'root'

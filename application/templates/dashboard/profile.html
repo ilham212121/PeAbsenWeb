@@ -1,20 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-</head>
-<body>
-    <form action="/profile/update" method="post">
-        <input type="hidden" name="nip" value="{{profile[0]}}">
-        <input type="text" name="nama" id="" value="{{profile[1]}}">
-        <input type="email" name="email" value="{{profile[2]}}">
-        <input type="text" name="gender" id="" value="{{profile[3]}}">
-        <input type="date" name="ttl" value="{{profile[4]}}">
-        <input type="number" name="no_hp" value="{{profile[5]}}">
-        <textarea name="alamat" id="" cols="30" rows="10">{{profile[6]}}</textarea>
+{% extends "dashboard/base.html" %}
+{% block content %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">profile</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">profile</li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #E6B794;">
+                <i class="fas fa-table me-1"></i>
+                update profile
+            </div><br>
+            <div class="card-body">
+                <form action="/profile/update" method="post">
+                    <input type="hidden" name="nip" value="{{dataprofile[0]}}">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputEmail" name="nama" type="text" value="{{dataprofile[1]}}" placeholder=" nama lengkap" />
+                        <label for="inputEmail">nama lengkap</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" name="email" id="inputEmail" type="email" value="{{dataprofile[2]}}" placeholder="email" />
+                        <label for="inputEmail">Email address</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        {% if dataprofile[3] == "L" %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="L" name="gender" id="flexRadioDefault1" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                laki - laki
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio"  value="P" name="gender" id="flexRadioDefault2">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                perempuan 
+                            </label>
+                          </div>
+                        {% else %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="L" name="gender" id="flexRadioDefault1">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                laki - laki
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio"  value="P" name="gender" id="flexRadioDefault2" checked>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                perempuan 
+                            </label>
+                          </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputEmail" type="date" name="ttl" value="{{dataprofile[4]}}"/>
+                        <label for="inputEmail">tanggal lahir</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputEmail" type="number" name="no_hp" value="{{dataprofile[6]}}" placeholder="08***" />
+                        <label for="inputEmail">nomor hp </label>
+                    </div>
+                        <div class="form-control">
+                        <label for="exampleFormControlTextarea1">Alamat</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="alamat" rows="3">{{dataprofile[5]}}</textarea>
+                    </div>
+                    <button type="submit" class="btn card bg-info text-white mt-3">Submit</button>
+                </form>
+            </div>
     </form>
-</body>
-</html>
+    </div>
+    </div>
+    </main>
+    
+{% endblock %}
+{% block footer %}
+
+{% endblock %}

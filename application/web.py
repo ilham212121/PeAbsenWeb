@@ -84,9 +84,32 @@ def profile():
     id = session['id']
     role = session['role']
     cur = mysql.connection.cursor()
-    cur.execute("SELECT login.nip, nama, email, gender, ttl, alamat, no_hp FROM login inner join %s on %s.nip = login.nip WHERE  nip = %s ",(role,role,id,))
+    cur.execute("SELECT login.nip, nama, email, gender, ttl, alamat, no_hp FROM login inner join "+role+" on "+role+".nip = login.nip WHERE  login.nip = %s ",(id,))
     dataprofile = cur.fetchone()
-    return render_template('profile.html',dataprofile=dataprofile)
+    return render_template('dashboard/profile.html',dataprofile=dataprofile)
+@web.route('/profile/update', methods=['POST']) 
+@roles_required('admin','HRD','karu')
+def profileupdate():
+    id = session['id']
+    print(id)
+    role = session['role']
+    print(role)
+    nama = request.form['nama'] 
+    print(nama)
+    email = request.form['email'] 
+    print(email)
+    gender = request.form['gender'] 
+    print(gender)
+    ttl = request.form['ttl'] 
+    print(ttl)
+    alamat = request.form['alamat'] 
+    print(alamat)
+    no_hp = request.form['no_hp']
+    print(no_hp)
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE login inner join "+role+" on "+role+".nip = login.nip SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s, no_hp=%s WHERE login.nip = %s ",(nama, email, gender, ttl, alamat, no_hp,id,))
+    mysql.connection.commit()
+    return redirect(url_for('web.profile'))
 @web.route('/form/<init>') 
 @roles_required('admin','HRD','karu')
 def form(init):
@@ -98,40 +121,93 @@ def form(init):
     bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
     tahun = datetime.today().year
     return render_template('dashboard/form.html', init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
-@web.route('/Editform/<init>/<no>') 
-@roles_required('admin','HRD','karu')
-def editform(init,no):
-    cur = mysql.connection.cursor()
-    if init=='admin':
+@web.route('/edit/admin/<no>',methods=['GET','PUT']) 
+@roles_required('admin')
+def editformadmin(no):
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM admin where nip= %s",(no,))
         admin = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin=admin,hrd="",karyawan="",karu="",jadwal="",shift="")
-    if init=='hrd':
+        return render_template('dashboard/formedit.html',init="admin",data=admin)
+    elif request.method == "PUT":
+        cur = mysql.connection.cursor()
+        nama = request.json['nama']
+        email = request.json[ 'email']
+        gender = request.json[ 'gender']
+        tanggal_lahir = request.json['tanggal_lahir']
+        alamat = request.json['alamat']
+        no_hp = request.json['no_hp']
+        cur.execute("UPDATE admin SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s,no_hp=%s where nip= %s",(nama,email,gender,tanggal_lahir,alamat,no_hp, str(no),))
+        mysql.connection.commit()
+        return jsonify({"status":"sukses","url":"/data_admin?msg='data berhasil diedit'"})
+@web.route('/edit/hrd/<no>',methods=['GET','PUT']) 
+@roles_required('admin','HRD')
+def editformhrd(no):
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM hrd where nip= %s",(no,))
         hrd = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin="",hrd=hrd,karyawan="",karu="",jadwal="",shift="")
-    if init=='karyawan':
-        cur.execute("SELECT * FROM karyawan where nip= %s",(no,))
-        karyawan = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan=karyawan,karu="",jadwal="",shift="")
-    if init=='karu':
+        return render_template('dashboard/formedit.html',init="hrd",data=hrd)
+    elif request.method == "PUT":
+        cur = mysql.connection.cursor()
+        nama = request.json['nama']
+        email = request.json[ 'email']
+        gender = request.json[ 'gender']
+        tanggal_lahir = request.json['tanggal_lahir']
+        alamat = request.json['alamat']
+        no_hp = request.json['no_hp']
+        cur.execute("UPDATE hrd SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s,no_hp=%s where nip= %s",(nama,email,gender,tanggal_lahir,alamat,no_hp, str(no),))
+        mysql.connection.commit()
+        return redirect(url_for('web.data_hrd'))
+    
+@web.route('/edit/karu/<no>',methods=['GET','PUT']) 
+@roles_required('admin','HRD','karu')
+def editformkaru(no):
+    
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM karu where nip= %s",(no,))
         karu = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu=karu,jadwal="",shift="")
-    if init=='jadwal':
-        cur.execute("SELECT * FROM jadwal where id= %s",(no,))
-        jadwal = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal=jadwal,shift="")
-    if init=='shift':
-        cur.execute("SELECT * FROM shift where id= %s",(no,))
-        shift = cur.fetchall()
-        return render_template('dashboard/formedit.html',init=init,admin="",hrd="",karyawan="",karu="",jadwal="",shift=shift)
+        return render_template('dashboard/formedit.html',init="karu",data=karu)
+    
+    elif request.method == "PUT":
+        cur = mysql.connection.cursor()
+        nama = request.json['nama']
+        email = request.json[ 'email']
+        gender = request.json[ 'gender']
+        tanggal_lahir = request.json['tanggal_lahir']
+        alamat = request.json['alamat']
+        no_hp = request.json['no_hp']
+        cur.execute("UPDATE karu SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s,no_hp=%s where nip= %s",(nama,email,gender,tanggal_lahir,alamat,no_hp, no,))
+        mysql.connection.commit()
+        return redirect(url_for('web.data_karu'))
+
+@web.route('/edit/karyawan/<no>',methods=['GET','PUT']) 
+@roles_required('admin','HRD','karu')
+def editformkaryawan(no):
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM karyawan where nip= %s",(no,))
+        karyawan = cur.fetchall()
+        return render_template('dashboard/formedit.html',init="karyawan",data=karyawan)
+    elif request.method == "PUT":
+        cur = mysql.connection.cursor()
+        nama = request.json['nama']
+        email = request.json[ 'email']
+        gender = request.json[ 'gender']
+        tanggal_lahir = request.json['tanggal_lahir']
+        alamat = request.json['alamat']
+        no_hp = request.json['no_hp']
+        cur.execute("UPDATE karyawan SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s,no_hp=%s where nip= %s",(nama,email,gender,tanggal_lahir,alamat,no_hp, no,))
+        mysql.connection.commit()
+        return redirect(url_for('web.data_karyawan'))
 @web.route('/data_admin') 
 @roles_required('admin')
 def data_admin():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM admin")
     admin = cur.fetchall()
+    print
     return render_template('dashboard/data_admin.html',admin=admin)
 @web.route('/data_hrd')
 @roles_required('admin','HRD')
@@ -224,9 +300,9 @@ def warga():
     data_warga = warga.fetchall()
     warga.close()
     return render_template('admin/data_warga.html',data_warga=data_warga)
-@web.route('/deleteuser/<id>',methods=['DELETE'])
+@web.route('/delete/<init>/<id>',methods=['DELETE'])
 @roles_required('admin','HRD')
-def deleteuser(id):
+def deleteuser(init,id):
     try:
         if request.method == 'DELETE':
             warga = mysql.connection.cursor()
@@ -235,18 +311,6 @@ def deleteuser(id):
     except Exception as e:
         return make_response(e)
     return redirect(url_for('auth.index'))
-@web.route('/updateuser/<id>',methods=['POST'])
-@roles_required('admin','HRD')
-def updateuser(id):
-    warga = mysql.connection.cursor()
-    nama = request.form['nama']
-    alamat = request.form['alamat']
-    kontak = request.form['kontak']
-    password = request.form['password']
-    email = request.form['email']
-    warga.execute("UPDATE data_warga SET id = "+id+",nama ='"+ nama+"',no_rumah = '" +alamat+"',kontak='"+ kontak+"',password = '"+password+"',email = '"+email+"' WHERE  id ="+id)
-    mysql.connection.commit()
-    return redirect(url_for('main.warga'))
 @web.route('/coba')
 def coba():
     cur = mysql.connection.cursor()

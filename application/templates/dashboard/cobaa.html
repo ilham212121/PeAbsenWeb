@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
+
+<div id="res"></div>
+<script>
+    alasql('select * into html("#res",{headers:true}) \
+  from xlsx("https://cdn.rawgit.com/agershun/alasql/version-0.0.36/test/test168.xlsx",\
+            {headers:true})')
+</script>
+</body>
+</html>
