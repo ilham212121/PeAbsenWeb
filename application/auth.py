@@ -72,9 +72,9 @@ def dashboard():
             print(tanggal)
             cur.execute(
                 'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
-                ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
+                ' FROM dataabsen INNER JOIN karyawan ON karyawan.nip = dataabsen.nip INNER JOIN jadwal on karyawan.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift '
                 ' WHERE dataabsen.status = "telat" AND dataabsen.tanggal = "'+tanggal+'"'
-                ' GROUP by dataabsen.status DESC')
+                ' GROUP by dataabsen.id DESC')
             datatelat = cur.fetchall()
             print(datatelat)
             tahun=str(time.gmtime().tm_year)
@@ -255,10 +255,12 @@ def dashboard():
             # df = pd.DataFrame(data)
 
             # df.to_excel(r'C:\Users\Ilham\Documents\GitHub\PeAbsenWeb\application\static\api\table-telat-hari-ini.xlsx', index=False)
-            
+            print(datatelat)
             return render_template('dashboard/index.html',datatelat=datatelat,ruangan=ruangan,nmbulan=nmbulan, lbl=lbl,data=data,lblkaryawan=lblkaryawan,datakaryawan=datakaryawan)   
     else:
         return redirect(url_for('auth.index'))
+
+
 @auth.route('/api/login',methods=['POST'])
 def apilogindashboard():
     cur = mysql.connection.cursor()
@@ -267,7 +269,7 @@ def apilogindashboard():
     cur.execute("SELECT * FROM login WHERE nip = %s" , (nip,))
     datalogin = cur.fetchone()
     print(datalogin)
-    if datalogin == None:
+    if datalogin is None:
         print("laka")
         cur.close()
         return redirect(url_for('auth.index',alert="maaf nip tidak ada"))
@@ -275,21 +277,24 @@ def apilogindashboard():
         cur.close()
         return redirect(url_for('auth.index',alert="maaf password salah"))
     else:
+        print(datalogin[2])
         if datalogin[2]=='admin':
             cur.execute("SELECT login.nip,login.role, admin.nama,admin.email,admin.alamat,admin.no_hp FROM login INNER JOIN admin ON login.nip = admin.nip WHERE login.nip = %s" , (nip,))
-            datalogin= cur.fetchone()
+            datasession= cur.fetchone()
         elif datalogin[2]=='HRD':
+            print(nip)
             cur.execute("SELECT login.nip,login.role, hrd.nama,hrd.email,hrd.alamat,hrd.no_hp FROM login INNER JOIN hrd ON login.nip = hrd.nip WHERE login.nip = %s" , (nip,))
-            datalogin= cur.fetchone()
+            datasession= cur.fetchone()
+            print(datasession)
         elif datalogin[2]=='karu':
             cur.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
-            datalogin= cur.fetchone()
+            datasession= cur.fetchone()
         else:
             return "maaf nip tida ada"
         session['loggedin'] = True
-        session['id'] = datalogin[0]
-        session['role'] = datalogin[1]
-        session['username'] = datalogin[2]
+        session['id'] = datasession[0]
+        session['role'] = datasession[1]
+        session['username'] = datasession[2]
         session['time'] = tanggal
         cur.close()
         return redirect(url_for('auth.dashboard'))

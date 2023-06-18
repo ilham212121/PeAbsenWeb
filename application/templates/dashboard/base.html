@@ -7,18 +7,20 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard Pengelola Absensi</title>
+
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+        <link href="../../static/css/dashboard.css" rel="stylesheet" />        
+        <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+        <link rel="stylesheet" type="text/css" href="../../static/css/util.css">
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    
         <style>
             #dash:hover ,#laporan:hover,#laporan_absen:hover, #laporan_pulang:hover,#data:hover,#data_karyawan:hover,#data_hrd:hover,#data_admin:hover,#data_ka_ruang:hover,#cetak_laporan:hover,#cetak_data:hover{
                 background-color: rgba(255, 255, 255, 0.459);
             }
         </style>
-	<link rel="icon" href="../static/assets/icons/logo.png"/>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-        <link href="../../static/css/dashboard.css" rel="stylesheet" />
-        
-<link rel="stylesheet" type="text/css" href="../../static/css/main.css">
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-<link rel="stylesheet" type="text/css" href="../../static/app-assets/vendors/css/toastr.css">
+        <link rel="icon" href="../static/assets/icons/logo.png"/>
+        <link rel="stylesheet" type="text/css" href="../../static/app-assets/vendors/css/toastr.css">
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
         <style>
             .box {
@@ -39,13 +41,11 @@
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" href="index.html">Pengelola Absensi</a>
             <!-- Sidebar Toggle-->
+            
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button" style="background-color: #E6B794;"><i class="fas fa-search"></i></button>
-                </div>
+               
             </form>
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -53,10 +53,10 @@
                     <a class="nav-link dropdown-toggl" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#!">Hai {{ session.username }}</a></li>
-                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="/profile">Profile </a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout </a></li>
                     </ul>
                 </li>
             </ul>
@@ -119,7 +119,7 @@
                             </a>
                             <div  class="collapse" id="collapseJadwal" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
-                                    <a id="laporan_absen" class="nav-link" href="{{ url_for('web.jadwal') }}" style="color: #E5DBCF;">Jadwal</a>
+                                    <a id="laporan_absen" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
                                     <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">Shift</a>
                                 </nav>
                             </div>
@@ -150,14 +150,24 @@
                 </footer>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="../../static/js/scripts.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
    
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../../static/app-assets/vendors/js/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="../../static/app-assets/vendors/js/toastr.min.js"></script>
         {% block footer %}
+
+        
         {% endblock %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="../../static/js/scripts.js"></script>
+        
         <script src="../../static/app-assets/vendors/js/toastr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>

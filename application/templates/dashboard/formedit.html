@@ -12,9 +12,28 @@
                 <div class="card-body">
                 {% for row in data %}
                     <form id="editform" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                        {% if init == 'shift' %}
+                        <label>Nama shift</label><br>
+                        <input class="input100" type="text" name="nama" id="nama"placeholder="masukan nama shift" value="{{row.1}}"><br>
+                        
+                        <label>jam berangkat</label><br>
+                        <input class="input100" type="time" name="jam_berangkat" id="jam_berangkat" min="0" max="24" step=".01" placeholder="masukan jam berangkat" value="{{berangkat}}"><br>
+
+                        <label>jam pulang</label><br>
+                        <input class="input100" type="time" name="jam_pulang" id="jam_pulang"min="0" max="24" step=".01" placeholder="masukan jam pulang"value="{{pulang}}" ><br>
+
+                        <label>jam kerja</label><br>
+                        <input class="input100" type="time" name="jam_kerja" id="jam_kerja"min="0" max="24" step=".01" placeholder="masukan jam kerja"value="{{jam_kerja}}" ><br>
+
+                        <div class="container-login100-form-btn">
+                            <button class="login100-form-btn" type="button" onclick="kirimedit()">
+                                Update
+                            </button>
+                        </div>
+                        {% else %}
                         <label>NIP</label><br>
                         <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                            <input class="input100" type="text" id="nip" placeholder="nip" value="{{row.0}}">
+                            <input class="input100" type="text" id="nip" placeholder="nip" value="{{row.0}}" disabled>
                             <span class="focus-input100"></span>
                         </div>
                         <label>Nama</label><br>
@@ -23,8 +42,36 @@
                             <label>Email</label><br>
 
                             <input class="input100" id="email" type="email" value="{{row.2}}"><br>
+                            {% if init == 'karu' %}
+                            <label>Pilih Ruangan :</label><br>
+                            <select id="ruangan" name="ruangan" class="input100">
+                                {% for ruang in ruangan %}
+                                {% if ruang == row.7 %}
+                                <option class="input100" style="width: max-content;" value="{{ruang.0}}" selected>{{ ruang.0 }}</option>
+                                {% else %}
+                                <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                                {% endif %}
+                                {% endfor %}
+                        </select><br>
+                            {% endif %}
+                            {% if init == 'karyawan' %}
+                            <label>Posisi</label><br>
+                            <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi" value="{{row.7}}"><br>
+                            
+                            <label>Pilih Ruangan :</label><br>
+                            <select id="ruangan" name="ruangan" class="input100">
+                                {% for ruang in ruangan %}
+                                {% if ruang == row.8 %}
+                                <option class="input100" style="width: max-content;" value="{{ruang.0}}" selected>{{ ruang.0 }}</option>
+                                {% else %}
+                                <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            </select><br>
+                            {% endif %}
+                            
                             <label>Jenis Kelamin</label><br>
-                            <label><select id="gender" class="input100" value="{{row.3}}">
+                            <select id="gender" class="input100" value="{{row.3}}">
                                     {% if row.3=='L'%}
                                     <option class="input100" value="L" selected>Laki-Laki</option>
                                     <option class="input100" value="P">Perempuan</option>
@@ -33,18 +80,32 @@
                                     <option class="input100" value="L">Laki-Laki</option>
                                     <option class="input100" value="P" selected>Perempuan</option>
                                     {% endif %}
-                                </select></label><br>
+                                </select><br>
+
                             <label>Tanggal Lahir</label><br>
                             <input class="input100" id="tanggal_lahir" type="date" value="{{row.4}}"><br>
+
                             <label>Nomor Hp</label><br>
-                            <input class="input100" id="no_hp" type="number" value="{{row.6}}"><br>
+                            <input class="input100" id="no_hp" type="number" value="{{row.5}}"><br>
                             <label>Alamat</label><br>
-                            <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                            <textarea class="input100" id="alamat">{{row.6}}</textarea><br>
                             <div class="container-login100-form-btn">
                                 <button class="login100-form-btn" type="button" onclick="kirimedit()">
                                     Update
                                 </button>
                             </div>
+                            
+                        {% endif %}
+                        
+                        {% if init == 'jadwal' %}
+                        <label>nama</label><br>
+                        <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi" value="{{row.7}}"><br>
+                        <label>shift</label><br>
+                        <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi" value="{{row.7}}"><br>
+                        <label></label><br>
+                        <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi" value="{{row.7}}"><br>
+                        
+                        {% endif %}
                     </form>
                 {% endfor %}
                 
@@ -59,14 +120,45 @@
 <script>
     async function kirimedit(){
         nip = "{{data[0][0]}}";
-         nama= $('#nama').val();
+        nama= $('#nama').val();
         email= $('#email').val();
         gender= $('#gender').val();
         tanggal_lahir=$('#tanggal_lahir').val();
         no_hp=$('#no_hp').val();
-        alamat= $('#alamat').html();
+        alamat= $('#alamat').val();
+        if ($('#posisi').length >0 ){
+            posisi = $('#posisi').val();
+        }
+        else{
+            posisi = ''
+        }
+        if ($('#ruangan').length >0 ){
+            ruangan = $('#ruangan').val();
+        }
+        else{
+            ruangan = ''
+        }
+        if ($('#jam_berangkat').length >0 ){
+            jam_berangkat = $('#jam_berangkat').val();
+        }
+        else{
+            jam_berangkat = ''
+        }
+        if ($('#jam_pulang').length >0 ){
+            jam_pulang = $('#jam_pulang').val();
+        }
+        else{
+            jam_pulang = ''
+        }
+        if ($('#jam_kerja').length >0 ){
+            jam_kerja = $('#jam_kerja').val();
+        }
+        else{
+            jam_kerja = ''
+        }
         url = "/edit/{{init}}/"+nip
-        console.log(url,nama,email,gender,tanggal_lahir,no_hp,alamat)
+
+        console.log(url,nama,email,gender,tanggal_lahir,no_hp,alamat,posisi,ruangan,jam_berangkat,jam_pulang,jam_kerja)
        try {
                     const { data } = await axios({
                                 method: 'put',
@@ -77,10 +169,16 @@
                                     gender: gender,
                                     tanggal_lahir: tanggal_lahir,
                                     no_hp:no_hp,
-                                    alamat: alamat
+                                    alamat: alamat,
+                                    posisi: posisi,
+                                    ruangan: ruangan,
+                                    jam_berangkat:jam_berangkat,
+                                    jam_pulang:jam_pulang,
+                                    jam_kerja:jam_kerja
                                 }
                             });
                                 console.log(data);
+                                location.replace("/"+data.url)
                                 } catch (err) {
                                     if (err.response.status === 404) {
                                         console.log('Resource could not be found!');

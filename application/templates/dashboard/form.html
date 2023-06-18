@@ -13,130 +13,152 @@
             <div class="card mb-4">
                 <div class="card-body">
                 {% if init == 'admin'%}
-                    <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                        <label>NIP</label><br>
-                        <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                            <input class="input100" type="text" name="nip" placeholder="nip" >
-                            <span class="focus-input100"></span>
-                        </div>
-                        <label>Nama</label><br>
-                        <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                            <input class="input100" type="text" name="nama" ><br>
-                            <label>Email</label><br>
+                    <form method="post" id="form-admin" action="#" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                        
+                        <div class="wrap-input100 validate-input " data-validate="Please enter nip">
+                            
+                            <label>Nama</label><br>
+                            <input class="input100" type="text"placeholder="masukan nama lengkap" name="nama" id="nama" ><br>
 
-                            <input class="input100" id="email" type="email" ><br>
+                            <label>Email</label><br>
+                            <input class="input100" id="email" name="email" type="email"placeholder="masukan email" ><br>
+
                             <label>Jenis Kelamin</label><br>
-                            <label><select id="gender" class="input100" >
+                            <select id="gender" name="jk" class="input100" >
                                     <option class="input100" value="L" selected>Laki-Laki</option>
                                     <option class="input100" value="P">Perempuan</option>
-                                </select></label><br>
+                            </select><br>
+
                             <label>Tanggal Lahir</label><br>
-                            <input class="input100" id="ttl" type="date"><br>
+                            <input class="input100" id="ttl" name="tgl_lahir" type="date"><br>
+
                             <label>Nomor Hp</label><br>
-                            <input class="input100" id="no_hp" type="number"><br>
+                            <input class="input100" id="no_hp" name="no_hp"placeholder="masukan no hp" type="number"><br>
+
                             <label>Alamat</label><br>
-                            <textarea class="input100" id="alamat"></textarea><br>
+                            <textarea class="input100" id="alamat" name="alamat"placeholder="masukan alamat lengkap"></textarea><br>
+                            
                             <div class="container-login100-form-btn">
-                                <button class="login100-form-btn">
+                                <button class="login100-form-btn" type="button" onclick="formsubmit('admin')">
                                     Simpan
                                 </button>
                             </div>
+                        </div>
                     </form>
                 {% endif %}
                 {% if init == 'hrd'%}
-                <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                    <label>NIP</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nip" placeholder="nip">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <label>Nama</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nama" ><br>
+                <form method="post" id="form-hrd" action="/add/hrd/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                    <div class="wrap-input100 validate-input " data-validate="Please enter nip">
+                        <label>Nama</label><br>
+                        <input class="input100" type="text" name="nama" id="nama"placeholder="masukan nama lengkap" ><br>
+                        
                         <label>Email</label><br>
-
-                        <input class="input100" id="email" type="email"><br>
+                        <input class="input100" id="email" name="email" type="email" placeholder="masukan email"><br>
+                        
                         <label>Jenis Kelamin</label><br>
-                        <label><select id="gender" class="input100">
+                        <select id="gender" name="jk" class="input100">
                                 <option class="input100" value="L" selected>Laki-Laki</option>
-                                <option class="input100" value="P">Perempuan</option>
-                               
-                            </select></label><br>
+                                <option class="input100" value="P">Perempuan</option>       
+                        </select><br>
+
                         <label>Tanggal Lahir</label><br>
-                        <input class="input100" id="ttl" type="date"><br>
+                        <input class="input100" id="ttl" name="tgl_lahir" type="date"><br>
+
                         <label>Nomor Hp</label><br>
-                        <input class="input100" id="no_hp" type="number"><br>
+                        <input class="input100" id="no_hp" name="no_hp" type="number" placeholder="masukan no hp"><br>
+
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat"></textarea><br>
+                        <textarea class="input100" id="alamat" name="alamat" placeholder="masukan alamat lengkap"></textarea><br>
+                        
                         <div class="container-login100-form-btn">
-                            <button class="login100-form-btn">
+                            <button class="login100-form-btn" type="button" onclick="formsubmit('hrd')">
                                 Simpan
                             </button>
                         </div>
+                    </div>
                 </form>
                 {% endif %}
                 {% if init == 'karu'%}
-                <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                    <label>NIP</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nip" placeholder="nip" >
-                        <span class="focus-input100"></span>
-                    </div>
-                    <label>Nama</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nama" ><br>
+                <form method="post" id="form-karu" action="/add/karu/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                    <div class="wrap-input100 validate-input" data-validate="Please enter nip">
+                        <label>Nama</label><br>
+                        <input class="input100" type="text" name="nama" id="nama" placeholder="masukan nama lengkap"><br>
+                        
                         <label>Email</label><br>
+                        <input class="input100" id="email" name="email" type="email"placeholder="masukan email" ><br>
+                        
+                        <label>Pilih Penempatan:</label><br>
+                        <select id="ruangan" name="ruangan" class="input100">
+                            {% for ruang in ruangan %}
+                            <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                        {% endfor %}
+                        </select><br>
 
-                        <input class="input100" id="email" type="email" ><br>
                         <label>Jenis Kelamin</label><br>
-                        <label><select id="gender" class="input100" >
+                        <select id="gender" name="jk" class="input100" >
                                 <option class="input100" value="L" selected>Laki-Laki</option>
-                                <option class="input100" value="P">Perempuan</option>
-                              
-                            </select></label><br>
+                                <option class="input100" value="P">Perempuan</option>      
+                        </select><br>
+
                         <label>Tanggal Lahir</label><br>
-                        <input class="input100" id="ttl" type="date" ><br>
+                        <input class="input100" id="ttl" name="tgl_lahir" type="date" ><br>
+                        
                         <label>Nomor Hp</label><br>
-                        <input class="input100" id="no_hp" type="number"><br>
+                        <input class="input100" id="no_hp" name="no_hp" type="number" placeholder="masukan no hp"><br>
+                        
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat"></textarea><br>
+                        <textarea class="input100" id="alamat" name="alamat" placeholder="masukan alamat lengkap"></textarea><br>
+                        
                         <div class="container-login100-form-btn">
-                            <button class="login100-form-btn">
+                            <button class="login100-form-btn" type="button" onclick="formsubmit('karu')">
                                 Simpan
                             </button>
                         </div>
+                    </div>
                 </form>
                 {% endif %}
                 {% if init == 'karyawan'%}
-                <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                    <label>NIP</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nip" placeholder="nip" >
-                        <span class="focus-input100"></span>
-                    </div>
-                    <label>Nama</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nama" ><br>
+                <form method="post" id="form-karyawan" action="/add/karyawan/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                    
+                    <div class="wrap-input100 validate-input" data-validate="Please enter nip">
+                        <label>Nama</label><br>
+                        <input class="input100" type="text" name="nama" id="nama" placeholder="masukan nama lengkap"><br>
+                        
                         <label>Email</label><br>
+                        <input class="input100" id="email" name="email" type="email" placeholder="masukan email"><br>
+                        
+                        <label>Posisi</label><br>
+                        <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi"><br>
+                        
+                        <label>Pilih Ruangan :</label><br>
+                        <select id="ruangan" name="ruangan" class="input100">
+                            {% for ruang in ruangan %}
+                            <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                        {% endfor %}
+    
+                        </select><br>
 
-                        <input class="input100" id="email" type="email" ><br>
                         <label>Jenis Kelamin</label><br>
-                        <label><select id="gender" class="input100" >
+                        <select id="gender" name="jk" class="input100" >
                                 <option class="input100" value="L" selected>Laki-Laki</option>
                                 <option class="input100" value="P">Perempuan</option>
-                              
-                            </select></label><br>
+                        </select><br>
+
                         <label>Tanggal Lahir</label><br>
-                        <input class="input100" id="ttl" type="date" ><br>
+                        <input class="input100" id="ttl" name="tgl_lahir" type="date" ><br>
+
                         <label>Nomor Hp</label><br>
-                        <input class="input100" id="no_hp" type="number" ><br>
+                        <input class="input100" id="no_hp" name="no_hp" type="number" placeholder="masukan no hp" ><br>
+                        
                         <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat">{{row.5}}</textarea><br>
+                        <textarea class="input100" id="alamat" name="alamat" placeholder="masukan alamat lengkap"></textarea><br>
+                        
                         <div class="container-login100-form-btn">
-                            <button class="login100-form-btn">
+                            <button class="login100-form-btn" type="button" onclick="formsubmit('karyawan')">
                                 Simpan
                             </button>
                         </div>
+                    </div>
                 </form>
                 {% endif %}
                 {% if init == 'jadwal'%}
@@ -180,34 +202,26 @@
                 </form>
                 {% endif %}
                 {% if init == 'shift'%}
-                <form method="post" action="/add/admin/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
-                    <label>NIP</label><br>
+                <form method="post" id="form-shift" action="/add/shift/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nip" placeholder="nip" >
-                        <span class="focus-input100"></span>
-                    </div>
-                    <label>Nama</label><br>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
-                        <input class="input100" type="text" name="nama" ><br>
-                        <label>Email</label><br>
+                        <label>Nama shift</label><br>
+                        <input class="input100" type="text" name="nama" id="nama"placeholder="masukan nama shift" ><br>
+                        
+                        <label>jam berangkat</label><br>
+                        <input class="input100" type="time" name="jam_berangkat" id="jam_berangkat" min="0" max="24" step=".01" placeholder="masukan jam kerja" ><br>
 
-                        <input class="input100" id="email" type="email" ><br>
-                        <label>Jenis Kelamin</label><br>
-                        <label><select id="gender" class="input100" >
-                                <option class="input100" value="L" selected>Laki-Laki</option>
-                                <option class="input100" value="P">Perempuan</option>
-                             </select></label><br>
-                        <label>Tanggal Lahir</label><br>
-                        <input class="input100" id="ttl" type="date" ><br>
-                        <label>Nomor Hp</label><br>
-                        <input class="input100" id="no_hp" type="number" ><br>
-                        <label>Alamat</label><br>
-                        <textarea class="input100" id="alamat"></textarea><br>
+                        <label>jam pulang</label><br>
+                        <input class="input100" type="time" name="jam_pulang" id="jam_pulang"min="0" max="24" step=".01" placeholder="masukan jam pulang" ><br>
+
+                        <label>jam kerja</label><br>
+                        <input class="input100" type="time" name="jam_kerja" id="jam_kerja"min="0" max="24" step=".01" placeholder="masukan jam kerja" ><br>
+
                         <div class="container-login100-form-btn">
-                            <button class="login100-form-btn">
+                            <button class="login100-form-btn" type="button"  onclick="formsubmit('shift')">
                                 Simpan
                             </button>
                         </div>
+                    </div>
                 </form>
                 {% endif %}
             </div>
@@ -218,10 +232,12 @@
         <p id="output"></p>
         </div>
         
+        {% if init == 'jadwal'%}
         <h4 class="text-center">TABLE PEGAWAI & SHIFT</h4>
 
         <div class="table-responsive mb-4" id="container-table"></div>
         <table id="myTable"></table>
+        {% endif %}
 </main>
 {% endblock %}
 {% block footer %}
@@ -496,6 +512,36 @@
                     .catch(function(error) {
                         toastr.error('Gagal simpan data!');
                         selectShift.removeAttr('disabled');
+                    });
+            }
+            function formsubmit(element) {
+                var selectform= $("#form-" + element);
+                console.log(selectform)
+                console.log(element)
+                var url = "/add/"+element;
+                var formData = {
+                    nama: selectform.find('#nama').val(),
+                    email: selectform.find("#email").val(),
+                    jk: selectform.find("#gender").val(),
+                    tgl_lahir: selectform.find("#ttl").val(),
+                    ruangan: selectform.find("#ruangan").val(),
+                    posisi: selectform.find("#posisi").val(),
+                    no_hp: selectform.find("#no_hp").val(),
+                    jam_berangkat: selectform.find("#jam_berangkat").val(),
+                    jam_pulang: selectform.find("#jam_pulang").val(),
+                    jam_kerja: selectform.find("#jam_kerja").val(),
+                    alamat: selectform.find("#alamat").val()
+                };
+                console.log(formData)
+                axios.post(url, formData)
+                    .then(function(response) {
+                        console.log(response)
+                        let data = response.data.data;
+                        let meta = response.data.meta;
+                        toastr.success(meta.message);
+                    })
+                    .catch(function(error) {
+                        toastr.error('Gagal simpan data!');
                     });
             }
     </script>
