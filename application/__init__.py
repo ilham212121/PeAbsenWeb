@@ -18,7 +18,7 @@ app.config['FOLDER_EXCELL'] = FOLDER_EXCELL
 app.config['SECRET_KEY'] = 'bukan rahasia'
 app.config['MYSQL_HOST']= '45.143.81.40'
 app.config['MYSQL_USER'] = 'u1547396_e-attandance'
-app.config['MYSQL_PASSWORD']  = 'S5hWl7OpG?2'
+app.config['MYSQL_PASSWORD']  = 'S5hWl7OpG?2}'
 app.config['MYSQL_DB'] = 'u1547396_e-attandance'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config.update(dict(
