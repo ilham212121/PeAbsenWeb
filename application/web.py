@@ -34,7 +34,7 @@ def form(init):
     cur = mysql.connection.cursor()
     cur.execute("SELECT Nama FROM ruangan")
     ruangan = cur.fetchall()
-    cur.execute("SELECT Nama FROM SHIFT")
+    cur.execute("SELECT Nama FROM shift")
     shift = cur.fetchall()
     bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
     tahun = datetime.today().year
