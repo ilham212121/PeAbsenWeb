@@ -5,6 +5,7 @@ Flask-MySQLdb
 Flask-RESTful
 Flask-SQLAlchemy
 numpy
+pandas
 Pillow
 scikit-image
 scipy
