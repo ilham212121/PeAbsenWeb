@@ -300,6 +300,7 @@ def apilogindashboard():
         return redirect(url_for('auth.dashboard'))
 @auth.route('/api/login/karyawan',methods=['POST'])
 def apilogin():
+    print(generate_password_hash("baru123"))
     cur = mysql.connection.cursor()
     nip = request.form['nip']
     access_token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
@@ -322,7 +323,7 @@ def apilogin():
         datalogin = cur.fetchall()
         print(access_token)
         cur.close()
-        return jsonify({"data":{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][3],"ttl":str(datalogin[0][4]),"email":datalogin[0][5],"no_hp":datalogin[0][6],"alamat":datalogin[0][7]},"msg":"login berhasil","token":refresh_token}),200
+        return jsonify({"data":{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][4],"ttl":str(datalogin[0][5]),"email":datalogin[0][6],"no_hp":datalogin[0][7],"alamat":datalogin[0][8]},"msg":"login berhasil","token":refresh_token}),200
 @auth.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():

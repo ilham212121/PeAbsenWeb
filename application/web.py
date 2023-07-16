@@ -28,6 +28,17 @@ def convertTuple(tup):
     st = ''.join(map(str, tup))
     return st
 
+@web.route('/form/<init>') 
+@roles_required('admin','HRD','karu')
+def form(init):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Nama FROM RUANGAN")
+    ruangan = cur.fetchall()
+    cur.execute("SELECT Nama FROM SHIFT")
+    shift = cur.fetchall()
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    tahun = datetime.today().year
+    return render_template('dashboard/form.html',init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
 @web.post("/update/<ruangan>/<bulan>/<tahun>")
 def update(ruangan,bulan,tahun):
     cur = mysql.connection.cursor()
@@ -41,17 +52,8 @@ def update(ruangan,bulan,tahun):
     cobajadwal=[]
     datapegawai= jsonify(datapegawai)
     cobapegawai=[{"nip":"220712001","nama":"Bambang"},{"nip":"220712002","nama":"Farid"},{"nip":"220712003","nama":"Gilang"}]
-    
     datajadwalabsen= jsonify(datajadwalabsen)
-    # datajadwalabsenfix = []
-    # for i in datapegawai:
-    #     dictlog=[]
-    #     for x in datajadwalabsen:
-    #         dictlog.append(datajadwalabsen[x], datajadwalabsen[1])
-    #         datajadwalabsenfix.append(dictlog)
-    # print(json.loads(datajadwalabsen))
     response = jsonify({"data_pegawai":cobapegawai,"data_jadwal":cobajadwal})
-    #response = numpy.array(datapegawai,datajadwalabsen)
     print(cobajadwal)
     return response
 @web.post("/updateOrInsertJadwal")
@@ -129,17 +131,6 @@ def profileupdate():
     cur.execute("UPDATE login inner join "+role+" on "+role+".nip = login.nip SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s, no_hp=%s WHERE login.nip = %s ",(nama, email, gender, ttl, alamat, no_hp,id,))
     mysql.connection.commit()
     return redirect(url_for('web.profile'))
-@web.route('/form/<init>') 
-@roles_required('admin','HRD','karu')
-def form(init):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT Nama FROM RUANGAN")
-    ruangan = cur.fetchall()
-    cur.execute("SELECT Nama FROM SHIFT")
-    shift = cur.fetchall()
-    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-    tahun = datetime.today().year
-    return render_template('dashboard/form.html',init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
 @web.route('/add/admin',methods=['POST']) 
 @roles_required('admin')
 def add_admin():

@@ -203,34 +203,71 @@ class update_profile(Resource):
     def put(self):
         cur = mysql.connection.cursor()
         nip = request.form['nip']
+        print(nip)
         old_pswd = request.form['old_pswd'] 
+        print(old_pswd)
         new_pswd = request.form['new_pswd']
+        print(new_pswd)
         email = request.form['email']
+        print(email)
         no_hp = request.form['no_hp']
+        print(no_hp)
         alamat = request.form['alamat']
+        print(alamat)
+        tgl = datetime.now()
+        cur.execute("SELECT * FROM login WHERE NIP = %s",(nip,))
+        data = cur.fetchall()
         if old_pswd == '':
-            cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
-            new_data = cur.fetchall()
-            cur.execute("UPDATE karyawan SET email=%s , no_hp=%s , alamat=%s WHERE nip = %s",(email,no_hp,alamat,nip,))
-            mysql.connection.commit()
-            return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":str(new_data[0][4]),"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
+            None
         else:
-            cur.execute("SELECT * FROM login WHERE NIP = %s",(nip,))
-            data = cur.fetchall()
             if not check_password_hash(data[0][1],old_pswd):
-                return jsonify({"msg":"password lama salah"})
+                status = False
+                msg = "password lama salah"
             else: 
                 if new_pswd == '':
-                    return jsonify({"msg":"Password Baru Tidak Boleh kosong"})
+                    status = False
+                    msg= "Password Baru Tidak Boleh kosong"
                 else:
                     new_pswd = generate_password_hash(new_pswd)
                     cur.execute("UPDATE login SET pswd = %s WHERE nip = %s",(new_pswd, nip))
-                    cur.execute("UPDATE karyawan SET email = %s , no_hp = %s , alamat = %s WHERE nip = %s",(email,no_hp,alamat,nip,))
-                    cur.execute("SELECT * FROM karyawan WHERE NIP = %s",(nip,))
-                    new_data = cur.fetchall()
                     mysql.connection.commit()
-                    return jsonify({"data":[{"nip":new_data[0][0],"nama":new_data[0][1],"posisi":new_data[0][2],"gender":new_data[0][3],"ttl":new_data[0][4],"email":new_data[0][5],"no_hp":new_data[0][6],"alamat":new_data[0][7]}],"msg":"data berhasil diupdate"})
-
+                    status = True
+        if email == '':
+            None
+        else:
+            cur.execute("UPDATE karyawan SET email=%s WHERE nip = %s ",(email,nip))
+            mysql.connection.commit()
+            status = True
+        if no_hp == '':
+            None
+        else:
+            cur.execute("UPDATE karyawan SET no_hp=%s WHERE nip = %s",(no_hp,nip,))
+            mysql.connection.commit()
+            status = True
+        if alamat == '':
+            None
+        else:
+            cur.execute("UPDATE karyawan SET alamat=%s WHERE nip = %s",(alamat,nip,))
+            mysql.connection.commit()
+            status = True
+        cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
+        new_data = cur.fetchall()
+        print(new_data)
+        if status == False :
+            print("false")
+            return jsonify({"msg":msg})
+        else:
+            print("true")
+            return jsonify({"data":[{"nip":new_data[0][0],
+                                     "nama":new_data[0][1],
+                                     "posisi":new_data[0][2],
+                                     "gender":new_data[0][4],
+                                     "ttl":str(new_data[0][5]),
+                                     "email":new_data[0][6],
+                                     "no_hp":new_data[0][7],
+                                     "alamat":new_data[0][8]}],
+                                     "msg":"data berhasil diupdate"})
+            
 api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['POST'])
 api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['POST'])
 api.add_resource(apiabsen, '/api/v1/events/absen', methods=['POST'])
