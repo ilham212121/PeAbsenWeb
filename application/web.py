@@ -32,7 +32,7 @@ def convertTuple(tup):
 @roles_required('admin','HRD','karu')
 def form(init):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT Nama FROM RUANGAN")
+    cur.execute("SELECT Nama FROM ruangan")
     ruangan = cur.fetchall()
     cur.execute("SELECT Nama FROM SHIFT")
     shift = cur.fetchall()
