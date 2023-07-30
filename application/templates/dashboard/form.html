@@ -393,6 +393,10 @@
             }
 
             function generateIdSelect(hari, bulan, tahun, nip) {
+                const zeroPad = (num, places) => String(num).padStart(places, '0');
+                console.log(zeroPad(hari, 2)); // "05"
+                hari=zeroPad(hari, 2);
+                bulan=zeroPad(bulan, 2);
                 var elementId = [hari, bulan, tahun, nip];
                 return 'shift-' + elementId.join('-');
             }

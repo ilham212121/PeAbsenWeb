@@ -47,14 +47,44 @@ def update(ruangan,bulan,tahun):
     print(tahun)
     cur.execute("SELECT nip, karyawan.nama FROM karyawan WHERE ruangan = '"+ruangan+"' ORDER by nama ASC")
     datapegawai = cur.fetchall()
-    cur.execute("SELECT tanggal, shift FROM jadwal inner join karyawan on jadwal.nip = karyawan.nip where karyawan.ruangan = '"+ ruangan+"'")
+    cur.execute("SELECT tanggal, shift,karyawan.nip FROM jadwal inner join karyawan on jadwal.nip = karyawan.nip where karyawan.ruangan = '"+ ruangan+"'")
     datajadwalabsen = cur.fetchall()
-    cobajadwal=[]
-    datapegawai= jsonify(datapegawai)
+    data_pegawai=[]
+    data_jadwal=[]
     cobapegawai=[{"nip":"220712001","nama":"Bambang"},{"nip":"220712002","nama":"Farid"},{"nip":"220712003","nama":"Gilang"}]
-    datajadwalabsen= jsonify(datajadwalabsen)
-    response = jsonify({"data_pegawai":cobapegawai,"data_jadwal":cobajadwal})
-    print(cobajadwal)
+
+    print(datajadwalabsen)
+    for i in datajadwalabsen:
+        index = {}
+        tanggal = i[0].strftime("%d-%m-%Y")
+        id = "#shift-"+str(tanggal)+"-"+str(i[2])
+        shift = i[1]
+        if shift == "pagi":
+            value = 1
+        elif shift == "middle 1":
+            value = 2
+        elif shift == "siang":
+            value = 3
+        elif shift == "malam":
+            value = 4
+        elif shift == "middle 2":
+            value = 5
+        elif shift == "middle 3":
+            value = 6
+        elif shift == "middle 4":
+            value = 7
+        else :
+            value = 0
+        index.update({'id':id,'value':value})
+        data_jadwal.append(index)
+    print(data_jadwal)
+    print(datapegawai)
+    for j in datapegawai:
+        index = {}
+        index.update({'nip':j[0],'nama':j[1]})
+        data_pegawai.append(index)
+    print(data_pegawai)
+    response = jsonify({"data_pegawai":data_pegawai,"data_jadwal":[data_jadwal]})
     return response
 @web.post("/updateOrInsertJadwal")
 def updateOrInsertJadwal():
@@ -145,7 +175,7 @@ def add_admin():
     cur.execute("SELECT COUNT(*)+1 FROM admin")
     no_urut = cur.fetchone()
     print(no_urut)
-    nip = generate_nip(tgl_lahir,jk,no_urut)
+    nip = random.randint(0,9999999)
     print(nip)
     today =  datetime.today()
     cur.execute("INSERT INTO `admin`(`nip`, `nama`, `email`, `gender`, `ttl`, `alamat`, `no_hp`, `deleted_at`, `created_at`, `updated_at`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ",(nip,nama,email,jk,tgl_lahir,alamat,no_hp,'',today,today))
@@ -429,7 +459,7 @@ def laporan_absen():
     cur.execute(
         'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
         ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
-        ' GROUP by jadwal.tanggal desc, waktu desc')
+        ' GROUP by dataabsen.tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
     cur.execute(
         'SELECT nama from ruangan')
@@ -442,7 +472,7 @@ def laporan_pulang():
     cur.execute(
         'SELECT datapulang.id, datapulang.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, datapulang.tanggal, `waktu`, datapulang.status'
         ' FROM datapulang INNER JOIN jadwal on datapulang.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON datapulang.nip = karyawan.nip '
-        ' GROUP by tanggal desc, waktu desc')
+        ' GROUP by datapulang.tanggal desc, waktu desc')
     datapulang = cur.fetchall()
     cur.execute(
         'SELECT nama from ruangan')

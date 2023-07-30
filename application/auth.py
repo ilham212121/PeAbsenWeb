@@ -204,7 +204,7 @@ def dashboard():
             workbook.close()
             
             excellpth = os.path.join(app.config['FOLDER_EXCELL'], 'table-telat-hari-ini.xlsx')
-            lbltlt = ['NIP','Nama','Ruangan','Shift','Latitude','Longitude','Foto','Tanggal','Waktu','Status']
+            lbltlt = ['NIP','Nama','ruangan','shift','Latitude','Longitude','Foto','Tanggal','Waktu','Status']
             
             workbook = xlsxwriter.Workbook(excellpth)
             worksheet = workbook.add_worksheet()
