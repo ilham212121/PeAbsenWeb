@@ -3,6 +3,7 @@ import json, numpy
 from application import app,mysql,allowed_file
 from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
 from application.auth import session,roles_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from time import time
 import time,random
@@ -180,6 +181,9 @@ def add_admin():
     today =  datetime.today()
     cur.execute("INSERT INTO `admin`(`nip`, `nama`, `email`, `gender`, `ttl`, `alamat`, `no_hp`, `deleted_at`, `created_at`, `updated_at`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ",(nip,nama,email,jk,tgl_lahir,alamat,no_hp,'',today,today))
     mysql.connection.commit()
+    pswd = generate_password_hash("baru123")
+    cur.execute("INSERT INTO `login`(`nip`, `password`,`role`, ) VALUES (%s,%s,%s) ",(nip,pswd,"karyawan"))
+    mysql.connection.commit()
     return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
 @web.route('/add/hrd',methods=['POST']) 
 @roles_required('admin','HRD')
@@ -221,6 +225,9 @@ def add_karu():
     today =  datetime.today()
     cur.execute("INSERT INTO `karu`(`nip`, `nama`,`penempatan`, `email`, `gender`, `ttl`, `alamat`, `no_hp`, `deleted_at`, `created_at`, `updated_at`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ",(nip,nama,penempatan,email,jk,tgl_lahir,alamat,no_hp,'',today,today))
     mysql.connection.commit()
+    pswd = generate_password_hash("baru123")
+    cur.execute("INSERT INTO `login`(`nip`, `password`,`role`, ) VALUES (%s,%s,%s) ",(nip,pswd,"karyawan"))
+    mysql.connection.commit()
     return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
 @web.route('/add/karyawan',methods=['POST']) 
 @roles_required('admin','HRD','karu')
@@ -242,6 +249,9 @@ def add_karyawan():
     print(nip)
     today =  datetime.today()
     cur.execute("INSERT INTO `karyawan`(`nip`, `nama`,`posisi`,`ruangan`, `email`, `gender`, `ttl`, `alamat`, `no_hp`, `deleted_at`, `created_at`, `updated_at`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ",(nip,nama,posisi,ruangan,email,jk,tgl_lahir,alamat,no_hp,'',today,today))
+    mysql.connection.commit()
+    pswd = generate_password_hash("baru123")
+    cur.execute("INSERT INTO `login`(`nip`, `password`,`role`, ) VALUES (%s,%s,%s) ",(nip,pswd,"karyawan"))
     mysql.connection.commit()
     return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
 @web.route('/add/shift',methods=['POST']) 
