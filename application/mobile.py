@@ -67,23 +67,30 @@ class apiabsen(Resource):
                     a=datetime.strptime("00:30:00","%H:%M:%S")
                     b= timeEnd-a
                     timeStart = datetime.strptime(str(b), "%H:%M:%S")
+                    print(timeStart)
+                    print(timeEnd)
+                    print(timeNow)
                     status=isNowAbsen(timeStart,timeEnd,timeNow)
                 file.save(os.path.join(app.config['FOLDER_ABSEN'], str(renamefile)))
                 img = Image.open(os.path.join(app.config['FOLDER_ABSEN'],renamefile))
                 resizedimg = img.resize((300,300),Image.ANTIALIAS==True)
                 resizedimg.save(os.path.join(app.config['FOLDER_ABSEN'],renamefile),optimize=True,quality=95)
+                print(status)
+                print(tanggal)
+                timeNow = str(timeNow).replace("1900-01-01 ","")
+                print(timeNow)
                 if status=='kamu absen terlalu cepat':
                     return jsonify({"msg":status})
                 if status=="kamu terlambat":
                     statusdb="telat"
                     cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
-                    if mysql.connection.commit():
-                        return jsonify({"msg":status})
+                    mysql.connection.commit()
+                    return jsonify({"msg":status})
                 if status=="kamu absen tepat waktu":
                     statusdb="tepat waktu"
                     cur.execute("INSERT INTO dataabsen(nip,latitude,longitude,tanggal,waktu,foto,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",(nip,latitude,longitude,tanggal,timeNow,renamefile,statusdb))
-                    if mysql.connection.commit():
-                        return jsonify({"msg":status,"waktu":timeNow,"tanggal":tanggal})
+                    mysql.connection.commit()
+                    return jsonify({"msg":status,"waktu":str(timeNow),"tanggal":str(tanggal)})
                 return jsonify({"msg":status})
             else:
                 return jsonify({"msg":"maaf kamu sudah absen"})

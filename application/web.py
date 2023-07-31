@@ -60,6 +60,7 @@ def update(ruangan,bulan,tahun):
         tanggal = i[0].strftime("%d-%m-%Y")
         id = "#shift-"+str(tanggal)+"-"+str(i[2])
         shift = i[1]
+        print(shift)
         if shift == "pagi":
             value = 1
         elif shift == "middle 1":
