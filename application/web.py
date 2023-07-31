@@ -111,7 +111,6 @@ def updateOrInsertJadwal():
 
     cur.execute("SELECT tanggal, shift  FROM jadwal WHERE nip = %s and tanggal = %s ",(nip,tanggal))
     datajadwalabsen = cur.fetchall()
-    print(shift)
     print(datajadwalabsen)
     if datajadwalabsen == ():
         print("kosong")

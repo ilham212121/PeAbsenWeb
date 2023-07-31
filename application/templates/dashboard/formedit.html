@@ -118,7 +118,177 @@
 
 {% block footer %}
 <script>
+    function validate(element){
+                var selectform = $("#editform");
+                var nama = selectform.find('#nama').val();
+                var email = selectform.find("#email").val();
+                var jk = selectform.find("#gender").val();
+                var tgl_lahir = selectform.find("#ttl").val();
+                var ruangan = selectform.find("#ruangan").val();
+                var posisi = selectform.find("#posisi").val();
+                var no_hp = selectform.find("#no_hp").val();
+                var jam_berangkat = selectform.find("#jam_berangkat").val();
+                var jam_pulang = selectform.find("#jam_pulang").val();
+                var jam_kerja = selectform.find("#jam_kerja").val();
+                var alamat = selectform.find("#alamat").val()
+                if (element == "hrd"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if (email.length < 1) {  
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "karyawan"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else if(posisi==""){
+                        return false
+                    }
+                    else if(ruangan==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+                            console.log(email)  
+                        var validEmail = regEx.test(email);  
+                            console.log(validEmail)  
+                        if (!validEmail) {  
+                            console.log("false")  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "admin"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "karu"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else if(ruangan==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        console.log(validEmail)
+                        if (!validEmail) {
+                            console.log("false")  
+                            return false;
+                        }  
+                        return true
+                    }
+                }        
+                else if (element == "shift"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(jam_berangkat==""){
+                    return false
+                    }
+                    else if(jam_pulang==""){
+                    return false
+                    }
+                    else if(jam_kerja==""){
+                    return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else{
+                    return false;
+                }
+            }
+      
     async function kirimedit(){
+        element = "{{init}}"
         nip = "{{data[0][0]}}";
         nama= $('#nama').val();
         email= $('#email').val();
@@ -159,6 +329,9 @@
         url = "/edit/{{init}}/"+nip
 
         console.log(url,nama,email,gender,tanggal_lahir,no_hp,alamat,posisi,ruangan,jam_berangkat,jam_pulang,jam_kerja)
+        var valid = validate(element);
+                console.log(valid);
+                if (valid == true){
        try {
                     const { data } = await axios({
                                 method: 'put',
@@ -187,6 +360,18 @@
                                     }
                                 }
                             }
+
+                
+                else if(valid == false){
+                    toastr.error('Gagal simpan data!');
+                }
+                else{
+                   
+                    toastr.error('Gagal simpan data!');
+                }
+                
+            }
+
 
 </script>
 {% endblock %}

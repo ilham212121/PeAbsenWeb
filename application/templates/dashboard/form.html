@@ -205,16 +205,16 @@
                 <form method="post" id="form-shift" action="/add/shift/" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter nip">
                         <label>Nama shift</label><br>
-                        <input class="input100" type="text" name="nama" id="nama"placeholder="masukan nama shift" ><br>
+                        <input class="input100" type="text" name="nama" id="nama"placeholder="masukan nama shift"  required><br>
                         
                         <label>jam berangkat</label><br>
-                        <input class="input100" type="time" name="jam_berangkat" id="jam_berangkat" min="0" max="24" step=".01" placeholder="masukan jam kerja" ><br>
+                        <input class="input100" type="time" name="jam_berangkat" id="jam_berangkat" min="0" max="24" step=".01" placeholder="masukan jam kerja" required><br>
 
                         <label>jam pulang</label><br>
-                        <input class="input100" type="time" name="jam_pulang" id="jam_pulang"min="0" max="24" step=".01" placeholder="masukan jam pulang" ><br>
+                        <input class="input100" type="time" name="jam_pulang" id="jam_pulang"min="0" max="24" step=".01" placeholder="masukan jam pulang" required ><br>
 
                         <label>jam kerja</label><br>
-                        <input class="input100" type="time" name="jam_kerja" id="jam_kerja"min="0" max="24" step=".01" placeholder="masukan jam kerja" ><br>
+                        <input class="input100" type="time" name="jam_kerja" id="jam_kerja"min="0" max="24" step=".01" placeholder="masukan jam kerja" required ><br>
 
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn" type="button"  onclick="formsubmit('shift')">
@@ -470,7 +470,7 @@
         //     console.log(data);
         //     var data = data;
         //     console.log(data);
-        //     var dataPegawai = data.data_pegawai;
+        //     var datiaPegawai = data.data_pegawai;
         //     console.log(dataPegawai);
         //     var dataJadwal = data.data_jadwal;
         //     console.log(dataJadwal);
@@ -491,7 +491,6 @@
         function updateOrInsertData(nip, hari, element) {
                 var selectShift = $("#" + element);
                 console.log(selectShift,nip,hari)
-            
                 var url = "/updateOrInsertJadwal";
                 var shiftId = selectShift.val();
                 console.log(shiftId)
@@ -518,12 +517,183 @@
                         selectShift.removeAttr('disabled');
                     });
             }
+            function validate(element){
+                var selectform = $("#form-" + element);
+                var nama = selectform.find('#nama').val();
+                var email = selectform.find("#email").val();
+                var jk = selectform.find("#gender").val();
+                var tgl_lahir = selectform.find("#ttl").val();
+                var ruangan = selectform.find("#ruangan").val();
+                var posisi = selectform.find("#posisi").val();
+                var no_hp = selectform.find("#no_hp").val();
+                var jam_berangkat = selectform.find("#jam_berangkat").val();
+                var jam_pulang = selectform.find("#jam_pulang").val();
+                var jam_kerja = selectform.find("#jam_kerja").val();
+                var alamat = selectform.find("#alamat").val()
+                if (element == "hrd"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if (email.length < 1) {  
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "karyawan"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else if(posisi==""){
+                        return false
+                    }
+                    else if(ruangan==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+                            console.log(email)  
+                        var validEmail = regEx.test(email);  
+                            console.log(validEmail)  
+                        if (!validEmail) {  
+                            console.log("false")  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "admin"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else if (element == "karu"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(email==""){
+                    return false
+                    }
+                    else if(jk==""){
+                    return false
+                    }
+                    else if(tgl_lahir==""){
+                    return false
+                    }
+                    else if(no_hp==""){
+                    return false
+                    }
+                    else if(alamat==""){
+                        return false
+                    }
+                    else if(ruangan==""){
+                        return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        console.log(validEmail)
+                        if (!validEmail) {
+                            console.log("false")  
+                            return false;
+                        }  
+                        return true
+                    }
+                }        
+                else if (element == "shift"){
+                    if(nama==""){
+                    return false
+                    }
+                    else if(jam_berangkat==""){
+                    return false
+                    }
+                    else if(jam_pulang==""){
+                    return false
+                    }
+                    else if(jam_kerja==""){
+                    return false
+                    }
+                    else{
+                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
+                        var validEmail = regEx.test(email);  
+                        if (!validEmail) {  
+                            return false;
+                        }  
+                        return true
+                    }
+                }
+                else{
+                    return false;
+                }
+            }
             function formsubmit(element) {
                 var selectform= $("#form-" + element);
                 console.log(selectform)
                 console.log(element)
                 var url = "/add/"+element;
-                var formData = {
+                var valid = validate(element);
+                console.log(valid);
+                if (valid == true){
+                    var formData = {
                     nama: selectform.find('#nama').val(),
                     email: selectform.find("#email").val(),
                     jk: selectform.find("#gender").val(),
@@ -547,6 +717,15 @@
                     .catch(function(error) {
                         toastr.error('Gagal simpan data!');
                     });
+                }
+                else if(valid == false){
+                    toastr.error('Gagal simpan data!');
+                }
+                else{
+                   
+                    toastr.error('Gagal simpan data!');
+                }
+                
             }
     </script>
 <script src="../../static/vendor/jquery/jquery-3.2.1.min.js"></script>
