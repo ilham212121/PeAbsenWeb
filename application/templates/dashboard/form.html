@@ -128,7 +128,7 @@
                         <input class="input100" id="email" name="email" type="email" placeholder="masukan email"><br>
                         
                         <label>Posisi</label><br>
-                        <input class="input100" id="posisi" name="email" type="text" placeholder="masukan posisi"><br>
+                        <input class="input100" id="posisi" name="posisi"  type="text" placeholder="masukan posisi"><br>
                         
                         <label>Pilih Ruangan :</label><br>
                         <select id="ruangan" name="ruangan" class="input100">
@@ -165,26 +165,18 @@
                 <form method="post" action="#" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
                     <center><label>Pilih Ruangan</label><br>
                     <label><select id="ruangan" class="input100">
-                        {% for ruang in ruangan %}
-                        <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                    {% for ruang in ruangan %}
+                        
+                    <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+
                     {% endfor %}
 
                     </select></label><br>
                     <label>Bulan</label><br>
                     <label><select id="bulan" class="input100">
-                        <option class="input100" value="1" selected>{{ bulan[0] }}</option>
-                        <option class="input100" value="2" >{{ bulan[1] }}</option>
-                        <option class="input100" value="3" >{{ bulan[2] }}</option>
-                        <option class="input100" value="4" >{{ bulan[3] }}</option>
-                        <option class="input100" value="5" >{{ bulan[4] }}</option>
-                        <option class="input100" value="6" >{{ bulan[5] }}</option>
-                        <option class="input100" value="7" >{{ bulan[6] }}</option>
-                        <option class="input100" value="8" >{{ bulan[7] }}</option>
-                        <option class="input100" value="9" >{{ bulan[8] }}</option>
-                        <option class="input100" value="10" >{{ bulan[9] }}</option>
-                        <option class="input100" value="11" >{{ bulan[10] }}</option>
-                        <option class="input100" value="12" >{{ bulan[11] }}</option>
-
+                        {% for i in bulanindex %}
+                        <option class="input100" value="{{i+1}}" >{{ bulan[i] }}</option>
+                        {% endfor %}
                     </select></label><br>
                     <label>Tahun</label><br>
                     
@@ -239,6 +231,7 @@
         <table id="myTable"></table>
         {% endif %}
 </main>
+
 {% endblock %}
 {% block footer %}
 <!-- BEGIN VENDOR JS-->
@@ -264,7 +257,12 @@
 <script src="../../static/app-assets/vendors/js/datatable/vfs_fonts.js"></script>
    
 <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+<script src="../../static/vendor/select2/select2.min.js"></script>
     <script>
+        $(document).ready(function () {
+    $.noConflict();
+
         function initDatatable() {
                 $("#datatable").DataTable({
                     paging: false,
@@ -274,7 +272,9 @@
                         searchPlaceholder: 'Masukan nama..',
                     },
                 });
+                
             }
+        });
         function createTable(callback) {
                 statusBtnShowPegawai(true);
                 var container = $("#container-table");
@@ -287,8 +287,10 @@
                 container.html(table);
                 setTimeout(() => {
                     callback();
-                }, 500);
+                   
+                }, 700);
             }
+        
             function statusBtnShowPegawai(status = false) {
                 var btnShowPegawai = $('#btn-show-pegawai');
                 if (status) {
@@ -348,9 +350,9 @@
             }
 
             function tambahBaris(data, bulan, tahun) {
-                console.log(data,data.nip,tahun,bulan)
+                console.log(data,data.nip,tahun,bulan,data.posisi)
                 if (!$("#baris" + data.nip).length) {
-                    generateRow(data.nip, data.nama, bulan, tahun);
+                    generateRow(data.nip, data.nama, bulan, tahun,data.posisi);
                 }
             }
             function checkSunday(hari, bulan, tahun) {
@@ -401,9 +403,10 @@
                 return 'shift-' + elementId.join('-');
             }
 
-            function generateRow(nip, nama, bulan, tahun) {
+            function generateRow(nip, nama, bulan, tahun,posisi) {
                 console.log(nip,nama,bulan,tahun)
-                var html = '<tr><td>' + nama + '<br>' + nip + '</td>';
+                console.log(posisi)
+                var html = '<tr><td>' + nama + '<br>' + nip + '<br>' + posisi + '</td>';
                 var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
                 console.log(jumlahHari)
                 for (var hari = 1; hari <= jumlahHari; hari++) {
@@ -415,11 +418,57 @@
                     }
                     html += '<select id="' + idSelect +'" class="form-control form-control-sm" onchange="updateOrInsertData(\''+nip+'\',\''+hari+'\',\''+idSelect+'\')">';
                     html += '<option value="0">Libur/Cuti/Kosong</option>';
-                    const fruits = ["Pagi", "Middle 1 (9-16)","Siang", "Malam","Middle 2 (10-17)","Middle 3 (11-18)","Middle 4 (18.30-01)"];
+                    if (posisi == "Security"){
+                        const fruits = ["Pagi","Siang", "Malam"];
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else if (posisi == "Perawat"){
+                        const fruits = ["Pagi", "Middle 1 (9-16)","Siang", "Malam"];
+                        console.log(fruits)
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else if (posisi == "Dokter Umum"){
+                        const fruits = ["Pagi","Siang","Malam"];
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else if (posisi == "Dokter Spesialis"){
+                        const fruits = ["Pagi"];
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else if (posisi == "Staff Pendaftaran"){
+                        const fruits = ["Pagi","Siang", "Malam"];
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else if (posisi == "Programer"){
+                        const fruits = ["Pagi","Middle 1 (9-16)","Siang"];
+                        fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    }
+                    else{
+                    const fruits = ["Pagi", "Middle 1 (9-16)","Siang", "Malam","Middle 2 (10-17)","Middle 3 (11-18)"];
                     fruits.forEach(function myFunction(item, index, arr) {
                         var index= index+1;
                         html += '<option value="'+index+'">'+item+'</option>'
                         } );
+                    }
+                    
                     html += '</select>';
                     html += '</td>';
                 }
@@ -517,6 +566,16 @@
                         selectShift.removeAttr('disabled');
                     });
             }
+            function validatePhoneNumber(input_str) {
+                var jml = input_str.toString().length;
+                var re = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+)/g;
+                if (jml>=10 && jml <=13){
+                    return re.test(input_str);
+                }
+                else{
+                    return false;
+                }
+            }
             function validate(element){
                 var selectform = $("#form-" + element);
                 var nama = selectform.find('#nama').val();
@@ -530,154 +589,199 @@
                 var jam_pulang = selectform.find("#jam_pulang").val();
                 var jam_kerja = selectform.find("#jam_kerja").val();
                 var alamat = selectform.find("#alamat").val()
+                var dob = new Date(tgl_lahir);   
+                var month_diff = Date.now() - dob.getTime();  
+                var age_dt = new Date(month_diff);  
+                var year = age_dt.getUTCFullYear();
+                var age = Math.abs(year - 1970);  
+                var valid_no_hp = validatePhoneNumber(no_hp);
                 if (element == "hrd"){
                     if(nama==""){
-                    return false
+                    return "nama tidak boleh kosong"
                     }
-                    else if(email==""){
-                    return false
+                    else if(email ==""){
+                    return "email tidak boleh kosong"
                     }
                     else if (email.length < 1) {  
-                    return false
+                    return "email tidak boleh 1 kata"
                     }
                     else if(jk==""){
-                    return false
+                    return "jenis kelamin tidak boleh kosong"
                     }
                     else if(tgl_lahir==""){
-                    return false
+                    return "taggal lahir tidak boleh kosong"
+                    }
+                    else if(age<=18){
+                    return "umur tidak boleh dibawah 18 tahun"
                     }
                     else if(no_hp==""){
-                    return false
+                    return "no hp tidak boleh kosong"
+                    }
+                    else if(valid_no_hp==false){
+                        return "no hp tidak valid"
                     }
                     else if(alamat==""){
-                        return false
+                        return "alamat tidak boleh kosong"
                     }
                     else{
-                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
-                        var validEmail = regEx.test(email);  
-                        if (!validEmail) {  
-                            return false;
-                        }  
-                        return true
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
+                        }
+                       
                     }
                 }
                 else if (element == "karyawan"){
                     if(nama==""){
-                    return false
+                    return "nama tidak boleh kosong"
                     }
-                    else if(email==""){
-                    return false
+                    else if(email ==""){
+                    return "email tidak boleh kosong"
+                    }
+                    else if (email.length < 1) {  
+                    return "email tidak boleh 1 kata"
                     }
                     else if(jk==""){
-                    return false
+                    return "jenis kelamin tidak boleh kosong"
                     }
                     else if(tgl_lahir==""){
-                    return false
+                    return "taggal lahir tidak boleh kosong"
+                    }
+                    else if(age<=18){
+                    return "umur tidak boleh dibawah 18 tahun"
                     }
                     else if(no_hp==""){
-                    return false
+                    return "no hp tidak boleh kosong"
+                    }
+                    else if(valid_no_hp==false){
+                        return "no hp tidak valid"
                     }
                     else if(alamat==""){
-                        return false
+                        return "alamat tidak boleh kosong"
                     }
                     else if(posisi==""){
-                        return false
+                        return "posisi tidak boleh kosong"
                     }
                     else if(ruangan==""){
-                        return false
+                        return "ruangan tidak boleh kosong"
                     }
                     else{
-                        var regEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-                            console.log(email)  
-                        var validEmail = regEx.test(email);  
-                            console.log(validEmail)  
-                        if (!validEmail) {  
-                            console.log("false")  
-                            return false;
-                        }  
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
+                        }
+                
                         return true
                     }
                 }
                 else if (element == "admin"){
                     if(nama==""){
-                    return false
+                    return "nama tidak boleh kosong"
                     }
-                    else if(email==""){
-                    return false
+                    else if(email ==""){
+                    return "email tidak boleh kosong"
+                    }
+                    else if (email.length < 1) {  
+                    return "email tidak boleh 1 kata"
                     }
                     else if(jk==""){
-                    return false
+                    return "jenis kelamin tidak boleh kosong"
                     }
                     else if(tgl_lahir==""){
-                    return false
+                    return "taggal lahir tidak boleh kosong"
+                    }
+                    else if(age<=18){
+                    return "umur tidak boleh dibawah 18 tahun"
                     }
                     else if(no_hp==""){
-                    return false
+                    return "no hp tidak boleh kosong"
+                    }
+                    else if(valid_no_hp==false){
+                        return "no hp tidak valid"
                     }
                     else if(alamat==""){
-                        return false
+                        return "alamat tidak boleh kosong"
                     }
                     else{
-                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
-                        var validEmail = regEx.test(email);  
-                        if (!validEmail) {  
-                            return false;
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
                         }  
                         return true
                     }
                 }
                 else if (element == "karu"){
                     if(nama==""){
-                    return false
+                    return "nama tidak boleh kosong"
                     }
-                    else if(email==""){
-                    return false
+                    else if(email ==""){
+                    return "email tidak boleh kosong"
+                    }
+                    else if (email.length < 1) {  
+                    return "email tidak boleh 1 kata"
                     }
                     else if(jk==""){
-                    return false
+                    return "jenis kelamin tidak boleh kosong"
                     }
                     else if(tgl_lahir==""){
-                    return false
+                    return "taggal lahir tidak boleh kosong"
+                    }
+                    else if(age<=18){
+                    return "umur tidak boleh dibawah 18 tahun"
                     }
                     else if(no_hp==""){
-                    return false
+                    return "no hp tidak boleh kosong"
+                    }
+                    else if(valid_no_hp==false){
+                        return "no hp tidak valid"
                     }
                     else if(alamat==""){
-                        return false
+                        return "alamat tidak boleh kosong"
                     }
                     else if(ruangan==""){
-                        return false
+                        return "ruangan tidak boleh kosong"
                     }
                     else{
-                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
-                        var validEmail = regEx.test(email);  
-                        console.log(validEmail)
-                        if (!validEmail) {
-                            console.log("false")  
-                            return false;
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
                         }  
                         return true
                     }
                 }        
                 else if (element == "shift"){
                     if(nama==""){
-                    return false
+                    return "nama tidak boleh kosong"
                     }
                     else if(jam_berangkat==""){
-                    return false
+                    return "jam berangkat tidak boleh kosong"
                     }
                     else if(jam_pulang==""){
-                    return false
+                    return "jam pulang tidak boleh kosong"
                     }
                     else if(jam_kerja==""){
-                    return false
+                    return "jam kerja tidak boleh kosong"
                     }
                     else{
-                        var regEx = /^[A-Z0-9][A-Z0-9._%+-]{0,63}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/;  
-                        var validEmail = regEx.test(email);  
-                        if (!validEmail) {  
-                            return false;
-                        }  
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
+                        } 
                         return true
                     }
                 }
@@ -718,12 +822,9 @@
                         toastr.error('Gagal simpan data!');
                     });
                 }
-                else if(valid == false){
-                    toastr.error('Gagal simpan data!');
-                }
                 else{
                    
-                    toastr.error('Gagal simpan data!');
+                    toastr.error(valid);
                 }
                 
             }

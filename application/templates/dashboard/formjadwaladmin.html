@@ -1,0 +1,307 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">tambah jadwal </h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Tambah Jadwal Admin </li>
+        </ol>
+        
+        <div class="row">
+            <div class="card mb-4">
+                <div class="card-body">
+                <form method="post" action="#" class="login100-form validate-form p-l-55 p-r-55 p-t-10">
+                   
+                    <label>Bulan</label><br>
+                    <label><select id="bulan" class="input100">
+                        {% for i in bulanindex %}
+                        <option class="input100" value="{{i+1}}" >{{ bulan[i] }}</option>
+                        {% endfor %}
+                    </select></label><br>
+                    <label>Tahun</label><br>
+                    
+					<div class="wrap-input100 validate-input" data-validate = "Please enter password">
+						<input id="tahun" class="input100" type="number" name="tahun" placeholder="2023" value="2023">
+						<span class="focus-input100"></span>
+					</div><br>
+                    </center>
+                        
+                        <div class="container-login100-form-btn">
+                            <button type="button"id="btn-show-pegawai"  class="login100-form-btn">
+                                Tampilkan Pegawai
+                            </button>
+                        </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="data">
+        <p id="output"></p>
+        </div>
+        
+        <h4 class="text-center">TABLE PEGAWAI & SHIFT</h4>
+
+        <div class="table-responsive mb-4" id="container-table"></div>
+        <table id="myTable"></table>
+
+</main>
+{% endblock %}
+{% block footer %}
+<!-- BEGIN VENDOR JS-->
+<script src="../../static/app-assets/vendors/js/jquery-ui.min.js"></script>
+<script src="../../static/app-assets/vendors/js/core/popper.min.js"></script>
+<script src="../../static/app-assets/vendors/js/core/bootstrap.min.js"></script>
+<script src="../../static/app-assets/vendors/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../static/app-assets/vendors/js/prism.min.js"></script>
+<script src="../../static/app-assets/vendors/js/jquery.matchHeight-min.js"></script>
+<script src="../../static/app-assets/vendors/js/screenfull.min.js"></script>
+<script src="../../static/app-assets/vendors/js/pace/pace.min.js"></script>
+<!-- BEGIN VENDOR JS-->
+<!-- BEGIN CONVEX JS-->
+<script src="../../static/app-assets/js/app-sidebar.js"></script>
+<script src="../../static/app-assets/js/notification-sidebar.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/datatables.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/dataTables.buttons.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.flash.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.html5.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/buttons.print.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/jszip.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/pdfmake.min.js"></script>
+<script src="../../static/app-assets/vendors/js/datatable/vfs_fonts.js"></script>
+   
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        function initDatatable() {
+                $("#datatable").DataTable({
+                    paging: false,
+                    ordering: false,
+                    language:{
+                        search: 'Pencarian Nama',
+                        searchPlaceholder: 'Masukan nama..',
+                    },
+                });
+            }
+        function createTable(callback) {
+                statusBtnShowPegawai(true);
+                var container = $("#container-table");
+                container.html("");
+                ///////////////////
+                var table = '<table id="datatable" class="table table-bordered table-stripped table-consended table-absensi table-sm">';
+                table += '<thead class="text-white" id="thead-table"></thead>';
+                table += '<tbody id="table-pegawai"></tbody>';
+                table += '</table>';
+                container.html(table);
+                setTimeout(() => {
+                    callback();
+                }, 500);
+            }
+            function statusBtnShowPegawai(status = false) {
+                var btnShowPegawai = $('#btn-show-pegawai');
+                if (status) {
+                    var icon = '<i class="fa fa-spin fa-spinner mr-1"></i>';
+                    var text = 'Tunggu sebentar...';
+                    btnShowPegawai.html(icon + text);
+                    btnShowPegawai.attr('disabled','disabled');
+                } else {
+                    var icon = '<i class="fa fa-search mr-1"></i>';
+                    var text = 'Tampilkan Pegawai';
+                    btnShowPegawai.html(icon + text);
+                    btnShowPegawai.removeAttr('disabled');
+                }
+            }
+            function initSetSelectJadwal(dataJadwalAll) {
+                setTimeout(function() {
+                    for (var i in dataJadwalAll) {
+                        var dataJadwal = dataJadwalAll[i];
+                        for (var x in dataJadwal) {
+                            console.log(dataJadwal[x].id)
+                            $(dataJadwal[x].id).val(dataJadwal[x].value);
+                        }
+                    }
+                }, 500);
+            }
+            
+            function showPegawaiByRuang(bulan,tahun) {
+                var url = "/update/admin/"+bulan+"/"+tahun;
+                var formData = {
+                    bulan: bulan,
+                    tahun: tahun
+                };
+                axios.post(url, formData)
+                    .then(function(response) {
+                        console.log(response);
+                        var data = response.data;
+                        console.log(data);
+                        var dataPegawai = data.data_pegawai;
+                        console.log(dataPegawai);
+                        var dataJadwal = data.data_jadwal;
+                        console.log(dataJadwal);
+                        console.log(dataPegawai.length)
+                        for (var i in dataPegawai) {
+                            tambahBaris(dataPegawai[i], bulan, tahun);
+                            if (i >= parseInt(dataPegawai.length - 1)) {
+                                initSetSelectJadwal(dataJadwal);
+                                statusBtnShowPegawai(false);
+                                initDatatable();
+                            }
+                        }
+                    })
+                    .catch(function(error) {
+                        statusBtnShowPegawai(false);
+                        toastr.error(error);
+                    });
+            }
+
+            function tambahBaris(data, bulan, tahun) {
+                console.log(data,data.nip,tahun,bulan)
+                if (!$("#baris" + data.nip).length) {
+                    generateRow(data.nip, data.nama, bulan, tahun);
+                }
+            }
+            function checkSunday(hari, bulan, tahun) {
+                var date = new Date(tahun + '-' + bulan + '-' + hari);
+                if (parseInt(date.getDay()) == 0) {
+                    return true;
+                }
+                return false;
+            }
+            function getNamaHari(hari, bulan, tahun) {
+                var date = new Date(tahun + '-' + bulan + '-' + hari);
+                var day = parseInt(date.getDay());
+                switch(day) {
+                    case 0: return "Minggu";
+                    case 1: return "Senin";
+                    case 2: return "Selasa";
+                    case 3: return "Rabu";
+                    case 4: return "Kamis";
+                    case 5: return "Jumat";
+                    case 6: return "Sabtu";
+                    default: return "undefined";
+                }
+            }
+            function headerTable(bulan, tahun) {
+                if (bulan !== "" && tahun !== "") {
+                    var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+                    var html = '<tr><th class="bg-info text-center">INFO<br>PEGAWAI</th>';
+                    for (var hari = 1; hari <= jumlahHari; hari++) {
+                        var namaHari = getNamaHari(hari, bulan, tahun) + '<br>' + hari;
+                        if (checkSunday(hari, bulan, tahun)) {
+                            html += '<th class="bg-danger text-center">' + namaHari + '</th>';
+                        } else {
+                            html += '<th class="bg-primary text-center">' + namaHari + '</th>';
+                        }
+                    }
+                    $('#thead-table').html(html);
+                } else {
+                    $('#thead-table').html("");
+                }
+            }
+
+            function generateIdSelect(hari, bulan, tahun, nip) {
+                const zeroPad = (num, places) => String(num).padStart(places, '0');
+                console.log(zeroPad(hari, 2)); // "05"
+                hari=zeroPad(hari, 2);
+                bulan=zeroPad(bulan, 2);
+                var elementId = [hari, bulan, tahun, nip];
+                return 'shift-' + elementId.join('-');
+            }
+
+            function generateRow(nip, nama, bulan, tahun) {
+                console.log(nip,nama,bulan,tahun)
+                var html = '<tr><td>' + nama + '<br>' + nip + '</td>';
+                var jumlahHari = parseInt(new Date(tahun, bulan, 0).getDate());
+                console.log(jumlahHari)
+                for (var hari = 1; hari <= jumlahHari; hari++) {
+                    var idSelect = generateIdSelect(hari,bulan,tahun,nip);
+                    if (checkSunday(hari, bulan, tahun)) {
+                        html += '<td class="table-danger">';
+                    } else {
+                        html += '<td>';
+                    }
+                    html += '<select id="' + idSelect +'" class="form-control form-control-sm" onchange="updateOrInsertData(\''+nip+'\',\''+hari+'\',\''+idSelect+'\')">';
+                    html += '<option value="0">Libur/Cuti/Kosong</option>';
+                    const fruits = ["Pagi", "Middle 1 (9-16)","Siang", "Malam","Middle 2 (10-17)","Middle 3 (11-18)","Middle 4 (18.30-01)"];
+                    fruits.forEach(function myFunction(item, index, arr) {
+                        var index= index+1;
+                        html += '<option value="'+index+'">'+item+'</option>'
+                        } );
+                    html += '</select>';
+                    html += '</td>';
+                }
+                html += '</tr>';
+                console.log(html)
+                $("#table-pegawai").append($(html));
+            }
+
+            function alertWarning(message = "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: message
+                });
+            }
+            $(function() {
+                $("#menu-jadwal-absensi").addClass("active");
+                $("#btn-show-pegawai").click(function() {
+                    $('#container-table').html("");
+                    /////////////////////////////
+                    var bulan = $('#bulan').val();
+                    var tahun = $('#tahun').val();
+                    if (bulan == "") {
+                        alertWarning('Silahkan pilih bulan.');
+                    } else if (tahun == "") {
+                        alertWarning('Silahkan masukan tahun.');
+                    } else if (tahun.length != 4) {
+                        alertWarning('Silahkan masukan tahun dengan benar.');
+                    } else {
+                        createTable(() => {
+                            headerTable(bulan,tahun);
+                            showPegawaiByRuang(bulan,tahun);
+                        });
+                    }
+                });
+            });
+        function updateOrInsertData(nip, hari, element) {
+                var selectShift = $("#" + element);
+                console.log(selectShift,nip,hari)
+                var url = "/updateOrInsertJadwal";
+                var shiftId = selectShift.val();
+                console.log(shiftId)
+                var formData = {
+                    ruangan:"admin",
+                    nip: nip,
+                    hari: hari,
+                    shift_id: shiftId,
+                    bulan: $('#bulan').val(),
+                    tahun: $('#tahun').val()
+                };
+                console.log(formData)
+                selectShift.attr('disabled', 'disabled');
+                axios.post(url, formData)
+                    .then(function(response) {
+                        console.log(response)
+                        let data = response.data.data;
+                        let meta = response.data.meta;
+                        toastr.success(meta.message);
+                        selectShift.removeAttr('disabled');
+                    })
+                    .catch(function(error) {
+                        toastr.error('Gagal simpan data!');
+                        selectShift.removeAttr('disabled');
+                    });
+            }
+            </script>
+<script src="../../static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="../../static/vendor/animsition/js/animsition.min.js"></script>
+<script src="../../static/vendor/bootstrap/js/popper.js"></script>
+<script src="../../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../static/vendor/select2/select2.min.js"></script>
+<script src="../../static/vendor/daterangepicker/moment.min.js"></script>
+<script src="../../static/vendor/daterangepicker/daterangepicker.js"></script>
+<script src="../../static/vendor/countdowntime/countdowntime.js"></script>
+<script src="../../static/js/main.js"></script>
+
+{% endblock %}

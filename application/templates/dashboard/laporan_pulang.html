@@ -98,6 +98,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <script>
+                                var tgl = "";
+                                var monthNames=""; 
+                                var d = ""; 
+                                var renametgl= "";
+                                </script>
                                 {% for row in datapulang %}
                                 
                                 {% if row.3 == ruang.0 %}
@@ -109,7 +115,14 @@
                                     <td>{{ row.5 }}</td>
                                     <td>{{ row.6 }}</td>
                                     <td><img src="../../static/assets/pulang/{{ row.7 }}" width="100px" height="100px"></td>
-                                    <td>{{ row.8 }}</td>
+                                    <td id="semua-{{row.8}}-{{row.9}}">{{ row.8 }}</td>
+                                    <script>
+                                    tgl = document.getElementById("semua-{{row.8}}-{{row.9}}").innerHTML;
+                                    monthNames =['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+                                    d = new Date(tgl);
+                                    renametgl = String(d.getFullYear())+"-"+ monthNames[d.getMonth()]+"-"+String(d.getDate());
+                                    document.getElementById("semua-{{row.8}}-{{row.9}}").innerHTML = renametgl;
+                                    </script>
                                     <td>{{ row.9 }}</td>
                                 {% if row.10=='tepat waktu'%}
                                 <td style="color: green;">{{ row.10 }}</td>
@@ -139,7 +152,7 @@
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >NIP</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Nama</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Ruangan</a></th>
-h                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter" >Shift</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Latitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Longitude</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter" >Foto</a></th>
@@ -159,7 +172,14 @@ h                                <th data-sortable=""><a href="#" class="dataTab
                                     <td>{{ row.5 }}</td>
                                     <td>{{ row.6 }}</td>
                                     <td><img src="../../static/assets/pulang/{{ row.7 }}" width="100px" height="100px"></td>
-                                    <td>{{ row.8 }}</td>
+                                    <td id="{{row.8}}-{{row.9}}">{{ row.8 }}</td>
+                                    <script>
+                                    tgl = document.getElementById("{{row.8}}-{{row.9}}").innerHTML;
+                                    monthNames =['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+                                    d = new Date(tgl);
+                                    renametgl = String(d.getFullYear())+"-"+ monthNames[d.getMonth()]+"-"+String(d.getDate());
+                                    document.getElementById("{{row.8}}-{{row.9}}").innerHTML = renametgl;
+                                    </script>
                                     <td>{{ row.9 }}</td>
                                     {% if row.10=='tepat waktu'%}
                                     <td style="color: green;">{{ row.10 }}</td>

@@ -28,25 +28,235 @@ def generate_nip(tgl_date,jk,no_urut):
 def convertTuple(tup):
     st = ''.join(map(str, tup))
     return st
-
-@web.route('/form/<init>') 
-@roles_required('admin','HRD','karu')
-def form(init):
+@web.route('/form/jadwal/admin') 
+@roles_required('admin','HRD')
+def formjadwaladmin():
     cur = mysql.connection.cursor()
     cur.execute("SELECT Nama FROM ruangan")
     ruangan = cur.fetchall()
     cur.execute("SELECT Nama FROM shift")
     shift = cur.fetchall()
+    a=time.localtime()
+    bulan_now=a.tm_mon-3
+    print(bulan_now)
     bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    filterbln =[]
+    for i in range(len(bulan)):
+        if i >= bulan_now:
+            filterbln.append(i)
     tahun = datetime.today().year
-    return render_template('dashboard/form.html',init=init, ruangan=ruangan, shift=shift, bulan=bulan, tahun=tahun)
+    return render_template('dashboard/formjadwaladmin.html', ruangan=ruangan, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
+@web.route('/form/jadwal/karu') 
+@roles_required('admin','HRD','karu')
+def formjadwalkaru():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Nama FROM ruangan")
+    ruangan = cur.fetchall()
+    cur.execute("SELECT Nama FROM shift")
+    shift = cur.fetchall()
+    a=time.localtime()
+    bulan_now=a.tm_mon-3
+    print(bulan_now)
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    filterbln =[]
+    for i in range(len(bulan)):
+        if i >= bulan_now:
+            filterbln.append(i)
+    tahun = datetime.today().year
+    return render_template('dashboard/formjadwalkaru.html', ruangan=ruangan, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
+@web.route('/form/jadwal/hrd') 
+@roles_required('admin','HRD')
+def formjadwalhrd():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Nama FROM ruangan")
+    ruangan = cur.fetchall()
+    cur.execute("SELECT Nama FROM shift")
+    shift = cur.fetchall()
+    a=time.localtime()
+    bulan_now=a.tm_mon-3
+    print(bulan_now)
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    filterbln =[]
+    for i in range(len(bulan)):
+        if i >= bulan_now:
+            filterbln.append(i)
+    tahun = datetime.today().year
+    return render_template('dashboard/formjadwalhrd.html', ruangan=ruangan, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
+
+@web.route('/form/<init>') 
+@roles_required('admin','HRD','karu')
+def form(init):
+    if init == "karu" and session['role'] == "karu":
+        None
+    elif init == "jadwal" and session['role'] == "karu":
+        None
+    elif init == "jadwal" and session['role'] == "HRD": 
+        return redirect(url_for('auth.index'))
+    elif session['role'] != "karu":
+        None
+    else:
+        return redirect(url_for('auth.index'))
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Nama FROM ruangan")
+    ruangan = cur.fetchall()
+    cur.execute("SELECT Nama FROM shift")
+    shift = cur.fetchall()
+    a=time.localtime()
+    bulan_now=a.tm_mon-3
+    print(bulan_now)
+    bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    filterbln =[]
+    for i in range(len(bulan)):
+        if i >= bulan_now:
+            filterbln.append(i)
+    tahun = datetime.today().year
+    return render_template('dashboard/form.html',init=init, ruangan=ruangan, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
+@web.post("/update/admin/<bulan>/<tahun>")
+def updateadmin(bulan,tahun):
+    cur = mysql.connection.cursor()
+    print(bulan)
+    print(tahun)
+    cur.execute("SELECT nip, nama FROM admin ")
+    datapegawai = cur.fetchall()
+    cur.execute("SELECT tanggal, shift,admin.nip FROM jadwal inner join admin on jadwal.nip = admin.nip ")
+    datajadwalabsen = cur.fetchall()
+    data_pegawai=[]
+    data_jadwal=[]
+
+    print(datajadwalabsen)
+    for i in datajadwalabsen:
+        index = {}
+        tanggal = i[0].strftime("%d-%m-%Y")
+        id = "#shift-"+str(tanggal)+"-"+str(i[2])
+        shift = i[1]
+        print(shift)
+        if shift == "pagi":
+            value = 1
+        elif shift == "middle 1":
+            value = 2
+        elif shift == "siang":
+            value = 3
+        elif shift == "malam":
+            value = 4
+        elif shift == "middle 2":
+            value = 5
+        elif shift == "middle 3":
+            value = 6
+        elif shift == "middle 4":
+            value = 7
+        else :
+            value = 0
+        index.update({'id':id,'value':value})
+        data_jadwal.append(index)
+    print(data_jadwal)
+    print(datapegawai)
+    for j in datapegawai:
+        index = {}
+        index.update({'nip':j[0],'nama':j[1]})
+        data_pegawai.append(index)
+    print(data_pegawai)
+    response = jsonify({"data_pegawai":data_pegawai,"data_jadwal":[data_jadwal]})
+    return response
+
+@web.post("/update/karu/<ruangan>/<bulan>/<tahun>")
+def updatekaru(ruangan,bulan,tahun):
+    cur = mysql.connection.cursor()
+    print(ruangan)
+    print(bulan)
+    print(tahun)
+    cur.execute("SELECT nip, karu.nama FROM karu ORDER by nama ASC")
+    datapegawai = cur.fetchall()
+    cur.execute("SELECT tanggal, shift,karu.nip FROM jadwal inner join karu on jadwal.nip = karu.nip ")
+    datajadwalabsen = cur.fetchall()
+    data_pegawai=[]
+    data_jadwal=[]
+    print(datajadwalabsen)
+    for i in datajadwalabsen:
+        index = {}
+        tanggal = i[0].strftime("%d-%m-%Y")
+        id = "#shift-"+str(tanggal)+"-"+str(i[2])
+        shift = i[1]
+        print(shift)
+        if shift == "pagi":
+            value = 1
+        elif shift == "middle 1":
+            value = 2
+        elif shift == "siang":
+            value = 3
+        elif shift == "malam":
+            value = 4
+        elif shift == "middle 2":
+            value = 5
+        elif shift == "middle 3":
+            value = 6
+        elif shift == "middle 4":
+            value = 7
+        else :
+            value = 0
+        index.update({'id':id,'value':value})
+        data_jadwal.append(index)
+    print(data_jadwal)
+    print(datapegawai)
+    for j in datapegawai:
+        index = {}
+        index.update({'nip':j[0],'nama':j[1]})
+        data_pegawai.append(index)
+    print(data_pegawai)
+    response = jsonify({"data_pegawai":data_pegawai,"data_jadwal":[data_jadwal]})
+    return response
+@web.post("/update/hrd/<bulan>/<tahun>")
+def updatehrd(bulan,tahun):
+    cur = mysql.connection.cursor()
+    print(bulan)
+    print(tahun)
+    cur.execute("SELECT nip, hrd.nama FROM hrd ORDER by nama ASC")
+    datapegawai = cur.fetchall()
+    cur.execute("SELECT tanggal, shift,hrd.nip FROM jadwal inner join hrd on jadwal.nip = hrd.nip ")
+    datajadwalabsen = cur.fetchall()
+    data_pegawai=[]
+    data_jadwal=[]
+    print(datajadwalabsen)
+    for i in datajadwalabsen:
+        index = {}
+        tanggal = i[0].strftime("%d-%m-%Y")
+        id = "#shift-"+str(tanggal)+"-"+str(i[2])
+        shift = i[1]
+        print(shift)
+        if shift == "pagi":
+            value = 1
+        elif shift == "middle 1":
+            value = 2
+        elif shift == "siang":
+            value = 3
+        elif shift == "malam":
+            value = 4
+        elif shift == "middle 2":
+            value = 5
+        elif shift == "middle 3":
+            value = 6
+        elif shift == "middle 4":
+            value = 7
+        else :
+            value = 0
+        index.update({'id':id,'value':value})
+        data_jadwal.append(index)
+    print(data_jadwal)
+    print(datapegawai)
+    for j in datapegawai:
+        index = {}
+        index.update({'nip':j[0],'nama':j[1]})
+        data_pegawai.append(index)
+    print(data_pegawai)
+    response = jsonify({"data_pegawai":data_pegawai,"data_jadwal":[data_jadwal]})
+    return response
+
 @web.post("/update/<ruangan>/<bulan>/<tahun>")
 def update(ruangan,bulan,tahun):
     cur = mysql.connection.cursor()
     print(ruangan)
     print(bulan)
     print(tahun)
-    cur.execute("SELECT nip, karyawan.nama FROM karyawan WHERE ruangan = '"+ruangan+"' ORDER by nama ASC")
+    cur.execute("SELECT nip, karyawan.nama,karyawan.posisi FROM karyawan WHERE ruangan = '"+ruangan+"' ORDER by nama ASC")
     datapegawai = cur.fetchall()
     cur.execute("SELECT tanggal, shift,karyawan.nip FROM jadwal inner join karyawan on jadwal.nip = karyawan.nip where karyawan.ruangan = '"+ ruangan+"'")
     datajadwalabsen = cur.fetchall()
@@ -83,7 +293,7 @@ def update(ruangan,bulan,tahun):
     print(datapegawai)
     for j in datapegawai:
         index = {}
-        index.update({'nip':j[0],'nama':j[1]})
+        index.update({'nip':j[0],'nama':j[1],'posisi':j[2]})
         data_pegawai.append(index)
     print(data_pegawai)
     response = jsonify({"data_pegawai":data_pegawai,"data_jadwal":[data_jadwal]})
@@ -233,7 +443,7 @@ def add_karu():
     mysql.connection.commit()
     return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
 @web.route('/add/karyawan',methods=['POST']) 
-@roles_required('admin','HRD','karu')
+@roles_required('admin','HRD')
 def add_karyawan():
     nama = request.json['nama']
     email = request.json['email']
@@ -256,7 +466,7 @@ def add_karyawan():
     pswd = generate_password_hash("baru123")
     cur.execute("INSERT INTO `login`(`nip`, `pswd`,`role`) VALUES (%s,%s,%s) ",(nip,pswd,"karyawan"))
     mysql.connection.commit()
-    return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
+    return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil Simpan Data","status":"success"}})
 @web.route('/add/shift',methods=['POST']) 
 @roles_required('admin','HRD')
 def add_shift():
@@ -371,11 +581,11 @@ def editformkaru(no):
         return jsonify({"msg":"sukses","url":"data_karu?msg='data berhasil diedit'"})
 
 @web.route('/edit/karyawan/<no>',methods=['GET','PUT']) 
-@roles_required('admin','HRD','karu')
+@roles_required('admin','HRD')
 def editformkaryawan(no):
     if request.method == "GET":
         cur = mysql.connection.cursor()
-        cur.execute("SELECT nip,nama,email,gender,ttl,no_hp,alamat,posisi,ruangan FROM karyawan where nip= %s",(no,))
+        cur.execute("SELECT karyawan.nip,nama,email,gender,ttl,no_hp,alamat,posisi,ruangan,login.device_id FROM karyawan LEFT JOIN login ON karyawan.nip = login.nip WHERE karyawan.nip=%s",(no,))
         karyawan = cur.fetchall()
         cur.execute('SELECT nama from ruangan')
         ruangan = cur.fetchall()
@@ -390,12 +600,15 @@ def editformkaryawan(no):
         tanggal_lahir = request.json['tanggal_lahir']
         alamat = request.json['alamat']
         no_hp = request.json['no_hp']
+        device_id = request.json['device_id']
         cur.execute("UPDATE karyawan SET nama=%s, email=%s,posisi=%s,ruangan=%s, gender=%s, ttl=%s, alamat=%s,no_hp=%s where nip= %s",(nama,email,posisi, ruangan , gender,tanggal_lahir,alamat,no_hp, no,))
+        mysql.connection.commit()
+        cur.execute("UPDATE login SET device_id = %s WHERE nip = %s",(device_id,no,))
         mysql.connection.commit()
         return jsonify({"msg":"sukses","url":"data_karyawan?msg='data berhasil diedit'"})
 
 @web.route('/edit/shift/<no>',methods=['GET','PUT']) 
-@roles_required('admin','HRD','karu')
+@roles_required('admin','HRD')
 def editformshift(no):
     if request.method == "GET":
         cur = mysql.connection.cursor()
@@ -456,6 +669,7 @@ def data_hrd():
 def data_karu():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM karu")
+    print(session['role'])
     karu = cur.fetchall()
     return render_template('dashboard/data_karu.html',karu=karu)
 @web.route('/data_karyawan') 
@@ -470,13 +684,14 @@ def data_karyawan():
 def laporan_absen():
     cur = mysql.connection.cursor()
     cur.execute(
-        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,shift.nama,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
-        ' FROM dataabsen INNER JOIN jadwal on dataabsen.nip = jadwal.nip INNER JOIN shift on shift.nama = jadwal.shift INNER JOIN karyawan ON dataabsen.nip = karyawan.nip '
+        'SELECT dataabsen.id, dataabsen.nip, karyawan.nama,jadwal.ruangan,jadwal.shift,`latitude`, `longitude`, `foto`, dataabsen.tanggal, `waktu`, dataabsen.status'
+        ' FROM dataabsen INNER JOIN karyawan ON dataabsen.nip = karyawan.nip INNER JOIN jadwal on karyawan.nip = jadwal.nip INNER JOIN shift on jadwal.shift = shift.Nama '
         ' GROUP by dataabsen.tanggal desc, waktu desc')
     dataabsen = cur.fetchall()
     cur.execute(
         'SELECT nama from ruangan')
     ruangan = cur.fetchall()
+    print(dataabsen)
     return render_template('dashboard/laporan_absen.html',dataabsen=dataabsen,ruangan=ruangan)
 @web.route('/laporan_pulang') 
 @roles_required('admin','HRD','karu')
@@ -540,6 +755,14 @@ def warga():
 def deleteuser(init,id):
     try:
         if request.method == 'DELETE':
+            if init == "karu" and session['role'] == "karu":
+                None
+            elif init == "jadwal" and session['role'] == "karu":
+                None
+            elif session['role'] != "karu":
+                None
+            else:
+                return redirect(url_for('auth.index'))
             warga = mysql.connection.cursor()
             where = ""
             if init == 'shift' :

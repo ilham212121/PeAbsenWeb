@@ -303,6 +303,11 @@ def apilogin():
     print(generate_password_hash("baru123"))
     cur = mysql.connection.cursor()
     nip = request.form['nip']
+    device_id = request.form["device_id"]
+    cur.execute("SELECT * FROM login where nip = %s and device_id = %s",(nip,device_id))
+    cekDevice = cur.fetchall()
+    if str(cekDevice) == '()':
+        return jsonify({"msg":"maaf akun anda tidak seseuai dengan device yang didaftarkan"})
     access_token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
     refresh_token=access_token
     password = request.form['password']

@@ -13,21 +13,33 @@
                 Data Karyawan
             </div>
             <div class="card-body">
+                {% if session.role=="admin" %}
                 <a href="/form/karyawan">
                     <button class="btn btn-primary bg-success" style="margin-bottom: 10px; margin-right: 10px;">add</button>
                     </a>
+                {% elif session.role=="HRD" %}
+                <a href="/form/karyawan">
+                    <button class="btn btn-primary bg-success" style="margin-bottom: 10px; margin-right: 10px;">add</button>
+                    </a>
+                {% endif %}
+              
                 <div class="table-responsive dataTable-container" >
                     <table id="datatablesSimple" class="dataTable-table">
                         <thead>
                             <tr>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">NIP</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Nama</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Email</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Ruangan</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Gender</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Tanggal Lahir</a></th>
-                                <th data-sortable=""><a href="#" class="dataTable-sorter">Alamat</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Email</a></th>
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">No_HP</a></th>
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Alamat</a></th>
+                                {% if session.role=="admin" %}
                                 <th data-sortable=""><a href="#" class="dataTable-sorter">Aksi</a></th>
+                                {% elif session.role=="HRD" %}
+                                <th data-sortable=""><a href="#" class="dataTable-sorter">Aksi</a></th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -41,7 +53,10 @@
                                 <td>{{ row.4 }}</td>
                                 <td>{{ row.5 }}</td>
                                 <td>{{ row.6 }}</td>
+                                <td>{{ row.7 }}</td>
+                                {% if session.role=="admin" %}
                                 <td>
+
                                     <a href="/edit/karyawan/{{row.0}}">
                                         <button class="btn btn-warning bg-warning" style="margin-bottom: 10px; margin-right: 10px;">edit</button>
                                         </a>
@@ -51,6 +66,20 @@
                                             </a>
                                    
                                 </td>
+                                {% elif session.role=="HRD" %}
+                                <td>
+
+                                    <a href="/edit/karyawan/{{row.0}}">
+                                        <button class="btn btn-warning bg-warning" style="margin-bottom: 10px; margin-right: 10px;">edit</button>
+                                        </a>
+                                        <a href="#">
+                                            <button class="btn btn-danger bg-danger"
+                                            onclick="del('/delete/karyawan/{{row.0}}')" style="margin-bottom: 10px; margin-right: 10px;">delete</button>
+                                            </a>
+                                   
+                                </td>
+                                {% endif %}
+                               
                             </tr>
                                 {% else %}
                                 <tr>

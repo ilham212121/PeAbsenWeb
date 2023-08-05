@@ -13,6 +13,7 @@
         <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
         <link rel="stylesheet" type="text/css" href="../../static/css/util.css">
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        
     
         <style>
             #dash:hover ,#laporan:hover,#laporan_absen:hover, #laporan_pulang:hover,#data:hover,#data_karyawan:hover,#data_hrd:hover,#data_admin:hover,#data_ka_ruang:hover,#cetak_laporan:hover,#cetak_data:hover{
@@ -92,17 +93,24 @@
                                     <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karyawan') }}">
                                         Data Karyawan
                                     </a>
-                                    {% if session['role'] == 'admin' or 'HRD' or 'karu'%}
+                                    {% if session['role'] == 'karu'%}
                                     <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
                                         Data Kepala Ruangan
                                     </a>
-                                    {% endif %}
-                                    {% if session.role == 'admin' or 'hrd' %}
+                                    {% elif session['role'] == 'HRD' %}
+                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
+                                        Data Kepala Ruangan
+                                    </a>
                                     <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_hrd') }}">
                                         Data Hrd
                                     </a>
-                                    {% endif %}
-                                    {% if session['role'] =='admin' %}
+                                    {% elif session['role'] =='admin' %}
+                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
+                                        Data Kepala Ruangan
+                                    </a>
+                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_hrd') }}">
+                                        Data Hrd
+                                    </a>
                                     <a id="data_admin"style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_admin') }}">
                                         Data Admin
                                     </a>
@@ -118,8 +126,13 @@
                             </a>
                             <div  class="collapse" id="collapseJadwal" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
-                                    <a id="laporan_absen" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
-                                    <a id="laporan_pulang" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">Shift</a>
+                                    
+                                    {% if session['role'] == 'karu'%}
+                                    <a id="jadwal" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
+                                    {% elif session['role'] =='admin' %}
+                                    <a id="jadwal" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
+                                    {% endif %}
+                                    <a id="shift" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">Shift</a>
                                 </nav>
                             </div>
                       

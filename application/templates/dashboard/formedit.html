@@ -87,8 +87,13 @@
 
                             <label>Nomor Hp</label><br>
                             <input class="input100" id="no_hp" type="number" value="{{row.5}}"><br>
+
                             <label>Alamat</label><br>
                             <textarea class="input100" id="alamat">{{row.6}}</textarea><br>
+
+                            <label>Nomor IMEI Device</label><br>
+                            <input class="input100" id="device_id" value="{{row.9}}" placeholder="masukan nomor imei device"><br>
+
                             <div class="container-login100-form-btn">
                                 <button class="login100-form-btn" type="button" onclick="kirimedit()">
                                     Update
@@ -296,6 +301,7 @@
         tanggal_lahir=$('#tanggal_lahir').val();
         no_hp=$('#no_hp').val();
         alamat= $('#alamat').val();
+        device_id=$('#device_id').val()
         if ($('#posisi').length >0 ){
             posisi = $('#posisi').val();
         }
@@ -343,6 +349,7 @@
                                     tanggal_lahir: tanggal_lahir,
                                     no_hp:no_hp,
                                     alamat: alamat,
+                                    device_id: device_id,
                                     posisi: posisi,
                                     ruangan: ruangan,
                                     jam_berangkat:jam_berangkat,
