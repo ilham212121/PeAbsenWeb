@@ -306,8 +306,6 @@ def apilogin():
     device_id = request.form["device_id"]
     cur.execute("SELECT * FROM login where nip = %s and device_id = %s",(nip,device_id))
     cekDevice = cur.fetchall()
-    if str(cekDevice) == '()':
-        return jsonify({"msg":"maaf akun anda tidak seseuai dengan device yang didaftarkan"})
     access_token = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
     refresh_token=access_token
     password = request.form['password']
@@ -317,6 +315,8 @@ def apilogin():
         cur.close()
         print("maaf nip tidak ada")
         return jsonify({"msg":"maaf nip tidak ada"}),401
+    elif str(cekDevice) == '()':
+        return jsonify({"msg":"maaf akun anda tidak sesuai dengan device yang didaftarkan"}),401
     elif not check_password_hash(datalogin[0][1],password):
         cur.close()
         print("maaf password salah")
@@ -324,11 +324,11 @@ def apilogin():
     else:
         cur.execute("UPDATE login SET token = %s WHERE role = 'karyawan' and nip = %s" , (refresh_token,nip))
         mysql.connection.commit()
-        cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
-        datalogin = cur.fetchall()
-        print(access_token)
+        cur.execute("SELECT nip,nama,posisi,gender,ttl,email,no_hp,alamat FROM karyawan WHERE nip = %s ",(nip,))
+        datalogin = cur.fetchone()
+        print(datalogin)
         cur.close()
-        return jsonify({"data":{"nip":datalogin[0][0],"nama":datalogin[0][1],"posisi":datalogin[0][2],"gender":datalogin[0][4],"ttl":str(datalogin[0][5]),"email":datalogin[0][6],"no_hp":datalogin[0][7],"alamat":datalogin[0][8]},"msg":"login berhasil","token":refresh_token}),200
+        return jsonify({"data":{"nip":datalogin[0],"nama":datalogin[1],"posisi":datalogin[2],"gender":datalogin[3],"ttl":str(datalogin[4]),"email":datalogin[5],"no_hp":datalogin[6],"alamat":datalogin[7]},"msg":"login berhasil","token":refresh_token}),200
 @auth.route('/logout')
 @roles_required('admin','HRD','karu')
 def logout():

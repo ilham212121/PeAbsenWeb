@@ -594,8 +594,8 @@
                 var age_dt = new Date(month_diff);  
                 var year = age_dt.getUTCFullYear();
                 var age = Math.abs(year - 1970);  
-                var valid_no_hp = validatePhoneNumber(no_hp);
                 if (element == "hrd"){
+                var valid_no_hp = validatePhoneNumber(no_hp);
                     if(nama==""){
                     return "nama tidak boleh kosong"
                     }
@@ -635,6 +635,7 @@
                     }
                 }
                 else if (element == "karyawan"){
+                var valid_no_hp = validatePhoneNumber(no_hp);
                     if(nama==""){
                     return "nama tidak boleh kosong"
                     }
@@ -681,6 +682,7 @@
                     }
                 }
                 else if (element == "admin"){
+                var valid_no_hp = validatePhoneNumber(no_hp);
                     if(nama==""){
                     return "nama tidak boleh kosong"
                     }
@@ -720,6 +722,7 @@
                     }
                 }
                 else if (element == "karu"){
+                var valid_no_hp = validatePhoneNumber(no_hp);
                     if(nama==""){
                     return "nama tidak boleh kosong"
                     }
@@ -775,13 +778,7 @@
                     return "jam kerja tidak boleh kosong"
                     }
                     else{
-                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                        if(email.match(mailformat))
-                        {
-                            return true;
-                        }else {
-                            return "email tidak valid";
-                        } 
+                       
                         return true
                     }
                 }

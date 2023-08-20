@@ -4,31 +4,24 @@ from application import app,mysql,allowed_file
 from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for,send_from_directory
 from application.auth import session,roles_required
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import hashlib
 from time import time
 import time,random
 from datetime import datetime
 
 web = Blueprint('auth', __name__)
-def generate_nip(tgl_date,jk,no_urut):
-    tgl = datetime.strptime(tgl_date, '%Y-%m-%d').date()
-    thn_lahir = tgl.year
-    bln_lahir = tgl.month
-    tgl_lahir = tgl.day
-    thn_ini = datetime.today().year
-    no_urut = convertTuple(no_urut)
-    no_urut = no_urut.zfill(3)
-    if jk == 'L':
-        jk = 0
-    else :
-        jk = 1
-    nip = str(thn_lahir)+str(bln_lahir)+str(tgl_lahir)+str(thn_ini)+str(bln_lahir)+str(jk)+str(no_urut)
-    return nip
-
-def convertTuple(tup):
-    st = ''.join(map(str, tup))
-    return st
-@web.route('/form/jadwal/admin') 
+def generate_code(name):
+    m = hashlib.md5()
+    m.update(str(name).encode('utf-8'))
+    return str(int(m.hexdigest(), 16))[0:3]
+def generate_nip(posisi,ruangan,urutan):
+    month = str(datetime.now().month).zfill(2)
+    year = str(datetime.now().year)[-2:]
+    kdPosisi = generate_code(posisi)
+    kdRuangan = generate_code(ruangan)
+    noUrut = str(urutan).zfill(3)
+    return year + month + kdPosisi + kdRuangan + noUrut
+@web.route('/form/jadwal/admin')
 @roles_required('admin','HRD')
 def formjadwaladmin():
     cur = mysql.connection.cursor()
@@ -91,6 +84,8 @@ def form(init):
     elif init == "jadwal" and session['role'] == "karu":
         None
     elif init == "jadwal" and session['role'] == "HRD": 
+        return redirect(url_for('auth.index'))
+    elif init == "jadwal" and session['role'] == "admin": 
         return redirect(url_for('auth.index'))
     elif session['role'] != "karu":
         None
@@ -457,8 +452,8 @@ def add_karyawan():
     cur = mysql.connection.cursor()
     cur.execute("SELECT COUNT(*)+1 FROM karyawan")
     no_urut = cur.fetchone()
-    print(no_urut)
-    nip = random.randint(0,9999999)
+    print(no_urut[0])
+    nip = generate_nip(posisi,ruangan,no_urut[0])
     print(nip)
     today =  datetime.today()
     cur.execute("INSERT INTO `karyawan`(`nip`, `nama`,`posisi`,`ruangan`, `email`, `gender`, `ttl`, `alamat`, `no_hp`, `deleted_at`, `created_at`, `updated_at`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ",(nip,nama,posisi,ruangan,email,jk,tgl_lahir,alamat,no_hp,'',today,today))
@@ -511,7 +506,7 @@ def add_shift():
     cur = mysql.connection.cursor()
     cur.execute("INSERT INTO `shift`(`Nama`,`berangkat`,`pulang`, `jam_kerja`) VALUES (%s,%s,%s,%s) ",(nama,jam_berangkat,jam_pulang,jam_kerja))
     mysql.connection.commit()
-    return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil ubah Data","status":"success"}})
+    return jsonify({"data":None,"meta":{"code":200,"message":"Berhasil Simpan Data","status":"success"}})
 
 @web.route('/edit/admin/<no>',methods=['GET','PUT']) 
 @roles_required('admin')
@@ -665,7 +660,7 @@ def data_hrd():
     hrd = cur.fetchall()
     return render_template('dashboard/data_hrd.html',hrd=hrd)
 @web.route('/data_karu')
-@roles_required('admin','HRD','karu')
+@roles_required('admin','HRD')
 def data_karu():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM karu")
@@ -751,7 +746,7 @@ def warga():
     warga.close()
     return render_template('admin/data_warga.html',data_warga=data_warga)
 @web.route('/delete/<init>/<id>',methods=['DELETE'])
-@roles_required('admin','HRD','karu')
+@roles_required('admin','karu')
 def deleteuser(init,id):
     try:
         if request.method == 'DELETE':

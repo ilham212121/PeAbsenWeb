@@ -18,7 +18,7 @@ def isNowAbsen(startTime, endTime, nowTime):
         if nowTime < startTime:
             wait=startTime-nowTime
             print(str(wait))
-            return "kamu absen terlalu cepat silahkan tunggu "+str(wait)+" lagi"
+            return "kamu absen terlalu cepat \n silahkan tunggu "+str(wait)+" lagi"
         if nowTime > endTime:
             return "kamu terlambat"
         if nowTime >= startTime and nowTime <= endTime:
@@ -54,11 +54,13 @@ class apiabsen(Resource):
             timeNow = str(a.tm_hour)+':'+str(a.tm_min)+':'+str(a.tm_sec)
             cur.execute("SELECT * from dataabsen where nip = %s and tanggal = %s ",(nip,tanggal))
             cek = cur.fetchall()
+            print(cek)
             if str(cek) == '()':
-                cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.nama = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s",(nip,str(a.tm_mon)))
+                cur.execute("SELECT jadwal.shift,shift.berangkat from jadwal INNER JOIN shift ON shift.nama = jadwal.shift where jadwal.nip = %s AND jadwal.bulan = %s AND jadwal.tanggal = %s",(nip,str(a.tm_mon),tanggal))
                 jadwal = cur.fetchall()
                 renamefile= secure_filename(str(tanggal)+"-"+str(nip)+".jpg")
                 timeNow = datetime.strptime(timeNow, "%H:%M:%S")
+                print(jadwal)
                 if str(jadwal)=='()':
                     print("maaf jadwal belum ada")
                     return jsonify({"msg":"maaf jadwal belum ada"})
@@ -173,7 +175,17 @@ class history_absen(Resource):
             dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
             respon.append(dictlogs)
         return make_response(jsonify([{"data":respon,"msg":'get history sukses'}]))
-
+class search_history_absen(Resource):
+    def get(self,nip,tanggal,status):
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM dataabsen WHERE nip = %s and tanggal = %s and status = %s GROUP BY tanggal DESC',(nip,tanggal,status))
+        datahistory= cur.fetchall()
+        respon=[]
+        for i in range(len(datahistory)):
+            dictlogs={}
+            dictlogs.update({"tanggal":str(datahistory[int(i)][5]),"waktu":str(datahistory[int(i)][6]),"status":str(datahistory[int(i)][7])})   
+            respon.append(dictlogs)
+        return make_response(jsonify([{"data":respon,"msg":'get history sukses'}]))
 class history_absenold(Resource):
     def post(self):
         nip = request.form['nip']
@@ -202,8 +214,9 @@ class profile(Resource):
         print(token)
         cur.execute("SELECT nip FROM login WHERE token = %s ",(token,))
         nip=cur.fetchone()
-        cur.execute("SELECT * FROM karyawan WHERE nip = %s ",(nip,))
+        cur.execute("SELECT nip,nama,posisi,gender,ttl,email,no_hp,alamat FROM karyawan WHERE nip = %s ",(nip,))
         dataprofile= cur.fetchone()
+        print(dataprofile)
         return jsonify({"data":{"nip":dataprofile[0],"nama":dataprofile[1],"posisi":dataprofile[2],"gender":dataprofile[3],"ttl":str(dataprofile[4]),"email":dataprofile[5],"no_hp":dataprofile[6],"alamat":dataprofile[7]},"msg":'get profile sukses'})
 
 class update_profile(Resource):
@@ -257,29 +270,22 @@ class update_profile(Resource):
             cur.execute("UPDATE karyawan SET alamat=%s WHERE nip = %s",(alamat,nip,))
             mysql.connection.commit()
             status = True
-        cur.execute("SELECT * FROM karyawan WHERE nip = %s" , (nip,))
-        new_data = cur.fetchall()
+        cur.execute("SELECT nip,nama,posisi,gender,ttl,email,no_hp,alamat FROM karyawan WHERE nip = %s ",(nip,))
+        new_data = cur.fetchone()
         print(new_data)
         if status == False :
             print("false")
             return jsonify({"msg":msg})
         else:
             print("true")
-            return jsonify({"data":[{"nip":new_data[0][0],
-                                     "nama":new_data[0][1],
-                                     "posisi":new_data[0][2],
-                                     "gender":new_data[0][4],
-                                     "ttl":str(new_data[0][5]),
-                                     "email":new_data[0][6],
-                                     "no_hp":new_data[0][7],
-                                     "alamat":new_data[0][8]}],
-                                     "msg":"data berhasil diupdate"})
+            return jsonify({"data":[{"nip":new_data[0],"nama":new_data[1],"posisi":new_data[2],"gender":new_data[3],"ttl":str(new_data[4]),"email":new_data[5],"no_hp":new_data[6],"alamat":new_data[7]}],"msg":"data berhasil diupdate"})
             
 api.add_resource(history_absenold, '/api/karyawan/history/absen', methods=['POST'])
 api.add_resource(history_pulangold, '/api/karyawan/history/pulang', methods=['POST'])
 api.add_resource(apiabsen, '/api/v1/events/absen', methods=['POST'])
 api.add_resource(apipulang, '/api/v1/events/pulang', methods=['POST'])
 api.add_resource(history_absen, '/api/v1/karyawan/history/absen/<nip>', methods=['GET'])
+api.add_resource(search_history_absen, '/api/v1/karyawan/history/absen/<nip>/<tanggal>/<status>', methods=['GET'])
 api.add_resource(history_pulang, '/api/v1/karyawan/history/pulang/<nip>', methods=['GET'])
 api.add_resource(update_profile, '/api/v1/karyawan/update_profile', methods=['PUT'])
 api.add_resource(profile, '/api/v1/karyawan/profile/<token>', methods=['GET'])

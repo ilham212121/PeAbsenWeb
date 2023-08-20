@@ -93,16 +93,9 @@
                                     <a id="data_karyawan" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karyawan') }}">
                                         Data Karyawan
                                     </a>
-                                    {% if session['role'] == 'karu'%}
+                                    {% if session['role'] == 'HRD' %}
                                     <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
                                         Data Kepala Ruangan
-                                    </a>
-                                    {% elif session['role'] == 'HRD' %}
-                                    <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
-                                        Data Kepala Ruangan
-                                    </a>
-                                    <a id="data_hrd" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_hrd') }}">
-                                        Data Hrd
                                     </a>
                                     {% elif session['role'] =='admin' %}
                                     <a id="data_ka_ruang" style="color: #E5DBCF;" class="nav-link" href="{{ url_for('web.data_karu') }}">
@@ -128,8 +121,6 @@
                                 <nav class="sb-sidenav-menu-nested nav " style="color: #E5DBCF;">
                                     
                                     {% if session['role'] == 'karu'%}
-                                    <a id="jadwal" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
-                                    {% elif session['role'] =='admin' %}
                                     <a id="jadwal" class="nav-link" href="/form/jadwal" style="color: #E5DBCF;">Jadwal</a>
                                     {% endif %}
                                     <a id="shift" class="nav-link" href="{{ url_for('web.shift') }}" style="color: #E5DBCF;">Shift</a>
