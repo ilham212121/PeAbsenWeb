@@ -20,10 +20,15 @@
                 <div class="dataTable-top">
                     <div class="dataTable-dropdown"><label><select id="ruangan" onclick="RUANGAN()"
                                 class="dataTable-selector">
+                                
+                                {% if session['role'] == 'karu' %}
+                                <option value="{{session['penempatan']}}">{{session['penempatan']}}</option>
+                                {% else %}
                                 {%for i in ruangan %}
                                 <option value="{{i.0}}">{{i.0}}</option>
                                 {%endfor%}
                                 <option value="semua">Semua</option>
+                                {% endif %}
                             </select> pilih ruangan</label>
                     </div>
                     <div></div>

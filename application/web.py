@@ -92,10 +92,12 @@ def form(init):
     else:
         return redirect(url_for('auth.index'))
     cur = mysql.connection.cursor()
-    cur.execute("SELECT Nama FROM ruangan")
+    cur.execute("SELECT * FROM ruangan")
     ruangan = cur.fetchall()
     cur.execute("SELECT Nama FROM shift")
     shift = cur.fetchall()
+    cur.execute("SELECT * FROM posisi")
+    posisi = cur.fetchall()
     a=time.localtime()
     bulan_now=a.tm_mon-3
     print(bulan_now)
@@ -105,7 +107,7 @@ def form(init):
         if i >= bulan_now:
             filterbln.append(i)
     tahun = datetime.today().year
-    return render_template('dashboard/form.html',init=init, ruangan=ruangan, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
+    return render_template('dashboard/form.html',init=init, ruangan=ruangan, posisi=posisi, shift=shift, bulanindex=filterbln, bulan=bulan,bulan_now = bulan_now, tahun=tahun)
 @web.post("/update/admin/<bulan>/<tahun>")
 def updateadmin(bulan,tahun):
     cur = mysql.connection.cursor()
@@ -351,22 +353,22 @@ def profileupdate():
     print(id)
     role = session['role']
     print(role)
-    nama = request.form['nama'] 
+    nama = request.json['nama'] 
     print(nama)
-    email = request.form['email'] 
+    email = request.json['email'] 
     print(email)
-    gender = request.form['gender'] 
+    gender = request.json['gender'] 
     print(gender)
-    ttl = request.form['ttl'] 
+    ttl = request.json['ttl'] 
     print(ttl)
-    alamat = request.form['alamat'] 
+    alamat = request.json['alamat'] 
     print(alamat)
-    no_hp = request.form['no_hp']
+    no_hp = request.json['no_hp']
     print(no_hp)
     cur = mysql.connection.cursor()
     cur.execute("UPDATE login inner join "+role+" on "+role+".nip = login.nip SET nama=%s, email=%s, gender=%s, ttl=%s, alamat=%s, no_hp=%s WHERE login.nip = %s ",(nama, email, gender, ttl, alamat, no_hp,id,))
     mysql.connection.commit()
-    return redirect(url_for('web.profile'))
+    return  jsonify({"data":"null","meta":{"code":200,"message":"Berhasil Edit Data","status":"success"}})
 @web.route('/add/admin',methods=['POST']) 
 @roles_required('admin')
 def add_admin():

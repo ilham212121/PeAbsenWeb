@@ -12,8 +12,9 @@
                 <i class="fas fa-table me-1"></i>
                 update profile
             </div><br>
+          
             <div class="card-body">
-                <form action="/profile/update" method="post">
+                <form >
                     <input type="hidden" name="nip" value="{{dataprofile[0]}}">
                     <div class="form-floating mb-3">
                         <input class="form-control" id="inputEmail" name="nama" type="text" value="{{dataprofile[1]}}" placeholder=" nama lengkap" />
@@ -66,7 +67,7 @@
                         <label for="exampleFormControlTextarea1">Alamat</label>
                         <textarea class="form-control" id="exampleFormControlTextarea1" name="alamat" rows="3">{{dataprofile[5]}}</textarea>
                     </div>
-                    <button type="submit" class="btn card bg-info text-white mt-3">Submit</button>
+                    <button type="button" class="btn card bg-info text-white mt-3" onclick="formsubmit()">Submit</button>
                 </form>
             </div>
     </form>
@@ -76,5 +77,100 @@
     
 {% endblock %}
 {% block footer %}
-
+<script>
+    function validatePhoneNumber(input_str) {
+                var jml = input_str.toString().length;
+                var re = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+)/g;
+                if (jml>=10 && jml <=13){
+                    return re.test(input_str);
+                }
+                else{
+                    return false;
+                }
+            }
+    function validate(){
+                var nama = $("[name='nama']").val();
+                var email = $("[name='email']").val();
+                var jk = $("[name='gender']").val();
+                var tgl_lahir = $("[name='ttl']").val();
+                var no_hp = $("[name='no_hp']").val();
+                var alamat = $("[name='alamat']").val()
+                var dob = new Date(tgl_lahir);   
+                var month_diff = Date.now() - dob.getTime();  
+                var age_dt = new Date(month_diff);  
+                var year = age_dt.getUTCFullYear();
+                var age = Math.abs(year - 1970);  
+                var valid_no_hp = validatePhoneNumber(no_hp);
+                    if(nama==""){
+                    return "nama tidak boleh kosong"
+                    }
+                    else if(email ==""){
+                    return "email tidak boleh kosong"
+                    }
+                    else if (email.length < 1) {  
+                    return "email tidak boleh 1 kata"
+                    }
+                    else if(jk==""){
+                    return "jenis kelamin tidak boleh kosong"
+                    }
+                    else if(tgl_lahir==""){
+                    return "taggal lahir tidak boleh kosong"
+                    }
+                    else if(age<=18){
+                    return "umur tidak boleh dibawah 18 tahun"
+                    }
+                    else if(no_hp==""){
+                    return "no hp tidak boleh kosong"
+                    }
+                    else if(valid_no_hp==false){
+                        return "no hp tidak valid"
+                    }
+                    else if(alamat==""){
+                        return "alamat tidak boleh kosong"
+                    }
+                    else{
+                        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                        if(email.match(mailformat))
+                        {
+                            return true;
+                        }else {
+                            return "email tidak valid";
+                        }
+                       
+                    }
+                }
+            
+        
+    function formsubmit() {
+        var url = "/profile/update";
+        var valid = validate();
+        if (valid == true){
+            var formData = {
+            nip: $("[name='nip']").val(),
+            nama: $("[name='nama']").val(),
+            email: $("[name='email']").val(),
+            gender: $("[name='gender']").val(),
+            ttl: $("[name='ttl']").val(),
+            alamat: $("[name='alamat']").val(),
+            no_hp: $("[name='no_hp']").val(),
+        };
+        console.log(formData)
+     axios.post(url, formData)
+                    .then(function(response) {
+                        console.log(response)
+                        let data = response.data.data;
+                        let meta = response.data.meta;
+                        toastr.success(meta.message);
+                    })
+                    .catch(function(error) {
+                        toastr.error('Gagal simpan data!');
+                    });
+                }
+                else{
+                   
+                    toastr.error(valid);
+                }
+                
+            }
+</script>
 {% endblock %}

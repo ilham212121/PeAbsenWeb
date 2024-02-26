@@ -88,9 +88,9 @@
                         <input class="input100" id="email" name="email" type="email"placeholder="masukan email" ><br>
                         
                         <label>Pilih Penempatan:</label><br>
-                        <select id="ruangan" name="ruangan" class="input100">
+                        <select id="ruangan" name="ruangan" class="input100" >
                             {% for ruang in ruangan %}
-                            <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                            <option class="input100" style="width: max-content;" value="{{ruang.1}}" >{{ ruang.1 }}</option>
                         {% endfor %}
                         </select><br>
 
@@ -128,14 +128,27 @@
                         <input class="input100" id="email" name="email" type="email" placeholder="masukan email"><br>
                         
                         <label>Posisi</label><br>
-                        <input class="input100" id="posisi" name="posisi"  type="text" placeholder="masukan posisi"><br>
-                        
+                        <script>
+                            var posisi = [];
+                            var ruangan = [];</script>
+                        <select  id="posisi" name="posisi" class="input100" >
+                            <option class="input100" style="width: max-content;" >pilih posisi</option>
+                            {% for pos in posisi %}
+                            <script> 
+                            dict = {id:"{{pos.0}}",nama : "{{pos.1}}",ids_ruangan : "{{pos.2}}"}
+                            posisi.push(dict)</script>
+                            <option class="input100" style="width: max-content;" value="{{pos.1}}" >{{pos.1}}</option>
+                            {% endfor %}
+                        </select><br>
+
                         <label>Pilih Ruangan :</label><br>
                         <select id="ruangan" name="ruangan" class="input100">
                             {% for ruang in ruangan %}
-                            <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
-                        {% endfor %}
-    
+                            <script>
+                                dict = {id:"{{ruang.0}}",nama : "{{ruang.1}}",ids_posisi : "{{ruang.2}}"}
+                                ruangan.push(dict)</script>
+                            <option class="input100" style="width: max-content;" id="ruangan{{ruang.0}}" value="{{ruang.1}}" >{{ ruang.1 }}</option>
+                            {% endfor %}
                         </select><br>
 
                         <label>Jenis Kelamin</label><br>
@@ -167,7 +180,7 @@
                     <label><select id="ruangan" class="input100">
                     {% for ruang in ruangan %}
                         
-                    <option class="input100" style="width: max-content;" value="{{ruang.0}}" >{{ ruang.0 }}</option>
+                    <option class="input100" style="width: max-content;" value="{{ruang.1}}" >{{ ruang.1 }}</option>
 
                     {% endfor %}
 
@@ -275,6 +288,32 @@
                 
             }
         });
+        function cekposisi(){
+            var pilih_posisi = $("#posisi").val()-1
+            var pilih = ""
+            var list_ruang = ""
+            console.log(pilih_posisi)
+            list_ruang = posisi[pilih_posisi]["ids_ruangan"]
+            console.log(list_ruang)
+            list_ruang = list_ruang.split(",")
+            console.log(list_ruang)
+            console.log(list_ruang[0])
+            for (var j in ruangan){
+                for (var z in list_ruang){
+                    console.log(list_ruang[z])
+                    console.log(ruangan[j]["id"])
+                    if (ruangan[j]["id"] = list_ruang[z] ){
+                        console.log("tampilkan #ruangan"+list_ruang[z])
+                        $("#ruangan"+list_ruang[z]).show()
+                    }
+                    else{
+                        console.log("hilangkan #ruangan"+list_ruang[z])
+                        $("#ruangan"+list_ruang[z]).hide();
+                    }
+                }
+            }
+        
+        }
         function createTable(callback) {
                 statusBtnShowPegawai(true);
                 var container = $("#container-table");

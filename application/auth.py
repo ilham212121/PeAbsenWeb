@@ -77,56 +77,55 @@ def dashboard():
                 ' GROUP by dataabsen.id DESC')
             datatelat = cur.fetchall()
             print(datatelat)
-            tahun=str(time.gmtime().tm_year)
-            bulan=a.tm_mon
-            nmbulan=''
-            jumlahHari=''
-            if bulan==1: 
-                nmbulan="jan"
-                jumlahHari=31
-            elif bulan==2:
-                nmbulan="feb"
-                if((tahun %4 == 0 and tahun % 100 !=0) or tahun % 400 == 0):
+            tahun = str(time.gmtime().tm_year)
+            bulan = time.gmtime().tm_mon
+            nmbulan = ''
+            jumlahHari = ''
+
+            if bulan == 1: 
+                nmbulan = "jan"
+                jumlahHari = 31
+            elif bulan == 2:
+                nmbulan = "feb"
+                if ((int(tahun) % 4 == 0 and int(tahun) % 100 != 0) or int(tahun) % 400 == 0):
                     jumlahHari = 29
                 else:
                     jumlahHari = 28
-            elif bulan==3:
-                nmbulan="mar"
-                jumlahHari= 31
-            elif bulan==4:
-                nmbulan="apr"
-                jumlahHari = 30
-            elif bulan==5:
-                nmbulan="mei"
+            elif bulan == 3:
+                nmbulan = "mar"
                 jumlahHari = 31
-            elif bulan== 6:
-                nmbulan="jun"
+            elif bulan == 4:
+                nmbulan = "apr"
                 jumlahHari = 30
-            elif bulan== 7:
-                nmbulan="jul"
+            elif bulan == 5:
+                nmbulan = "mei"
                 jumlahHari = 31
-            elif bulan== 8:
-                nmbulan="agu"
-                jumlahHari = 31
-            elif bulan== 9:
-                nmbulan="sep"
+            elif bulan == 6:
+                nmbulan = "jun"
                 jumlahHari = 30
-            elif bulan== 10:
-                nmbulan="okt"
+            elif bulan == 7:
+                nmbulan = "jul"
                 jumlahHari = 31
-            elif bulan== 11:
-                nmbulan="nov"
+            elif bulan == 8:
+                nmbulan = "agu"
+                jumlahHari = 31
+            elif bulan == 9:
+                nmbulan = "sep"
                 jumlahHari = 30
-            elif bulan== 12:
-                nmbulan="des"
-                jumlahHari =31
-            
-            tgl = a.tm_mday
+            elif bulan == 10:
+                nmbulan = "okt"
+                jumlahHari = 31
+            elif bulan == 11:
+                nmbulan = "nov"
+                jumlahHari = 30
+            elif bulan == 12:
+                nmbulan = "des"
+                jumlahHari = 31
 
-            cur.execute(
-                'SELECT nama from ruangan')
+            tgl = time.gmtime().tm_mday
+
+            cur.execute('SELECT nama from ruangan')
             ruangan = cur.fetchall()
-            
             print(jumlahHari)
             setengahbln = jumlahHari/2
             if tgl < setengahbln:
@@ -287,8 +286,9 @@ def apilogindashboard():
             datasession= cur.fetchone()
             print(datasession)
         elif datalogin[2]=='karu':
-            cur.execute("SELECT login.nip,login.role, karu.nama,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
+            cur.execute("SELECT login.nip,login.role, karu.nama,karu.penempatan,karu.email,karu.alamat,karu.no_hp FROM login INNER JOIN karu ON login.nip = karu.nip WHERE login.nip = %s " , (nip,))
             datasession= cur.fetchone()
+            session['penempatan'] = datasession[3]
         else:
             return "maaf nip tida ada"
         session['loggedin'] = True
